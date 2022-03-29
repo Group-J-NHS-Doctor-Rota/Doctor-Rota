@@ -8,7 +8,7 @@
 - Shichao (Dennis) Liu
 - Rongkun Wang
 
-![The whole gang](./Resources/Team Photo.png)
+![The whole gang](resources/Team Photo.png)
 
 ## Brief (as originally given by client)
 

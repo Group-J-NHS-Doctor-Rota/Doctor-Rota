@@ -8,7 +8,7 @@
 - Shichao (Dennis) Liu
 - Rongkun Wang
 
-![The whole gang](resources/Team Photo.png)
+![The whole gang](/resources/Team Photo.png?raw=true "All 5 of us")
 
 ## Brief (as originally given by client)
 

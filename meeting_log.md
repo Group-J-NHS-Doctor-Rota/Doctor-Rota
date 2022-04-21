@@ -1,5 +1,5 @@
 # Meeting Log
-| No. | Time | Name(Sorted by characters) |
+| No. | Time | Name (Sorted by characters) |
 |-----|------|-------------------------------------|
 | 1.  | 08 March 2022 | Dennies, Jonny, Henry, Steven, Rongkun |
 | 2.  | 15 March 2022 | Dennies, Jonny, Henry, Steven, Rongkun |
@@ -9,3 +9,4 @@
 | 6.  | 25 March 2022 | Dennies, Jonny, Henry, Steven, Rongkun |
 | 7.  | 29 March 2022 | Dennies, Jonny, Henry, Steven, Rongkun |
 | 8.  | 06 April 2022 | Dennies, Jonny, Henry, Steven, Rongkun |
+| 9.  | 20 April 2022 | Dennies, Jonny, Henry, Steven, Rongkun |

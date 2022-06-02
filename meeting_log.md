@@ -1,5 +1,5 @@
 # Meeting Log
-| No. | Time | Name (Sorted by characters) |
+| No. | Time | Name (in Alphabetical order) |
 |-----|------|-------------------------------------|
 | 1.  | 08 March 2022 | Dennis, Jonny, Henry, Steven, Rongkun |
 | 2.  | 15 March 2022 | Dennis, Jonny, Henry, Steven, Rongkun |
@@ -12,3 +12,5 @@
 | 9.  | 20 April 2022 | Dennis, Jonny, Henry, Steven, Rongkun |
 | 10. | 27 April 2022 | Dennis, Jonny, Henry, Steven, Rongkun |
 | 11. | 26 May   2022 | Dennis, Jonny, Henry, Steven, Rongkun |
+| 12. | 27 May   2022 | Aisling O'kane, Dennis, Jonny, Henry, Steven, Rongkun |
+| 13. | 1  June  2022 | Dennis, Jonny, Henry, Steven, Rongkun |

@@ -38,7 +38,6 @@ public class Rota {
 
     }
 
-    //TODO complete this
     public int getCost() {
         return cost;
     }

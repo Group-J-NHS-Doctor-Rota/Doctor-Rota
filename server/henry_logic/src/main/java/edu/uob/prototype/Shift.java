@@ -4,6 +4,10 @@ public class Shift {
 
     private ShiftTypes type;
 
+    public Shift(ShiftTypes type) {
+        this.type = type;
+    }
+
     public boolean isOnCall() {
         return switch (type) {
             case DayOnCall, NightOnCall -> true;

@@ -61,7 +61,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                edu.uob.prototype/edu.uob.prototype.HelloApplication
+                                edu.uob.prototype/edu.uob.prototype.RotaBuild
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

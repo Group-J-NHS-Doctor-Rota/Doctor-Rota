@@ -15,6 +15,10 @@ public class Shift {
         };
     }
 
+    public boolean isWorking() {
+        return !type.equals(ShiftTypes.NotWorking);
+    }
+
     public double getHours() {
         return switch (type) {
             case DayOnCall, NightOnCall -> 12.5;

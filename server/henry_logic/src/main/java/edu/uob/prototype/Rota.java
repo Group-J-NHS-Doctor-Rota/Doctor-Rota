@@ -39,12 +39,15 @@ public class Rota {
         return endDate;
     }
 
-
     public void addShift(ShiftTypes shiftType, LocalDate date, String EmployeeId) {
         if(!shifts.containsKey(EmployeeId)) {
             shifts.put(EmployeeId, new HashMap<>());
         }
         shifts.get(EmployeeId).put(date, new Shift(shiftType));
+    }
+
+    public void addRule(Rule rule) {
+        rules.add(rule);
     }
 
     public void refreshRules() {
@@ -59,7 +62,11 @@ public class Rota {
         return cost;
     }
 
+    // If date outside of rota, then employee is not working
     public Shift getShift(String EmployeeId, LocalDate date) {
+        if(LocalDateTools.isLarger(startDate,date) || LocalDateTools.isLarger(date, endDate)) {
+            return new Shift(ShiftTypes.NotWorking);
+        }
         return shifts.get(EmployeeId).get(date);
     }
 

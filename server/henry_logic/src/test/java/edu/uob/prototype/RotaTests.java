@@ -20,5 +20,8 @@ final class RotaTests {
         assertEquals(ShiftTypes.NotWorking, s1.getType(), "Should be not working");
         Shift s2 = rota1.getShift("123456", LocalDate.parse("2020-01-31"));
         assertEquals(ShiftTypes.NotWorking, s2.getType(), "Should be not working");
+        // Employee is not working outside of rota dates
+        Shift s3 = rota1.getShift("123456", LocalDate.parse("2030-01-31"));
+        assertEquals(ShiftTypes.NotWorking, s3.getType(), "Should be not working");
     }
 }

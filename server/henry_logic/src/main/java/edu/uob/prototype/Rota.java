@@ -27,34 +27,32 @@ public class Rota {
         shifts.put(employee.getId(), new HashMap<>());
     }
 
-    public void initialiseShiftsAndRules() {
-        createAllShiftsNotWorking();
-        createRules();
+    public ArrayList<String> getEmployeeIds() {
+        return new ArrayList<>(employees.keySet());
     }
 
-    private void createAllShiftsNotWorking() {
-        for(HashMap<LocalDate, Shift> map: shifts.values()) {
-            for(LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
-                map.put(date, new Shift(ShiftTypes.NotWorking));
-            }
-        }
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void addShift(Shift shift, LocalDate date, String EmployeeId) {
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+
+    public void addShift(ShiftTypes shiftType, LocalDate date, String EmployeeId) {
         if(!shifts.containsKey(EmployeeId)) {
             shifts.put(EmployeeId, new HashMap<>());
         }
-        shifts.get(EmployeeId).put(date, shift);
+        shifts.get(EmployeeId).put(date, new Shift(shiftType));
     }
 
-    // TODO complete this to generate all rules
-    private void createRules() {
-        rules = new ArrayList<>();
-    }
-
-    // TODO complete this to update cost
     public void refreshRules() {
-
+        cost = 0;
+        for(Rule rule: rules) {
+            rule.refresh();
+            cost += rule.getCost();
+        }
     }
 
     public int getCost() {

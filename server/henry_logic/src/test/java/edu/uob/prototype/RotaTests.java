@@ -15,8 +15,10 @@ final class RotaTests {
         Employee emp2 = new Employee("123457");
         rota1.addEmployee(emp1);
         rota1.addEmployee(emp2);
-        rota1.initialiseShiftsAndRules();
+        RotaTools.createAllShiftsNotWorking(rota1);
         Shift s1 = rota1.getShift("123456", LocalDate.parse("2020-01-01"));
         assertEquals(ShiftTypes.NotWorking, s1.getType(), "Should be not working");
+        Shift s2 = rota1.getShift("123456", LocalDate.parse("2020-01-31"));
+        assertEquals(ShiftTypes.NotWorking, s2.getType(), "Should be not working");
     }
 }

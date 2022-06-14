@@ -18,6 +18,7 @@ public class RotaTools {
 
     public static void createRules(Rota rota) {
         createNight46HoursOffRules(rota);
+        rota.refreshRules();
     }
 
     private static void createNight46HoursOffRules(Rota rota) {
@@ -35,5 +36,7 @@ public class RotaTools {
             }
         }
     }
+
+
 
 }

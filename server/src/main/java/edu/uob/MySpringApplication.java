@@ -1,12 +1,12 @@
-package com.example.herokudemo;
+package edu.uob;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class HerokuDemoApplication {
+public class MySpringApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HerokuDemoApplication.class, args);
+		SpringApplication.run(MySpringApplication.class, args);
 	}
 }

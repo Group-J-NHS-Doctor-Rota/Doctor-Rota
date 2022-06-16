@@ -48,5 +48,9 @@ final class RotaTests {
         rota1.getShift("123456", LocalDate.parse("2020-01-02")).updateType(ShiftTypes.NormalShift);
         rota1.refreshRules();
         assertTrue(rota1.getCost()>0, "Rule should be broken");
+        ShiftTools.swapShifts(rota1.getShift("123456", LocalDate.parse("2020-01-02")),
+                rota1.getShift("123456", LocalDate.parse("2020-01-04")));
+        rota1.refreshRules();
+        assertEquals(0, rota1.getCost(), "Rule should now be fixed");
     }
 }

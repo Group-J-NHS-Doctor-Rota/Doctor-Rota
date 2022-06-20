@@ -31,6 +31,8 @@ final class RotaTests {
         // Check rules
         RotaTools.createRules(rota1);
         assertEquals(0, rota1.getCost(), "Shouldn't be any cost with all not working");
+        // Number of days test
+        assertEquals(31, rota1.getNumberOfDays(), "Should be 31 days");
     }
 
     @Test

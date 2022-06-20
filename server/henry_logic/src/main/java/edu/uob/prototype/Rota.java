@@ -39,6 +39,11 @@ public class Rota {
         return endDate;
     }
 
+    public int getNumberOfDays() {
+        // +1 as we inclusively want the start and end dates
+        return endDate.compareTo(startDate) + 1;
+    }
+
     public void addShift(ShiftTypes shiftType, LocalDate date, String EmployeeId) {
         if(!shifts.containsKey(EmployeeId)) {
             shifts.put(EmployeeId, new HashMap<>());

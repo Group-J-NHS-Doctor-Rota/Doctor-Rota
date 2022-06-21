@@ -26,8 +26,9 @@ public class RotaBuild {
         int numberOfOnCallNights = numberOfDays;
         int totalMaxHours = (int) (numberOfWeeks*48);
         HashMap<String, HashMap<ShiftTypes, Integer>> employeeShiftTypes = new HashMap<>();
+        HashMap<ShiftTypes, Integer> temp;
         for(String id: employeeIds) {
-            HashMap<ShiftTypes, Integer> temp = new HashMap<>();
+            temp = new HashMap<>();
             temp.put(ShiftTypes.NightOnCall, 0);
             temp.put(ShiftTypes.DayOnCall, 0);
             temp.put(ShiftTypes.NotWorking, 0);
@@ -41,7 +42,7 @@ public class RotaBuild {
         for(int i = 0; i < numberOfDays; i++) {
             for(String id: employeeIds) {
                 int hours = 0;
-                HashMap<ShiftTypes, Integer> temp = employeeShiftTypes.get(id);
+                temp = employeeShiftTypes.get(id);
                 hours += temp.get(ShiftTypes.NightOnCall) * new Shift(ShiftTypes.NightOnCall).getHours();
                 hours += temp.get(ShiftTypes.DayOnCall) * new Shift(ShiftTypes.DayOnCall).getHours();
                 hours += temp.get(ShiftTypes.NormalShift) * new Shift(ShiftTypes.NormalShift).getHours();
@@ -68,7 +69,7 @@ public class RotaBuild {
         int idIndex = 0;
         while(numberOfWeekendNights > 0){
             String employee = employeeIds.get(idIndex);
-            HashMap<ShiftTypes, Integer> temp = employeeShiftTypes.get(employee);
+            temp = employeeShiftTypes.get(employee);
             temp.put(ShiftTypes.NightOnCall, temp.get(ShiftTypes.NightOnCall) - 2);
             //temp.put(ShiftTypes.WeekendNight, temp.get(ShiftTypes.WeekendNight) + 2);
             weekendNights.add(employee);
@@ -79,7 +80,7 @@ public class RotaBuild {
         // List for weekend days
         while(numberOfWeekendDays > 0){
             String employee = employeeIds.get(idIndex);
-            HashMap<ShiftTypes, Integer> temp = employeeShiftTypes.get(employee);
+            temp = employeeShiftTypes.get(employee);
             temp.put(ShiftTypes.DayOnCall, temp.get(ShiftTypes.DayOnCall) - 2);
             //temp.put(ShiftTypes.WeekendDay, temp.get(ShiftTypes.WeekendDay) + 2);
             weekendDays.add(employee);
@@ -91,7 +92,7 @@ public class RotaBuild {
         idIndex = 0;
         while(skip < numberOfEmployees){
             String employee = employeeIds.get(idIndex);
-            HashMap<ShiftTypes, Integer> temp = employeeShiftTypes.get(employee);
+            temp = employeeShiftTypes.get(employee);
             if(temp.get(ShiftTypes.NightOnCall) == 0) {
                 skip++;
             } else {
@@ -106,7 +107,7 @@ public class RotaBuild {
         skip = 0;
         while(skip < numberOfEmployees){
             String employee = employeeIds.get(idIndex);
-            HashMap<ShiftTypes, Integer> temp = employeeShiftTypes.get(employee);
+            temp = employeeShiftTypes.get(employee);
             if(temp.get(ShiftTypes.DayOnCall) == 0) {
                 skip++;
             } else {
@@ -151,11 +152,12 @@ public class RotaBuild {
                 rota1.addShift(ShiftTypes.WeekendDay, day, employeeId2);
                 rota1.addShift(ShiftTypes.WeekendDay, day.plusDays(1), employeeId2);
                 weekendDays.remove(0);
-                //TODO Need to remove not working days from count
                 for(String id : employeeIds) {
                     if(!id.equals(employeeId1) && !id.equals(employeeId2)) {
                         rota1.addShift(ShiftTypes.NotWorking, day, id);
                         rota1.addShift(ShiftTypes.NotWorking, day.plusDays(1), id);
+                        temp = employeeShiftTypes.get(id);
+                        temp.put(ShiftTypes.NotWorking, temp.get(ShiftTypes.NotWorking) - 1);
                     }
                 }
                 day = day.plusDays(7);
@@ -184,6 +186,16 @@ public class RotaBuild {
 
 
         System.out.println(rota1);
+
+        System.out.println(employeeShiftTypes.get("0006"));
+        System.out.println(employeeShiftTypes.get("0007"));
+        System.out.println(employeeShiftTypes.get("0004"));
+        System.out.println(employeeShiftTypes.get("0005"));
+        System.out.println(employeeShiftTypes.get("0002"));
+        System.out.println(employeeShiftTypes.get("0003"));
+        System.out.println(employeeShiftTypes.get("0001"));
+        System.out.println(employeeShiftTypes.get("0008"));
+
         System.exit(0);
         // Lists of employees for each
         //LocalDate day = rota1.getStartDate();

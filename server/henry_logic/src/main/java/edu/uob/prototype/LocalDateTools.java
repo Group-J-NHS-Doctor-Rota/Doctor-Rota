@@ -9,4 +9,10 @@ public class LocalDateTools {
         return date1.compareTo(date2) > 0;
     }
 
+    // Is date a weekend
+    public static boolean isWeekend(LocalDate date) {
+        return date.getDayOfWeek().toString().equals("SATURDAY") ||
+                date.getDayOfWeek().toString().equals("SUNDAY");
+    }
+
 }

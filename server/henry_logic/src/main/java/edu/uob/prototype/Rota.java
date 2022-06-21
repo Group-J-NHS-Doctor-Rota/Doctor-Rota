@@ -3,6 +3,7 @@ package edu.uob.prototype;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class Rota {
 
@@ -41,7 +42,7 @@ public class Rota {
 
     public int getNumberOfDays() {
         // +1 as we inclusively want the start and end dates
-        return endDate.compareTo(startDate) + 1;
+        return (int) (DAYS.between(startDate, endDate) + 1);
     }
 
     public void addShift(ShiftTypes shiftType, LocalDate date, String EmployeeId) {
@@ -78,6 +79,40 @@ public class Rota {
     //TODO complete this
     public void swapShifts() {
 
+    }
+
+    //TODO improve this
+    @Override
+    public String toString() {
+        String str = "";
+        String tempStr = "";
+        Shift tempShift;
+        int stringLength = 12;
+        str = "Employees ";
+        //https://www.baeldung.com/java-pad-string
+        str = String.format("%1$-" + 10 + "s", "Employees");
+        for(String employeeId : getEmployeeIds()) {
+            str = str.concat("|");
+            tempStr = String.format("%1$-" + stringLength + "s", employeeId);
+            str = str.concat(tempStr);
+        }
+        for(LocalDate date = startDate; LocalDateTools.isLarger(endDate.plusDays(1), date); date = date.plusDays(1)) {
+            str = str.concat("\n");
+            str = str.concat(date.toString());
+            for(String employeeId : getEmployeeIds()) {
+                str = str.concat("|");
+                tempShift = getShift(employeeId, date);
+                if(tempShift != null) {
+                    //https://www.baeldung.com/java-pad-string
+                    tempStr = String.format("%1$-" + stringLength + "s", tempShift);
+                } else {
+                    //https://stackoverflow.com/questions/1235179/simple-way-to-repeat-a-string
+                    tempStr = new String(new char[stringLength]).replace("\0", " ");
+                }
+                str = str.concat(tempStr);
+            }
+        }
+        return str;
     }
 
 }

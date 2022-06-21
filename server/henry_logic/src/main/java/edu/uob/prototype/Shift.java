@@ -10,8 +10,8 @@ public class Shift {
 
     public boolean isOnCall() {
         return switch (type) {
-            case DayOnCall, NightOnCall -> true;
-            default -> false;
+            case NotWorking, NormalShift -> false;
+            default -> true;
         };
     }
 
@@ -21,9 +21,9 @@ public class Shift {
 
     public double getHours() {
         return switch (type) {
-            case DayOnCall, NightOnCall -> 12.5;
             case NormalShift -> 10;
             case NotWorking -> 0;
+            default -> 12.5;
         };
     }
 

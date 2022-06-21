@@ -4,5 +4,7 @@ public enum ShiftTypes {
     NotWorking,
     NormalShift,
     NightOnCall,
-    DayOnCall
+    DayOnCall,
+    WeekendNight,
+    WeekendDay
 }

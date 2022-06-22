@@ -72,6 +72,8 @@ final class RotaTests {
         System.out.println(rota1);
         RotaTools.createRules(rota1);
 
+        System.out.println("Cost: " + rota1.getCost());
+
         Shift s1 = rota1.getShift("0006", LocalDate.parse("2020-01-02"));
         Shift s2 = rota1.getShift("0007", LocalDate.parse("2020-01-02"));
         Shift s3 = rota1.getShift("0006", LocalDate.parse("2020-01-11"));
@@ -79,6 +81,15 @@ final class RotaTests {
         assertTrue(ShiftTools.swapShifts(s1,s3));
 
         System.out.println(rota1);
+
+        rota1.refreshRules();
+        System.out.println("Cost: " + rota1.getCost());
+
+        ShiftTools.swapShifts(rota1.getShift("0006", LocalDate.parse("2020-01-03")),
+                rota1.getShift("0006", LocalDate.parse("2020-01-14")));
+
+        rota1.refreshRules();
+        System.out.println("Cost: " + rota1.getCost());
 
     }
 }

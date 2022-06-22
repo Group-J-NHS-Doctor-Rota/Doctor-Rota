@@ -4,7 +4,7 @@ public class ShiftTools {
 
     // Return false if swap not possible (i.e. incompatible or immutable)
     public static boolean swapShifts(Shift shift1, Shift shift2) {
-        if(isInvalidSwap(shift1, shift2)) {
+        if(!bothSameEmployee(shift1, shift2)) {
             return false;
         }
         performSwap(shift1, shift2);
@@ -12,7 +12,7 @@ public class ShiftTools {
     }
 
     private static boolean bothSameEmployee(Shift shift1, Shift shift2) {
-        return shift1.getEmployeeId() != shift2.getEmployeeId();
+        return shift1.getEmployeeId() == shift2.getEmployeeId();
     }
 
     private static boolean bothWeekendOrBothWeek(Shift shift1, Shift shift2) {

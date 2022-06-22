@@ -142,7 +142,7 @@ public class RotaTools {
             idIndex = (idIndex + 1) % employeeIds.size();
         }
 
-        System.out.println(weekendNights);
+        /*System.out.println(weekendNights);
         System.out.println(weekendDays);
         System.out.println(weekOnCallDays);
         System.out.println(weekOnCallNights);
@@ -154,7 +154,7 @@ public class RotaTools {
         System.out.println(employeeShiftTypes.get("0002"));
         System.out.println(employeeShiftTypes.get("0003"));
         System.out.println(employeeShiftTypes.get("0001"));
-        System.out.println(employeeShiftTypes.get("0008"));
+        System.out.println(employeeShiftTypes.get("0008"));*/
 
         // Schedule all shifts
         String employeeId1 = "";
@@ -218,14 +218,14 @@ public class RotaTools {
             day = day.plusDays(1);
         }
 
-        System.out.println(employeeShiftTypes.get("0006"));
+        /*System.out.println(employeeShiftTypes.get("0006"));
         System.out.println(employeeShiftTypes.get("0007"));
         System.out.println(employeeShiftTypes.get("0004"));
         System.out.println(employeeShiftTypes.get("0005"));
         System.out.println(employeeShiftTypes.get("0002"));
         System.out.println(employeeShiftTypes.get("0003"));
         System.out.println(employeeShiftTypes.get("0001"));
-        System.out.println(employeeShiftTypes.get("0008"));
+        System.out.println(employeeShiftTypes.get("0008"));*/
     }
 
 }

@@ -1,18 +1,17 @@
 package edu.uob.prototype;
 
-import java.util.HashMap;
-
 public class Night46HoursOffRule  extends Rule {
 
     private final int cost = 150;
-    private final HashMap<String, Shift> shifts;
+    private Shift day1;
+    private Shift day2;
+    private Shift day3;
     private boolean broken;
 
     public Night46HoursOffRule(Shift day1, Shift day2, Shift day3) {
-        shifts = new HashMap<>();
-        shifts.put("day1", day1);
-        shifts.put("day2", day2);
-        shifts.put("day3", day3);
+        this.day1 = day1;
+        this.day2 = day2;
+        this.day3 = day3;
         refresh();
     }
 
@@ -31,13 +30,13 @@ public class Night46HoursOffRule  extends Rule {
 
     @Override
     public void refresh() {
-        broken = shifts.get("day1").getType().equals(ShiftTypes.NightOnCall) &&
-                !shifts.get("day2").getType().equals(ShiftTypes.NightOnCall) &&
+        broken = day1.getType().equals(ShiftTypes.NightOnCall) &&
+                !day2.getType().equals(ShiftTypes.NightOnCall) &&
                 !haveTwoDaysOff();
     }
 
     private boolean haveTwoDaysOff() {
-        return shifts.get("day2").getHours() + shifts.get("day3").getHours() == 0;
+        return day2.getHours() + day3.getHours() == 0;
     }
 
 }

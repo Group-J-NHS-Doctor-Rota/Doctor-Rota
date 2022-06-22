@@ -5,8 +5,8 @@ import java.time.LocalDate;
 public class Shift {
 
     private ShiftTypes type;
-    String employeeId;
-    LocalDate date;
+    private String employeeId;
+    private LocalDate date;
 
     public Shift(ShiftTypes type) {
         this.type = type;
@@ -51,6 +51,12 @@ public class Shift {
 
     public void updateType(ShiftTypes type) {
         this.type = type;
+    }
+
+    public void updateShift(ShiftTypes type, String employeeId, LocalDate date) {
+        this.type = type;
+        this.employeeId = employeeId;
+        this.date = date;
     }
 
     @Override

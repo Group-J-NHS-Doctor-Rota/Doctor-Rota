@@ -73,9 +73,9 @@ final class RotaTests {
         RotaTools.createRules(rota1);
 
         Shift s1 = rota1.getShift("0006", LocalDate.parse("2020-01-02"));
-        Shift s2 = rota1.getShift("0007", LocalDate.parse("2020-01-01"));
+        Shift s2 = rota1.getShift("0007", LocalDate.parse("2020-01-02"));
         Shift s3 = rota1.getShift("0006", LocalDate.parse("2020-01-11"));
-        //assertFalse(ShiftTools.swapShifts(s1,s2));
+        assertFalse(ShiftTools.swapShifts(s1,s2));
         assertTrue(ShiftTools.swapShifts(s1,s3));
 
         System.out.println(rota1);

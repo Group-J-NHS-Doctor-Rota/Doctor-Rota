@@ -1,11 +1,21 @@
 package edu.uob.prototype;
 
+import java.time.LocalDate;
+
 public class Shift {
 
     private ShiftTypes type;
+    String employeeId;
+    LocalDate date;
 
     public Shift(ShiftTypes type) {
         this.type = type;
+    }
+
+    public Shift(ShiftTypes type, String employeeId, LocalDate date) {
+        this.type = type;
+        this.employeeId = employeeId;
+        this.date = date;
     }
 
     public boolean isOnCall() {
@@ -29,6 +39,14 @@ public class Shift {
 
     public ShiftTypes getType() {
         return type;
+    }
+
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public LocalDate getDate() {
+        return date;
     }
 
     public void updateType(ShiftTypes type) {

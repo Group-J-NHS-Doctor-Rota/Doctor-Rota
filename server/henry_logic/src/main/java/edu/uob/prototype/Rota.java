@@ -49,7 +49,7 @@ public class Rota {
         if(!shifts.containsKey(EmployeeId)) {
             shifts.put(EmployeeId, new HashMap<>());
         }
-        shifts.get(EmployeeId).put(date, new Shift(shiftType));
+        shifts.get(EmployeeId).put(date, new Shift(shiftType, EmployeeId, date));
     }
 
     public void addRule(Rule rule) {

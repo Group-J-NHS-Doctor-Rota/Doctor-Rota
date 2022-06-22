@@ -44,4 +44,10 @@ public class MaxHours168Rule extends Rule {
         // 71.5 instead of 72, as on call has 15 mins overlap at start and end
         broken = hours > 71.5;
     }
+
+    //TODO
+    @Override
+    public boolean resolve(Rota rota) {
+        return false;
+    }
 }

@@ -28,4 +28,10 @@ public class NotOnCallRequestRule extends Rule {
     public void refresh() {
         broken = shift.isWorking();
     }
+
+    ///TODO
+    @Override
+    public boolean resolve(Rota rota) {
+        return false;
+    }
 }

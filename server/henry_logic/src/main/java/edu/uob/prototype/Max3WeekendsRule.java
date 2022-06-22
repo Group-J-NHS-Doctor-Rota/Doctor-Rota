@@ -39,6 +39,12 @@ public class Max3WeekendsRule extends Rule {
                 workingWeekend("3");
     }
 
+    //TODO
+    @Override
+    public boolean resolve(Rota rota) {
+        return false;
+    }
+
     private boolean workingWeekend(String number) {
         return shifts.get("saturday".concat(number)).isWorking() ||
                 shifts.get("sunday".concat(number)).isWorking();

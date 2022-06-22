@@ -43,6 +43,12 @@ public class Max4LongShiftsRule extends Rule {
         broken = !have48HoursOff();
     }
 
+    //TODO
+    @Override
+    public boolean resolve(Rota rota) {
+        return false;
+    }
+
     private boolean haveFourOnCallShifts() {
         return shifts.get("day1").isOnCall() && shifts.get("day2").isOnCall() &&
                 shifts.get("day3").isOnCall() && shifts.get("day4").isOnCall();

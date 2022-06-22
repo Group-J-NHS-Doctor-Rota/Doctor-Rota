@@ -35,6 +35,12 @@ public class Night46HoursOffRule  extends Rule {
                 !haveTwoDaysOff();
     }
 
+    //TODO
+    @Override
+    public boolean resolve(Rota rota) {
+        return false;
+    }
+
     private boolean haveTwoDaysOff() {
         return day2.getHours() + day3.getHours() == 0;
     }

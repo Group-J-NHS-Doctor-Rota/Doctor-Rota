@@ -46,6 +46,12 @@ public class Max7ShiftsRule extends Rule {
         broken = !have48HoursOff();
     }
 
+    //TODO
+    @Override
+    public boolean resolve(Rota rota) {
+        return false;
+    }
+
     private boolean areDays1To7Working() {
         return shifts.get("day1").isWorking() && shifts.get("day2").isWorking() &&
                 shifts.get("day3").isWorking() && shifts.get("day4").isWorking() &&

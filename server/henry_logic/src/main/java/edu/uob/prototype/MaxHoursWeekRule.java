@@ -43,4 +43,10 @@ public class MaxHoursWeekRule extends Rule {
         //TODO confirm this as broken in example rota
         broken = hours > 48;
     }
+
+    //TODO
+    @Override
+    public boolean resolve(Rota rota) {
+        return false;
+    }
 }

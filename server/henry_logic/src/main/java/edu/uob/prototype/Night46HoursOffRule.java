@@ -3,9 +3,9 @@ package edu.uob.prototype;
 public class Night46HoursOffRule  extends Rule {
 
     private final int cost = 150;
-    private Shift day1;
-    private Shift day2;
-    private Shift day3;
+    private final Shift day1;
+    private final Shift day2;
+    private final Shift day3;
     private boolean broken;
 
     public Night46HoursOffRule(Shift day1, Shift day2, Shift day3) {
@@ -35,14 +35,28 @@ public class Night46HoursOffRule  extends Rule {
                 !haveTwoDaysOff();
     }
 
+    private boolean haveTwoDaysOff() {
+        return day2.getHours() + day3.getHours() == 0;
+    }
+
     //TODO
     @Override
     public boolean resolve(Rota rota) {
+        if(resolveNight(rota)) {
+            return true;
+        } else {
+            return resolveNotWorking(rota);
+        }
+    }
+
+    //TODO
+    private boolean resolveNight(Rota rota) {
         return false;
     }
 
-    private boolean haveTwoDaysOff() {
-        return day2.getHours() + day3.getHours() == 0;
+    //TODO
+    private boolean resolveNotWorking(Rota rota) {
+        return false;
     }
 
 }

@@ -64,6 +64,16 @@ public class Rota {
         }
     }
 
+    public Rule getNextBrokenRule() {
+        Rule output = null;
+        for(Rule rule: rules) {
+            if(rule.isBroken()) {
+                output = rule;
+            }
+        }
+        return output;
+    }
+
     public int getCost() {
         return cost;
     }
@@ -74,6 +84,17 @@ public class Rota {
             return new Shift(ShiftTypes.NotWorking);
         }
         return shifts.get(EmployeeId).get(date);
+    }
+
+    // Should not always be true
+    public boolean resolveRules() {
+        Rule rule = getNextBrokenRule();
+        while(rule != null) {
+            // TODO what if rule not fixed
+            rule.resolve(this);
+            rule = getNextBrokenRule();
+        }
+        return true;
     }
 
     //TODO complete this

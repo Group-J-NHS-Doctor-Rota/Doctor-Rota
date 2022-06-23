@@ -19,6 +19,10 @@ public class RotaTools {
 
     public static void createRules(Rota rota) {
         createNight46HoursOffRules(rota);
+        createMax4LongShiftsRules(rota);
+        createMaxHours168Rules(rota);
+        createMax7ShiftsRules(rota);
+        create3WeekendsRules(rota);
         rota.refreshRules();
     }
 
@@ -34,6 +38,90 @@ public class RotaTools {
                 s2 = rota.getShift(id, date.plusDays(1));
                 s3 = rota.getShift(id, date.plusDays(2));
                 rota.addRule(new Night46HoursOffRule(s1, s2, s3));
+            }
+        }
+    }
+
+    private static void createMax4LongShiftsRules(Rota rota) {
+        LocalDate startDate = rota.getStartDate();
+        LocalDate endDate = rota.getEndDate();
+        ArrayList<String> employeeIds = rota.getEmployeeIds();
+        Shift s1, s2, s3, s4, s5, s6, s7;
+        for(String id: employeeIds) {
+            // Last five days checked
+            for(LocalDate date = startDate; date.isBefore(endDate.minusDays(3)); date = date.plusDays(1)) {
+                s1 = rota.getShift(id, date);
+                s2 = rota.getShift(id, date.plusDays(1));
+                s3 = rota.getShift(id, date.plusDays(2));
+                s4 = rota.getShift(id, date.plusDays(3));
+                s5 = rota.getShift(id, date.plusDays(4));
+                s6 = rota.getShift(id, date.plusDays(5));
+                s7 = rota.getShift(id, date.plusDays(6));
+                rota.addRule(new Max4LongShiftsRule(s1, s2, s3, s4, s5, s6, s7));
+            }
+        }
+    }
+
+    private static void createMaxHours168Rules(Rota rota) {
+        LocalDate startDate = rota.getStartDate();
+        LocalDate endDate = rota.getEndDate();
+        ArrayList<String> employeeIds = rota.getEmployeeIds();
+        Shift s1, s2, s3, s4, s5, s6, s7;
+        for(String id: employeeIds) {
+            // Only full 7 days checked
+            for(LocalDate date = startDate; date.isBefore(endDate.minusDays(5)); date = date.plusDays(1)) {
+                s1 = rota.getShift(id, date);
+                s2 = rota.getShift(id, date.plusDays(1));
+                s3 = rota.getShift(id, date.plusDays(2));
+                s4 = rota.getShift(id, date.plusDays(3));
+                s5 = rota.getShift(id, date.plusDays(4));
+                s6 = rota.getShift(id, date.plusDays(5));
+                s7 = rota.getShift(id, date.plusDays(6));
+                rota.addRule(new MaxHours168Rule(s1, s2, s3, s4, s5, s6, s7));
+            }
+        }
+    }
+
+    private static void createMax7ShiftsRules(Rota rota) {
+        LocalDate startDate = rota.getStartDate();
+        LocalDate endDate = rota.getEndDate();
+        ArrayList<String> employeeIds = rota.getEmployeeIds();
+        Shift s1, s2, s3, s4, s5, s6, s7, s8, s9, s10;
+        for(String id: employeeIds) {
+            // Last 8 days checked
+            for(LocalDate date = startDate; date.isBefore(endDate.minusDays(6)); date = date.plusDays(1)) {
+                s1 = rota.getShift(id, date);
+                s2 = rota.getShift(id, date.plusDays(1));
+                s3 = rota.getShift(id, date.plusDays(2));
+                s4 = rota.getShift(id, date.plusDays(3));
+                s5 = rota.getShift(id, date.plusDays(4));
+                s6 = rota.getShift(id, date.plusDays(5));
+                s7 = rota.getShift(id, date.plusDays(6));
+                s8 = rota.getShift(id, date.plusDays(7));
+                s9 = rota.getShift(id, date.plusDays(8));
+                s10 = rota.getShift(id, date.plusDays(9));
+                rota.addRule(new Max7ShiftsRule(s1, s2, s3, s4, s5, s6, s7, s8, s9, s10));
+            }
+        }
+    }
+
+    private static void create3WeekendsRules(Rota rota) {
+        LocalDate startDate = rota.getStartDate();
+        LocalDate endDate = rota.getEndDate();
+        ArrayList<String> employeeIds = rota.getEmployeeIds();
+        Shift sat1, sun1, sat2, sun2, sat3, sun3;
+        for(String id: employeeIds) {
+            // Copes with rota starting on Sunday and ending on Saturday (if needed)
+            for(LocalDate date = startDate.minusDays(1); date.isBefore(endDate.minusDays(13)); date = date.plusDays(1)) {
+                if(date.getDayOfWeek().toString().equals("SATURDAY")){
+                    sat1 = rota.getShift(id, date);
+                    sun1 = rota.getShift(id, date.plusDays(1));
+                    sat2 = rota.getShift(id, date.plusDays(7));
+                    sun2 = rota.getShift(id, date.plusDays(8));
+                    sat3 = rota.getShift(id, date.plusDays(14));
+                    sun3 = rota.getShift(id, date.plusDays(15));
+                    rota.addRule(new Max3WeekendsRule(sat1, sun1, sat2, sun2, sat3, sun3));
+                }
             }
         }
     }
@@ -169,12 +257,12 @@ public class RotaTools {
         while(day.isBefore(rota.getEndDate().plusDays(1))) {
             if(LocalDateTools.isWeekend(day)) {
                 employeeId1 = weekendNights.get(0);
-                rota.addShift(ShiftTypes.WeekendNight, day, employeeId1);
-                rota.addShift(ShiftTypes.WeekendNight, day.plusDays(1), employeeId1);
+                rota.addShift(ShiftTypes.NightOnCall, day, employeeId1);
+                rota.addShift(ShiftTypes.NightOnCall, day.plusDays(1), employeeId1);
                 weekendNights.remove(0);
                 employeeId2 = weekendDays.get(0);
-                rota.addShift(ShiftTypes.WeekendDay, day, employeeId2);
-                rota.addShift(ShiftTypes.WeekendDay, day.plusDays(1), employeeId2);
+                rota.addShift(ShiftTypes.DayOnCall, day, employeeId2);
+                rota.addShift(ShiftTypes.DayOnCall, day.plusDays(1), employeeId2);
                 weekendDays.remove(0);
                 for(String id : employeeIds) {
                     if(!id.equals(employeeId1) && !id.equals(employeeId2)) {

@@ -19,3 +19,5 @@
 | 16. | 13 June  2022 | Dennis, Joanne Adelaine, Jonny, Henry, Lorna Burrows, Steven, Rongkun |
 | 17. | 14 June  2022 | Aisling O'kane, Dennis, Jonny, Henry, Steven, Rongkun |
 | 18. | 16 June  2022 | Jonny, Henry, Rongkun                 |
+| 19. | 20 June  2022 | Dennis, Jonny, Henry, Steven, Rongkun |
+| 20. | 22 June  2022 | Aisling O'kane, Dennis, Jonny, Henry, Steven, Rongkun |

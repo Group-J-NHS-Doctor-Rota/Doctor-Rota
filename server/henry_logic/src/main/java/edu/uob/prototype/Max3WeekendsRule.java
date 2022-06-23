@@ -1,22 +1,24 @@
 package edu.uob.prototype;
 
-import java.util.HashMap;
-
 public class Max3WeekendsRule extends Rule {
 
     private final int cost = 300;
-    private final HashMap<String, Shift> shifts;
+    private final Shift saturday1;
+    private final Shift sunday1;
+    private final Shift saturday2;
+    private final Shift sunday2;
+    private final Shift saturday3;
+    private final Shift sunday3;
     private boolean broken;
 
     public Max3WeekendsRule(Shift saturday1, Shift sunday1, Shift saturday2,
                             Shift sunday2, Shift saturday3, Shift sunday3) {
-        shifts = new HashMap<>();
-        shifts.put("saturday1", saturday1);
-        shifts.put("sunday1", sunday1);
-        shifts.put("saturday2", saturday2);
-        shifts.put("sunday2", sunday2);
-        shifts.put("saturday3", saturday3);
-        shifts.put("sunday3", sunday3);
+        this.saturday1 = saturday1;
+        this.sunday1 = sunday1;
+        this.saturday2 = saturday2;
+        this.sunday2 = sunday2;
+        this.saturday3 = saturday3;
+        this.sunday3 = sunday3;
         refresh();
     }
 
@@ -35,8 +37,8 @@ public class Max3WeekendsRule extends Rule {
 
     @Override
     public void refresh() {
-        broken = workingWeekend("1") && workingWeekend("2") &&
-                workingWeekend("3");
+        broken = workingWeekend1() && workingWeekend2() &&
+                workingWeekend3();
     }
 
     //TODO
@@ -45,8 +47,15 @@ public class Max3WeekendsRule extends Rule {
         return false;
     }
 
-    private boolean workingWeekend(String number) {
-        return shifts.get("saturday".concat(number)).isWorking() ||
-                shifts.get("sunday".concat(number)).isWorking();
+    private boolean workingWeekend1() {
+        return saturday1.isWorking() || sunday1.isWorking();
+    }
+
+    private boolean workingWeekend2() {
+        return saturday2.isWorking() || sunday2.isWorking();
+    }
+
+    private boolean workingWeekend3() {
+        return saturday3.isWorking() || sunday3.isWorking();
     }
 }

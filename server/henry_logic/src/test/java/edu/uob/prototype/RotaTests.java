@@ -88,6 +88,8 @@ final class RotaTests {
         ShiftTools.swapShifts(rota1.getShift("0006", LocalDate.parse("2020-01-03")),
                 rota1.getShift("0006", LocalDate.parse("2020-01-14")));
 
+        System.out.println(rota1);
+
         rota1.refreshRules();
         System.out.println("Cost: " + rota1.getCost());
 

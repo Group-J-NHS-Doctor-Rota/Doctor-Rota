@@ -1,0 +1,293 @@
+/* clear all margin and paddings */
+* {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* set all font style in the popup window except for the size (also applies to all the icons) */
+.font-popup {
+  font-family: 'Roboto' !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  color: #168082;
+}
+
+/* title font style of the popup windows */
+.font-title {
+  font-size: 32px !important;
+  line-height: 38px !important;
+  font-weight: 700 !important;
+}
+
+/* fix the modal at the center of the screen */
+.screen-center {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* eliminate bootstrap-generated border */
+.modal-content,
+.modal-header,
+.modal-footer {
+  border: none !important;
+}
+
+/* set modal mainbody's color */
+.modal-content {
+  background-color: #EDFCF9 !important;
+  /* width: 568px !important;
+  height: 675px !important; */
+}
+
+/* size of the closing button (i.e., 'x') */
+.btn-close {
+  font-size: medium !important;
+}
+
+/* modal title margin */
+.modal-heading {
+  margin-left: 59px !important;
+  margin-top: 68px !important;
+}
+
+.modal-head {
+  position: absolute !important;
+  left: 59px !important;
+  top: 68px !important;
+}
+
+.modal-form {
+  position: absolute !important;
+  left: 59px !important;
+  top: 188px !important;
+}
+
+/* modal body margin - can be adjusted upon need */
+.modal-body {
+  margin-left: 59px !important;
+  margin-top: 82px !important;
+}
+
+/* e.g., gap between 'mobile' and the text-box */
+.span-popup {
+  margin-left: 30px !important;
+  font-size: 16px !important;
+}
+
+/* line gaps in the modals' body */
+.div-1 {
+  margin-top: 28px !important;
+}
+
+/* big single line input box */
+.input-box {
+  width: 437px !important;
+  height: 45px !important;
+  background: #fff !important;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* small single line input box */
+.input-box2 {
+  width: 337px !important;
+  height: 45px !important;
+  background: #fff !important;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* button that occupies one line, e.g., submit */
+.button-bottom {
+  width: 240px !important;
+  height: 60px !important;
+  background: #168082 !important;
+  border: none !important;
+  font-size: 32px !important;
+  color: white !important;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) !important;
+  border-radius: 5px !important;
+}
+
+.single-button {
+  position: absolute !important;
+  left: 164px !important;
+  top: 575px !important;
+}
+
+/* two buttons in one line, e.g., update/cancel */
+.button-bottom2 {
+  display: inline-block !important;
+  width: 162px !important;
+  height: 60px !important;
+  margin-left: 13px !important;
+  background: #168082 !important;
+  border-radius: 0% !important;
+  border: none !important;
+  font-size: 32px !important;
+  color: white !important;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) !important;
+  border-radius: 5px !important;
+}
+
+/* place the button to the middle of the modal */
+.btn-middle {
+  margin-left: 164px !important;
+  /* margin-top: 78px !important; */
+}
+
+/* only apply to date and time fields in request leave */
+.time-field {
+  margin-left: 20px !important;
+}
+
+/* drop-down menu style */
+.drop-down {
+  width: 437px !important;
+  height: 45px !important;
+  /* background: #fff !important; */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) !important;
+}
+
+.form-control {
+  width: 100% !important;
+}
+
+/* textfield style */
+.comment-box {
+  width: 437px;
+  /* background: #FFFFFF; */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* place the update/cancel buttons to the middle */
+.div-2 {
+  margin-left: 102.5px !important;
+  margin-top: 50px !important;
+}
+
+.div-3 {
+  position: absolute;
+  margin-left: 102.5px !important;
+  margin-top: 150px !important;
+}
+
+/* useless - delete later */
+.temp {
+  display: block;
+  margin-left: 30px !important;
+  background-color: pink !important;
+}
+
+/* force the button font color to be black - this is the only way */
+.btn-primary {
+  color: white !important;
+}
+
+.mt1 {
+  margin-top: 56px !important;
+}
+
+.mt2 {
+  margin-top: 50px !important;
+}
+
+/* cancel button style */
+.cancel-box {
+  background-color: #fff !important;
+  color: #168082 !important;
+  /* font-weight: 700 !important; */
+}
+
+/* warning message when logout */
+.warning-logout {
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  position: absolute !important;
+  top: 50px;
+  left: 23.5%;
+  bottom: 100px;
+}
+
+
+/* for modals on mobiles */
+@media screen and (max-width: 568px) {
+  .modal {
+    width: 95% !important;
+    height: 90% !important;
+  }
+
+  .drop-down {
+    width: 85% !important;
+  }
+
+  .modal-heading {
+    margin-left: 35px !important;
+    margin-top: 48px !important;
+  }
+
+  .modal-head {
+    position: absolute !important;
+    left: 35px !important;
+    top: 48px !important;
+  }
+
+  .modal-form {
+    position: absolute !important;
+    left: 35px !important;
+    top: 168px !important;
+    /* width: 95% !important; */
+  }
+
+  .modal-body {
+    margin-left: 39px !important;
+    margin-top: 62px !important;
+  }
+
+  .comment-box {
+    width: 100% !important;
+  }
+
+  .single-button {
+    position: absolute !important;
+    left: 20% !important;
+    top: 525px !important;
+  }
+
+  .form-control {
+    width: 70% !important;
+  }
+
+  .button-bottom2 {
+    display: block !important;
+    width: 121.5px !important;
+    height: 45px !important;
+    font-size: 24px !important;
+  }
+
+  .div-2 {
+    margin-left: 42.5px !important;
+    margin-top: 50px !important;
+  }
+
+  textarea.form-control {
+    width: 100% !important;
+  }
+
+  .cancel-box {
+    background-color: #fff !important;
+    color: #168082 !important;
+    /* font-weight: 700 !important; */
+  }
+
+  .warning-logout {
+    font-size: 20px !important;
+  }
+}
+
+
+.item-logo {
+  font-size: 16px !important;
+  color: #168082 !important;
+}

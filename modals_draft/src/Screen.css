@@ -1,0 +1,41 @@
+/* @media screen and (max-width: 400px),
+screen and (orientation: landscape) {
+  .Modal {
+    width: '300px';
+  }
+} */
+
+.whole-screen {
+    background-color: #EDFCF9 !important;
+    height: 100vh !important;
+    background-clip: border-box !important;
+    color: #168082 !important;
+    /* z-index: -1; */
+}
+
+.signup-screen {
+    background-color: #EDFCF9 !important;
+    background-clip: border-box !important;
+}
+
+.screen-header {
+    font-weight: 700 !important;
+    border-top: 150px solid #EDFCF9;
+    border-left: 15px solid #EDFCF9;
+
+}
+
+/* * {
+    margin: 0 !important;
+    padding: 0 !important;
+} */
+
+.nhs-logo-screen {
+    border-left: 20px solid #EDFCF9;
+    border-top: 30px solid #EDFCF9;
+    background-image: url(https://www.nbt.nhs.uk/themes/custom/nbt/logo.png);
+    background-repeat: no-repeat;
+    position: absolute;
+    width: 182px;
+    height: 140px;
+}

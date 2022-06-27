@@ -1,0 +1,15 @@
+.nhs-logo {
+    background-image: url(https://www.nbt.nhs.uk/themes/custom/nbt/logo.png);
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 30px;
+    right: 0;
+    width: 162px;
+    height: 110px;
+}
+
+.warning2 {
+    margin-left: 43px !important;
+    margin-top: 23px !important;
+    color: #000 !important;
+}

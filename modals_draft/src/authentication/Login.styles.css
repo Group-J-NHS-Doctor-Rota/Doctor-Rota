@@ -1,0 +1,30 @@
+/* .screen-center {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+} */
+
+.modal-container {
+    width: '568px' !important;
+    height: '675px' !important;
+    background-color: '#fff' !important;
+    box-shadow: '0px 4px 4px rgba(0, 0, 0, 0.25)' !important;
+    border-radius: '10px' !important;
+}
+
+/* .modal-backdrop.show {
+    opacity: 0 !important;
+} */
+
+.go-center {
+    margin-top: 16px !important;
+    margin-left: 205px !important;
+    color: #000 !important;
+}
+
+.warning1 {
+    margin-left: 43px !important;
+    margin-top: 63px !important;
+    color: #000 !important;
+}

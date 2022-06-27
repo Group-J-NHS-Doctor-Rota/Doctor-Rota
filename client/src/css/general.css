@@ -1,0 +1,16 @@
+.modal-content{
+    background-color: #EDFCF9 !important; 
+    border-radius: 5px;
+
+}
+
+.modal-dialog {
+    margin: 150px auto !important;
+}
+
+@media (min-width: 915px){
+    .modal-dialog {
+        margin: 150px auto !important;
+    }
+
+}

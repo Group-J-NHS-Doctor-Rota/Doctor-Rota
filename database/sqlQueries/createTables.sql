@@ -38,3 +38,27 @@ CREATE TABLE rotaTypes (
     PRIMARY KEY (id)
 );
 
+/*shiftTypes*/
+CREATE TABLE shiftTypes (
+    id int NOT NULL,
+    name varchar,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id)
+);
+
+/*Information on rota shifts*/
+CREATE TABLE shifts (
+    id SERIAL NOT NULL,
+    accountId int NOT NULL,
+    rotaGroupId int NOT NULL,
+    rotaTypeId int NOT NULL,
+    date date NOT NULL,
+    type int NOT NULL,
+    ruleNotes varchar,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (accountId) REFERENCES accounts(id),
+    FOREIGN KEY (rotaGroupId) REFERENCES rotagroups(id),
+    FOREIGN KEY (rotaTypeId) REFERENCES rotaTypes(id),
+    FOREIGN KEY (type) REFERENCES shiftTypes(id)
+);

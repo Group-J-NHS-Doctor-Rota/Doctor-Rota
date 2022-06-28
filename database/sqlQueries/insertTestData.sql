@@ -18,3 +18,14 @@ VALUES
     ('Type 3'),
     ('Type 4');
 
+/*shiftTypes data*/
+INSERT INTO shiftTypes (id, name)
+VALUES
+    (0, 'Normal Working Day'),
+    (1, 'Long Day'),
+    (2, 'Night');
+
+/*shifts data*/
+INSERT INTO shifts (accountid, rotagroupid, rotatypeid, date, type, rulenotes)
+VALUES
+    (1, 1, 1, '2021-09-01', 0, '');

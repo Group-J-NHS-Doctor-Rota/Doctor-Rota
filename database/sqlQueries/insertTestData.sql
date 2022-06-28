@@ -10,22 +10,13 @@ INSERT INTO accounts (name, password, salt, email, doctorid, accountstatus, doct
 VALUES
     ('John Smith', 'sdafgndfjgn', '123', 'test@test.com', '9876', 0, 0, 1, 1, 1, false);
 
-/*rotaTypes data*/
-INSERT INTO rotaTypes (name)
-VALUES
-    ('Type 1'),
-    ('Type 2'),
-    ('Type 3'),
-    ('Type 4');
-
-/*shiftTypes data*/
-INSERT INTO shiftTypes (id, name)
-VALUES
-    (0, 'Normal Working Day'),
-    (1, 'Long Day'),
-    (2, 'Night');
-
 /*shifts data*/
 INSERT INTO shifts (accountid, rotagroupid, rotatypeid, date, type, rulenotes)
 VALUES
     (1, 1, 1, '2021-09-01', 0, '');
+
+/*leaveRequests data*/
+INSERT INTO leaveRequests (accountid, date, type, note, status)
+VALUES
+    (1, '2021-09-07', 0, '', 0);
+

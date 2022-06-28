@@ -38,7 +38,7 @@ CREATE TABLE rotaTypes (
     PRIMARY KEY (id)
 );
 
-/*shiftTypes*/
+/*Different shift types*/
 CREATE TABLE shiftTypes (
     id int NOT NULL,
     name varchar,
@@ -62,3 +62,35 @@ CREATE TABLE shifts (
     FOREIGN KEY (rotaTypeId) REFERENCES rotaTypes(id),
     FOREIGN KEY (type) REFERENCES shiftTypes(id)
 );
+
+/*Different types of leave requests*/
+CREATE TABLE leaveRequestTypes (
+    id SERIAL NOT NULL,
+    name varchar,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id)
+);
+
+/*Different types of request status*/
+CREATE TABLE statusTypes (
+    id int NOT NULL,
+    name varchar,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id)
+);
+
+/*Details about days off and whether they are confirmed*/
+CREATE TABLE leaveRequests (
+    id SERIAL NOT NULL,
+    accountId int NOT NULL,
+    date date NOT NULL,
+    type int NOT NULL,
+    note varchar,
+    status int NOT NULL,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (accountId) REFERENCES accounts(id),
+    FOREIGN KEY (type) REFERENCES leaveRequestTypes(id),
+    FOREIGN KEY (status) REFERENCES statusTypes(id)
+);
+

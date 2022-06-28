@@ -29,3 +29,12 @@ CREATE TABLE accounts (
     PRIMARY KEY (id),
     FOREIGN KEY (rotaGroupId) REFERENCES rotagroups(id)
 );
+
+/*Information on the 4 different rotas within each rota group*/
+CREATE TABLE rotaTypes (
+    id SERIAL NOT NULL,
+    name varchar,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id)
+);
+

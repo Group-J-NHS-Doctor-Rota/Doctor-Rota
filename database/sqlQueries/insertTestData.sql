@@ -10,4 +10,11 @@ INSERT INTO accounts (name, password, salt, email, doctorid, accountstatus, doct
 VALUES
     ('John Smith', 'sdafgndfjgn', '123', 'test@test.com', '9876', 0, 0, 1, 1, 1, false);
 
+/*rotaTypes data*/
+INSERT INTO rotaTypes (name)
+VALUES
+    ('Type 1'),
+    ('Type 2'),
+    ('Type 3'),
+    ('Type 4');
 

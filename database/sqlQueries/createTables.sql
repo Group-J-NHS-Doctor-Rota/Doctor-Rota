@@ -94,3 +94,16 @@ CREATE TABLE leaveRequests (
     FOREIGN KEY (status) REFERENCES statusTypes(id)
 );
 
+/*Details about what leave requests are addressed by who*/
+CREATE TABLE accountLeaveRequestRelationShips (
+    accountId int NOT NULL,
+    leaveRequestId int NOT NULL,
+    status int NOT NULL,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (accountId, leaveRequestId),
+    FOREIGN KEY (accountId) REFERENCES accounts(id),
+    FOREIGN KEY (leaveRequestId) REFERENCES leaveRequests(id),
+    FOREIGN KEY (status) REFERENCES statusTypes(id)
+);
+
+

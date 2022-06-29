@@ -1,12 +1,18 @@
 /*Type data table map integers to names*/
 
-/*rotaTypes data*/
-INSERT INTO rotaTypes (name)
+/*levelTypes data*/
+INSERT INTO levelTypes (id, name)
 VALUES
-    ('Type 1'),
-    ('Type 2'),
-    ('Type 3'),
-    ('Type 4');
+    (0, 'Normal'),
+    (1, 'Admin');
+
+/*rotaTypes data*/
+INSERT INTO rotaTypes (id, name)
+VALUES
+    (1, 'Type 1'),
+    (2, 'Type 2'),
+    (3, 'Type 3'),
+    (4, 'Type 4');
 
 /*shiftTypes data*/
 INSERT INTO shiftTypes (id, name)

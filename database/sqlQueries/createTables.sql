@@ -10,6 +10,14 @@ CREATE TABLE rotaGroups (
     PRIMARY KEY (id)
 );
 
+/*Different possible levels of a account*/
+CREATE TABLE levelTypes (
+    id int NOT NULL,
+    name varchar,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id)
+);
+
 /*Account information for anyone using the website*/
 CREATE TABLE accounts (
     id SERIAL NOT NULL,
@@ -27,12 +35,13 @@ CREATE TABLE accounts (
     fixedWorking bool NOT NULL,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
-    FOREIGN KEY (rotaGroupId) REFERENCES rotagroups(id)
+    FOREIGN KEY (rotaGroupId) REFERENCES rotagroups(id),
+    FOREIGN KEY (level) REFERENCES levelTypes(id)
 );
 
 /*Information on the 4 different rotas within each rota group*/
 CREATE TABLE rotaTypes (
-    id SERIAL NOT NULL,
+    id int NOT NULL,
     name varchar,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id)
@@ -57,6 +66,7 @@ CREATE TABLE shifts (
     ruleNotes varchar,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
+    UNIQUE (accountId, rotaTypeId, rotaGroupId, date),
     FOREIGN KEY (accountId) REFERENCES accounts(id),
     FOREIGN KEY (rotaGroupId) REFERENCES rotagroups(id),
     FOREIGN KEY (rotaTypeId) REFERENCES rotaTypes(id),

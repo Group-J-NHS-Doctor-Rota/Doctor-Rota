@@ -26,3 +26,7 @@ INSERT INTO accountLeaveRequestRelationShips (accountId, leaveRequestId, status)
 VALUES
     (1, 2, 1);
 
+/*accountRotaTypes data*/
+INSERT INTO accountRotaTypes (accountid, rotatypeid, rotagroupid, startdate, enddate)
+VALUES
+    (1, 2, 1, '2021-08-04', '2021-11-02');

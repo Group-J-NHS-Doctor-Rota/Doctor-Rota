@@ -106,4 +106,19 @@ CREATE TABLE accountLeaveRequestRelationShips (
     FOREIGN KEY (status) REFERENCES statusTypes(id)
 );
 
+/*Details about which accounts are working in which rota types for what period of days*/
+CREATE TABLE accountRotaTypes (
+    id SERIAL NOT NULL,
+    accountId int NOT NULL,
+    rotaTypeId int NOT NULL,
+    rotaGroupId int NOT NULL,
+    startDate date NOT NULL,
+    endDate date NOT NULL,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id),
+    UNIQUE (accountId, rotaTypeId, rotaGroupId),
+    FOREIGN KEY (accountId) REFERENCES accounts(id),
+    FOREIGN KEY (rotaTypeId) REFERENCES rotaTypes(id),
+    FOREIGN KEY (rotaGroupId) REFERENCES rotaGroups(id)
+);
 

@@ -122,3 +122,34 @@ CREATE TABLE accountRotaTypes (
     FOREIGN KEY (rotaGroupId) REFERENCES rotaGroups(id)
 );
 
+/*Details on fixed rota shifts, for any accounts that have them*/
+CREATE TABLE fixedRotaShifts (
+    id SERIAL NOT NULL,
+    accountId int NOT NULL,
+    date date NOT NULL,
+    shiftType int NOT NULL,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (accountId) REFERENCES accounts(id),
+    FOREIGN KEY (shiftType) REFERENCES shiftTypes(id)
+);
+
+/*Int to days of the week*/
+CREATE TABLE dayOfWeek (
+    id int NOT NULL,
+    day varchar NOT NULL,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id)
+);
+
+/*Details on when part time works do or don't work*/
+CREATE TABLE partTimeDetails (
+    id SERIAL NOT NULL,
+    accountId int NOT NULL,
+    dayOfWeek int NOT NULL,
+    canWork bool NOT NULL,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (accountId) REFERENCES accounts(id),
+    FOREIGN KEY (dayOfWeek) REFERENCES dayOfWeek(id)
+);

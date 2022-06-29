@@ -1,5 +1,11 @@
 /*Drop all tables in an order so as to not delete source of foreign keys*/
 
+DROP TABLE partTimeDetails;
+
+DROP TABLE dayOfWeek;
+
+DROP TABLE fixedRotaShifts;
+
 DROP TABLE accountRotaTypes;
 
 DROP TABLE accountLeaveRequestRelationShips;

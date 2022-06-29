@@ -30,3 +30,19 @@ VALUES
 INSERT INTO accountRotaTypes (accountid, rotatypeid, rotagroupid, startdate, enddate)
 VALUES
     (1, 2, 1, '2021-08-04', '2021-11-02');
+
+/*fixedRotaShifts data*/
+INSERT INTO fixedRotaShifts (accountId, date, shiftType)
+VALUES
+    (1, '2021-10-01', 2);
+
+/*partTimeDetails data*/
+INSERT INTO partTimeDetails (accountid, dayofweek, canwork)
+VALUES
+    (1, 0, true),
+    (1, 1, true),
+    (1, 2, false),
+    (1, 3, true),
+    (1, 4, true),
+    (1, 5, true),
+    (1, 6, true);

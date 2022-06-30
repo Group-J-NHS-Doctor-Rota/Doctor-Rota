@@ -21,3 +21,7 @@
 | 18. | 16 June  2022 | Jonny, Henry, Rongkun                 |
 | 19. | 20 June  2022 | Dennis, Jonny, Henry, Steven, Rongkun |
 | 20. | 22 June  2022 | Aisling O'kane, Dennis, Jonny, Henry, Steven, Rongkun |
+| 21. | 23 June  2022 | Jonny, Henry, Rongkun                 |
+| 22. | 27 June  2022 | Dennis, Henry, Steven, Rongkun        |
+| 23. | 28 June  2022 | Aisling O'kane, Dennis, Jonny, Henry, Steven, Rongkun |
+| 24. | 29 June  2022 | Dennis, Jonny, Henry, Steven, Rongkun |

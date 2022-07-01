@@ -1,5 +1,7 @@
 package edu.uob;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,7 @@ public class IndexController {
         }
     }
 
+    // TODO maybe remove or improve this depending on usage
     @GetMapping("/configvar")
     public ResponseEntity<String> getConfigVar() {
         String url = System.getenv("JDBC_DATABASE_URL");
@@ -37,8 +40,26 @@ public class IndexController {
         if (url.length() > 4) {
             lastFourChars = url.substring(url.length() - 4);
         } else {
-            lastFourChars = url;
+            lastFourChars = "";
         }
         return ResponseEntity.status(HttpStatus.OK).body(lastFourChars.concat("\n"));
     }
+
+    //TODO remove this as just example code
+    //https://jenkov.com/tutorials/java-json/jackson-jsonnode.html
+    @GetMapping(value = "/testjson", produces = "application/json")
+    public ResponseEntity<ObjectNode> testJson() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("field1", "value1");
+        objectNode.put("field2", 123);
+        objectNode.put("field3", 999.999);
+        ObjectNode objectNode2 = objectMapper.createObjectNode();
+        objectNode2.put("item 1", "value1");
+        objectNode2.put("item 2", 123);
+        objectNode2.put("item 3", 999.999);
+        objectNode.putArray("array").add(objectNode2);
+        return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+    }
+
 }

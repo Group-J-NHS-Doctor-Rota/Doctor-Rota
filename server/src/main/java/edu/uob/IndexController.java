@@ -26,12 +26,22 @@ public class IndexController {
             return ResponseEntity.status(HttpStatus.OK).body("Test ok (CODE 200)\n");
         } catch (SQLException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("The request was not completed due to database connection issues (CODE 500)\n");
+                    .body(e.getMessage().concat("\nThe request was not completed due to database connection issues (CODE 500)\n"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage().concat("\nThe request was not completed due to server issues (CODE 500)\n"));
         }
     }
 
     @GetMapping("/configvar")
     public ResponseEntity<String> getConfigVar() {
-        return ResponseEntity.status(HttpStatus.OK).body(System.getenv("JDBC_DATABASE_URL").concat("\n"));
+        String url = System.getenv("JDBC_DATABASE_URL");
+        String lastFourChars;
+        if (url.length() > 4) {
+            lastFourChars = url.substring(url.length() - 4);
+        } else {
+            lastFourChars = url;
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(lastFourChars.concat("\n"));
     }
 }

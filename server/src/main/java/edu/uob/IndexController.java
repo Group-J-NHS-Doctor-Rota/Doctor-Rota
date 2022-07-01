@@ -29,4 +29,9 @@ public class IndexController {
                     .body("The request was not completed due to database connection issues (CODE 500)\n");
         }
     }
+
+    @GetMapping("/configvar")
+    public ResponseEntity<String> getConfigVar() {
+        return ResponseEntity.status(HttpStatus.OK).body(System.getenv("JDBC_DATABASE_URL").concat("\n"));
+    }
 }

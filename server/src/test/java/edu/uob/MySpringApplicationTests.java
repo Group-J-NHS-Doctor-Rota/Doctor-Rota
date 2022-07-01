@@ -1,6 +1,6 @@
 package edu.uob;
 
-//Some tests adapted from lin:
+//Some tests adapted from link:
 //https://www.javainuse.com/spring/springboot_testcases
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

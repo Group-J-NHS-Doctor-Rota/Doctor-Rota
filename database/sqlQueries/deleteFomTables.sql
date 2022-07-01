@@ -4,24 +4,24 @@ DELETE FROM partTimeDetails WHERE 1=1;
 
 DELETE FROM dayOfWeek WHERE 1=1;
 
-DELETE FROM fixedRotaShifts WHERE 1=1;;
+DELETE FROM fixedRotaShifts WHERE 1=1;
 
-DELETE FROM accountRotaTypes WHERE 1=1;;
+DELETE FROM accountRotaTypes WHERE 1=1;
 
-DELETE FROM accountLeaveRequestRelationShips WHERE 1=1;;
+DELETE FROM accountLeaveRequestRelationShips WHERE 1=1;
 
-DELETE FROM leaveRequests WHERE 1=1;;
+DELETE FROM leaveRequests WHERE 1=1;
 
-DELETE FROM statusTypes WHERE 1=1;;
+DELETE FROM statusTypes WHERE 1=1;
 
-DELETE FROM leaveRequestTypes WHERE 1=1;;
+DELETE FROM leaveRequestTypes WHERE 1=1;
 
-DELETE FROM shifts WHERE 1=1;;
+DELETE FROM shifts WHERE 1=1;
 
-DELETE FROM shiftTypes WHERE 1=1;;
+DELETE FROM shiftTypes WHERE 1=1;
 
-DELETE FROM rotaTypes WHERE 1=1;;
+DELETE FROM rotaTypes WHERE 1=1;
 
-DELETE FROM accounts WHERE 1=1;;
+DELETE FROM accounts WHERE 1=1;
 
-DELETE FROM rotaGroups WHERE 1=1;;
+DELETE FROM rotaGroups WHERE 1=1;

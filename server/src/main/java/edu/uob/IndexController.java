@@ -32,6 +32,6 @@ public class IndexController {
 
     @GetMapping("/configvar")
     public ResponseEntity<String> getConfigVar() {
-        return ResponseEntity.status(HttpStatus.OK).body(System.getenv("JDBC_DATABASE_URL").concat("\n"));
+        return ResponseEntity.status(HttpStatus.OK).body(System.getenv("PROJECT_PATH").concat("\n"));
     }
 }

@@ -21,19 +21,9 @@ public class IndexController {
 
     @GetMapping("/test")
     public ResponseEntity<String> getTest() {
-        String connectionString;
-        try {
-            connectionString = ConnectionTools.getConnectionString();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.toString().concat("\nThe request was not completed due issues getting connection string (CODE 500)\n"));
-        }
-
+        String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             return ResponseEntity.status(HttpStatus.OK).body("Test ok (CODE 200)\n");
-        } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.toString().concat("\nThe request was not completed due to database connection issues (CODE 500)\n"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.toString().concat("\nThe request was not completed due to server issues (CODE 500)\n"));

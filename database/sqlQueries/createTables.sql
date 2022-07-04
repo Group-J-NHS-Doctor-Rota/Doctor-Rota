@@ -165,3 +165,21 @@ CREATE TABLE partTimeDetails (
     FOREIGN KEY (accountId) REFERENCES accounts(id),
     FOREIGN KEY (dayOfWeek) REFERENCES dayOfWeek(id)
 );
+
+/*Different types of possible notification*/
+CREATE TABLE notificationTypes (
+    id int NOT NULL,
+    name varchar NOT NULL,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id)
+);
+
+/*Details on any notifications for users*/
+CREATE TABLE notifications (
+    id SERIAL NOT NULL,
+    type int NOT NULL,
+    detailId int NOT NULL,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id),
+    FOREIGN KEY (type) REFERENCES notificationTypes(id)
+);

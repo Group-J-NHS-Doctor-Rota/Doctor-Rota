@@ -45,3 +45,8 @@ VALUES
     (4, 'Friday'),
     (5, 'Saturday'),
     (6, 'Sunday');
+
+/*notificationTypes data*/
+INSERT INTO notificationTypes (id, name)
+VALUES
+    (0, 'Leave Request');

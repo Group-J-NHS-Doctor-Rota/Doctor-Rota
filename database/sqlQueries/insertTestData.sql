@@ -27,7 +27,7 @@ VALUES
     (1, 2, 1);
 
 /*accountRotaTypes data*/
-INSERT INTO accountRotaTypes (accountid, rotatypeid, rotagroupid, startdate, enddate)
+INSERT INTO accountRotaTypes (accountId, rotaTypeId, rotaGroupId, startDate, endDate)
 VALUES
     (1, 2, 1, '2021-08-04', '2021-11-02');
 
@@ -37,7 +37,7 @@ VALUES
     (1, '2021-10-01', 2);
 
 /*partTimeDetails data*/
-INSERT INTO partTimeDetails (accountid, dayofweek, canwork)
+INSERT INTO partTimeDetails (accountId, dayOfWeek, canWork)
 VALUES
     (1, 0, true),
     (1, 1, true),
@@ -46,3 +46,9 @@ VALUES
     (1, 4, true),
     (1, 5, true),
     (1, 6, true);
+
+
+/*notifications data*/
+INSERT INTO notifications (type, detailId)
+VALUES
+    (0, 1);

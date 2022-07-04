@@ -1,5 +1,9 @@
 /*Drop all tables in an order so as to not delete source of foreign keys*/
 
+DROP TABLE notifications;
+
+DROP TABLE notificationTypes;
+
 DROP TABLE partTimeDetails;
 
 DROP TABLE dayOfWeek;

@@ -21,7 +21,9 @@ CREATE TABLE levelTypes (
 /*Account information for anyone using the website*/
 CREATE TABLE accounts (
     id SERIAL NOT NULL,
-    name varchar NOT NULL,
+    username varchar NOT NULL,
+    -- Might not need name?
+    name varchar,
     --Only store encrypted and never actual password
     password varchar NOT NULL,
     salt varchar NOT NULL,

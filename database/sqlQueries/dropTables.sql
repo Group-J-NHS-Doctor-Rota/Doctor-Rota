@@ -24,5 +24,7 @@ DROP TABLE rotaTypes;
 
 DROP TABLE accounts;
 
+DROP TABLE levelTypes;
+
 DROP TABLE rotaGroups;
 

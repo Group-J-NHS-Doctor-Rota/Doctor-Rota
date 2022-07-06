@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import Navbar from '../element/Navbar'
 import DataCard from '../element/DataCard'
 import CalendarTable from '../element/CalendarTable'
-// import SwitchCalendar from '../element/SwitchCalendar'
 
 import styled from 'styled-components'
 
@@ -73,7 +72,6 @@ const Container = styled.div`
 `
 
 const Icon = styled.i`
-    
     &:hover{
         color: #168082;
     }
@@ -86,3 +84,4 @@ const Week = styled.div`
         grid-template-columns: repeat(7, 1fr)
     }
 `
+

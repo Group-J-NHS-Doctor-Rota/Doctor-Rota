@@ -12,7 +12,7 @@ export default function AccountPage(){
         let content = [];
         for (let i = 0; i < number; i++) {
             content.push(
-            <AccountCard key={i} style={{cursor: 'pointer'}} onClick={()=>console.log(1)}>
+            <AccountCard key={i} onClick={()=>console.log(1)}>
                 <TableTd>Steven</TableTd>
                 <TableTd>stevenlin3263@gmail.com</TableTd>
                 <TableTd>1.0</TableTd>
@@ -83,7 +83,7 @@ const Input = styled.input`
 const Button = styled.button`
     padding: 5px 25px;
     color: white;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
     background-color: #168082;
     border: none;
@@ -95,6 +95,7 @@ const AccountCard = styled.tr`
     width: 100%;
     border-radius: 5px;
     background-color: white;
+    cursor: pointer;
     
     &:nth-child(even) {
         background-color: #EDFCF9;

@@ -62,10 +62,11 @@ public class IndexController {
 
     //todo: decide if none are required but any missing default to false
     @PutMapping("/account/{id}/workingdays")
-    public ResponseEntity<String> putWorkingDays(@PathVariable String id, @RequestParam boolean monday, @RequestParam boolean tuesday,
+    public ResponseEntity<String> putWorkingDays(@PathVariable int id, @RequestParam boolean monday, @RequestParam boolean tuesday,
                                                  @RequestParam boolean wednesday, @RequestParam boolean thursday, @RequestParam boolean friday,
                                                  @RequestParam boolean saturday, @RequestParam boolean sunday) {
-        return PutOperations.workingdays(id, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
+        //todo check token is valid
+        return PutOperations.putWorkingDays(id, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
     }
 
 }

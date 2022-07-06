@@ -6,7 +6,7 @@ DELETE FROM fixedRotaShifts WHERE 1=1;
 
 DELETE FROM accountRotaTypes WHERE 1=1;
 
-DELETE FROM accountLeaveRequestRelationShips WHERE 1=1;
+DELETE FROM accountLeaveRequestRelationships WHERE 1=1;
 
 DELETE FROM leaveRequests WHERE 1=1;
 

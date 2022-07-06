@@ -10,7 +10,7 @@ DROP TABLE fixedRotaShifts;
 
 DROP TABLE accountRotaTypes;
 
-DROP TABLE accountLeaveRequestRelationShips;
+DROP TABLE accountLeaveRequestRelationships;
 
 DROP TABLE leaveRequests;
 

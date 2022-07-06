@@ -102,13 +102,14 @@ CREATE TABLE leaveRequests (
     status int NOT NULL,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
+    UNIQUE (accountId, date),
     FOREIGN KEY (accountId) REFERENCES accounts(id),
     FOREIGN KEY (type) REFERENCES leaveRequestTypes(id),
     FOREIGN KEY (status) REFERENCES statusTypes(id)
 );
 
 /*Details about what leave requests are addressed by who*/
-CREATE TABLE accountLeaveRequestRelationShips (
+CREATE TABLE accountLeaveRequestRelationships (
     accountId int NOT NULL,
     leaveRequestId int NOT NULL,
     status int NOT NULL,
@@ -143,6 +144,7 @@ CREATE TABLE fixedRotaShifts (
     shiftType int NOT NULL,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
+    UNIQUE (accountId, date),
     FOREIGN KEY (accountId) REFERENCES accounts(id),
     FOREIGN KEY (shiftType) REFERENCES shiftTypes(id)
 );

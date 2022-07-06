@@ -22,7 +22,7 @@ VALUES
     (1, '2021-09-08', 1, '', 1);
 
 /*accountLeaveRequestRelationShips data*/
-INSERT INTO accountLeaveRequestRelationShips (accountId, leaveRequestId, status)
+INSERT INTO accountLeaveRequestRelationships (accountId, leaveRequestId, status)
 VALUES
     (1, 2, 1);
 

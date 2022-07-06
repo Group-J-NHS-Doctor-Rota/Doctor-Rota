@@ -35,17 +35,6 @@ VALUES
     (1, 'Approved'),
     (2, 'Rejected');
 
-/*dayOfWeek data*/
-INSERT INTO dayOfWeek (id, day)
-VALUES
-    (0, 'Monday'),
-    (1, 'Tuesday'),
-    (2, 'Wednesday'),
-    (3, 'Thursday'),
-    (4, 'Friday'),
-    (5, 'Saturday'),
-    (6, 'Sunday');
-
 /*notificationTypes data*/
 INSERT INTO notificationTypes (id, name)
 VALUES

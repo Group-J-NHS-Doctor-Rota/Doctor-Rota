@@ -3,15 +3,27 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom';
 
 import LogoutModal from '../modal/LogoutModal'
+import ProfileModal from '../modal/ProfileModal';
+import RequestLeaveModal from '../modal/RequestLeaveModal';
 
 import styled from 'styled-components'
 
 export default function Navbar(){
     const [open, setOpen] = useState(false)
+    const [profile, setProfile] = useState(false)
     const [logout, setLogout] = useState(false)
+    const [leave, setLeave] = useState(false)
 
     function toggleList(type){
         setOpen(!open)
+
+        if(type == "profile"){
+            setProfile(true)
+        }
+
+        if(type == "leave"){
+            setLeave(true)
+        }
 
         if(type == "logout"){
             setLogout(true)
@@ -33,7 +45,7 @@ export default function Navbar(){
                     open &&
                     <div className="d-flex justify-content-end">
                         <ListCard className="me-2 mt-2 p-3">
-                            <IconBackground className="d-flex my-2"  onClick={() => toggleList()}>
+                            <IconBackground className="d-flex my-2"  onClick={() => toggleList("profile")}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-person-fill" style={{ fontSize: '30px' }}></i>
                                 </div>
@@ -54,7 +66,7 @@ export default function Navbar(){
                             </IconBackground>
 
 
-                            <IconBackground className="d-flex my-2" onClick={() => toggleList()}>
+                            <IconBackground className="d-flex my-2" onClick={() => toggleList("leave")}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-clipboard2-check-fill" style={{ fontSize: '30px' }}></i>
                                 </div>
@@ -90,6 +102,8 @@ export default function Navbar(){
             </div>
 
             <LogoutModal logout={logout} setLogout={setLogout}/>
+            <ProfileModal profile={profile} setProfile={setProfile}/>
+            <RequestLeaveModal leave={leave} setLeave={setLeave}/>
         </>
     )
 }
@@ -118,3 +132,4 @@ const IconBackground = styled.div`
         background-color: #EDFCF9;
     }
 `
+

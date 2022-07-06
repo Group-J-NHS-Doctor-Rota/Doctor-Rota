@@ -32,24 +32,41 @@ const Title = styled.h1`
     font-size: 32px;
     font-weight: bold;
     color: #168082;
+    padding: 10px;
+
+    @media (max-width: 575px){
+        font-size: 24px;
+    }
 `
 
 const CloseButton = styled.button`
     min-width: 100px;
-    font-size: 24px;
+    font-size: 20px;
     background-color: white;
     border-radius: 5px;
     border: none;
     color: #168082;
+    font-weight: bold;
     padding: 5px 10px;
+
+    @media (max-width: 575px){
+        font-size: 16px;
+        min-width: 80px;
+    }
 `
 
 const ConfirmButton = styled.button`
     min-width: 100px;
-    font-size: 24px;
+    font-size: 20px;
     background-color: #168082;
     border-radius: 5px;
     border: none;
     color: white;
+    font-weight: bold;
     padding: 5px 10px;
+
+    @media (max-width: 575px){
+        font-size: 16px;
+        min-width: 80px;
+    }
 `

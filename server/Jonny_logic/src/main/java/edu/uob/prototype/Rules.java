@@ -33,7 +33,10 @@ public class Rules {
                 rulesBroken++;
                 rulesBrokenDescription.add("Four long days in a row -> " + doctor.getName() +" = " + date.minusDays(4) + " - " + date);
             }
-            if(doctor.getShifts(date) == Shifts.DAYON){
+            if(counter == 4){
+                check48Hours(date, doctor);
+            }
+            if(doctor.getShiftType(date) == Shifts.DAYON){
                 counter++;
             }else {
                 counter = 0;
@@ -51,8 +54,11 @@ public class Rules {
                 rulesBrokenDescription.add("seven shifts in a row -> " + doctor.getName()
                         +" = " + date.minusDays(7) + " - " + date);
             }
-            if(doctor.getShifts(date) == Shifts.DAYON || doctor.getShifts(date) == Shifts.NIGHT ||
-                    doctor.getShifts(date) == Shifts.THEATRE){
+            if(counter == 7){
+                check48Hours(date, doctor);
+            }
+            if(doctor.getShiftType(date) == Shifts.DAYON || doctor.getShiftType(date) == Shifts.NIGHT ||
+                    doctor.getShiftType(date) == Shifts.THEATRE){
                 counter++;
             }else {
                 counter = 0;
@@ -61,7 +67,22 @@ public class Rules {
         }
     }
 
-    private static void threeWeekendsInARow(JuniorDoctor doctor){
+    public static void check48Hours(LocalDate date, JuniorDoctor doctor) {
+        int counter = 0;
+        date = date.plusDays(1);
+        for (int i = 0; i < 2; i++) {
+            if (doctor.getShiftType(date) == Shifts.DAYON || doctor.getShiftType(date) == Shifts.NIGHT ||
+                    doctor.getShiftType(date) == Shifts.THEATRE) {
+                counter++;
+            }
+            date = date.plusDays(1);
+        }
+        if(counter == 2){
+            rulesBroken++;
+        }
+    }
+
+    public static void threeWeekendsInARow(JuniorDoctor doctor){
         LocalDate date = startDate;
         int totalWeekends = 0;
         int weekendOnCounter = 0;
@@ -82,6 +103,7 @@ public class Rules {
                     totalWeekends = 0;
                 }
                 if(totalWeekends == 3){
+                    //return false;
                     rulesBroken++;
                     rulesBrokenDescription.add("three weekends in a row -> " + doctor.getName());
                 }
@@ -107,9 +129,9 @@ public class Rules {
             }else if(date.getDayOfWeek().equals(DayOfWeek.WEDNESDAY)){
                 hoursWorking = 0;
             }
-            if(doctor.getShifts(date) == Shifts.DAYON || doctor.getShifts(date) == Shifts.NIGHT){
+            if(doctor.getShiftType(date) == Shifts.DAYON || doctor.getShiftType(date) == Shifts.NIGHT){
                 hoursWorking = hoursWorking + 12.5;
-            }else if(doctor.getShifts(date) == Shifts.THEATRE){
+            }else if(doctor.getShiftType(date) == Shifts.THEATRE){
                 hoursWorking = hoursWorking + 10;
             }
             date = date.plusDays(1);

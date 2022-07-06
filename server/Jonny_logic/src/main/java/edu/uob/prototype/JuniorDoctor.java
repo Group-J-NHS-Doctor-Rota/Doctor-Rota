@@ -8,24 +8,45 @@ public class JuniorDoctor {
     public Hashtable<LocalDate, Shifts> shifts;
     private int longDays;
     private int nights;
+    private int totalOnCall;
     private int theatre;
+    private int weekends;
+    private final int setLongDays;
+    private final int setNights;
+    private final int setTheatre;
+    private final int setWeekends;
 
     JuniorDoctor(){
         shifts = new Hashtable<>();
-        this.longDays = 11;
-        this.nights = 11;
-        this.theatre = 32;
+        this.setLongDays = 11;
+        this.setNights = 11;
+        this.setTheatre = 32;
+        this.setWeekends = 3;
+    }
+
+    public void resetDoctor(){
+        longDays = setLongDays;
+        nights = setNights;
+        theatre = setTheatre;
+        weekends = setWeekends;
+        totalOnCall = nights + longDays;
+        shifts = new Hashtable<>();
     }
 
     public boolean shiftTaken(LocalDate date){
         return this.shifts.containsKey(date);
     }
+
     public boolean onShift(LocalDate date){
         Shifts shift = shifts.get(date);
         return shift.equals(Shifts.DAYON) || shift.equals(Shifts.NIGHT) || shift.equals(Shifts.THEATRE);
     }
 
-    public Shifts getShifts(LocalDate date) {
+    public int getWeekends(){return weekends;}
+
+    public void reduceWeekends(){this.weekends--;}
+
+    public Shifts getShiftType(LocalDate date) {
         return this.shifts.get(date);
     }
 
@@ -39,6 +60,10 @@ public class JuniorDoctor {
 
     public void reduceLongDays() {
         this.longDays--;
+    }
+
+    public void reduceLongDays(int value) {
+        this.longDays = this.longDays-value;
     }
 
     public int getNights() {
@@ -68,4 +93,11 @@ public class JuniorDoctor {
     public int getNumberOfShifts(){
         return shifts.size();
     }
+
+    public int getTotalOnCall(){return totalOnCall;}
+
+    public void reduceTotalOnCall(){this.totalOnCall--;}
+
+    public void reduceTotalOnCall(int value ){this.totalOnCall = totalOnCall-value;}
+
 }

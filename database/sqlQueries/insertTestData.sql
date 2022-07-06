@@ -37,16 +37,9 @@ VALUES
     (1, '2021-10-01', 2);
 
 /*partTimeDetails data*/
-INSERT INTO partTimeDetails (accountId, dayOfWeek, canWork)
+INSERT INTO partTimeDetails (accountid, monday, tuesday, wednesday, thursday, friday, saturday, sunday)
 VALUES
-    (1, 0, true),
-    (1, 1, true),
-    (1, 2, false),
-    (1, 3, true),
-    (1, 4, true),
-    (1, 5, true),
-    (1, 6, true);
-
+    (1, true, false, true, false, true, false, true);
 
 /*notifications data*/
 INSERT INTO notifications (type, detailId)

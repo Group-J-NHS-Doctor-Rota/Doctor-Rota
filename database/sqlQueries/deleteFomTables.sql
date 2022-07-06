@@ -2,8 +2,6 @@
 
 DELETE FROM partTimeDetails WHERE 1=1;
 
-DELETE FROM dayOfWeek WHERE 1=1;
-
 DELETE FROM fixedRotaShifts WHERE 1=1;
 
 DELETE FROM accountRotaTypes WHERE 1=1;

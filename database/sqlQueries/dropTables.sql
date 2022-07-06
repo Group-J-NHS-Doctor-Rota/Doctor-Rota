@@ -6,8 +6,6 @@ DROP TABLE notificationTypes;
 
 DROP TABLE partTimeDetails;
 
-DROP TABLE dayOfWeek;
-
 DROP TABLE fixedRotaShifts;
 
 DROP TABLE accountRotaTypes;

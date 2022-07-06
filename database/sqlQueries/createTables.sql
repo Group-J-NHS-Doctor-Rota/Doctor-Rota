@@ -149,24 +149,19 @@ CREATE TABLE fixedRotaShifts (
     FOREIGN KEY (shiftType) REFERENCES shiftTypes(id)
 );
 
-/*Int to days of the week*/
-CREATE TABLE dayOfWeek (
-    id int NOT NULL,
-    day varchar NOT NULL,
-    timestamp timestamp DEFAULT now(),
-    PRIMARY KEY (id)
-);
-
 /*Details on when part time works do or don't work*/
 CREATE TABLE partTimeDetails (
-    id SERIAL NOT NULL,
     accountId int NOT NULL,
-    dayOfWeek int NOT NULL,
-    canWork bool NOT NULL,
+    monday bool NOT NULL,
+    tuesday bool NOT NULL,
+    wednesday bool NOT NULL,
+    thursday bool NOT NULL,
+    friday bool NOT NULL,
+    saturday bool NOT NULL,
+    sunday bool NOT NULL,
     timestamp timestamp DEFAULT now(),
-    PRIMARY KEY (id),
-    FOREIGN KEY (accountId) REFERENCES accounts(id),
-    FOREIGN KEY (dayOfWeek) REFERENCES dayOfWeek(id)
+    PRIMARY KEY (accountId),
+    FOREIGN KEY (accountId) REFERENCES accounts(id)
 );
 
 /*Different types of possible notification*/

@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Connection;
@@ -60,6 +58,14 @@ public class IndexController {
         objectNode2.put("item 3", 999.999);
         objectNode.putArray("array").add(objectNode2);
         return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+    }
+
+    //todo: decide if none are required but any missing default to false
+    @PutMapping("/account/{id}/workingdays")
+    public ResponseEntity<String> putWorkingDays(@PathVariable String id, @RequestParam boolean monday, @RequestParam boolean tuesday,
+                                                 @RequestParam boolean wednesday, @RequestParam boolean thursday, @RequestParam boolean friday,
+                                                 @RequestParam boolean saturday, @RequestParam boolean sunday) {
+        return PutOperations.workingdays(id, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
     }
 
 }

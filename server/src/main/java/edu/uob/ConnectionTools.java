@@ -1,12 +1,14 @@
 package edu.uob;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import io.github.cdimascio.dotenv.DotenvException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.*;
 
 public class ConnectionTools {
 
+    // Get the database connection string
     public static String getConnectionString() {
         String JDBC_DATABASE_URL = "";
         // First try and get the variable from .env file
@@ -22,22 +24,18 @@ public class ConnectionTools {
         return JDBC_DATABASE_URL;
     }
 
-    public static boolean accountIdExists(int id) {
-        String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString)) {
-            String SQL = "SELECT EXISTS (SELECT id FROM accounts WHERE id = ?);";
-            try (PreparedStatement s = c.prepareStatement(SQL)) {
-                s.setInt(1, id);
-                ResultSet r = s.executeQuery();
-                r.next();
-                return r.getBoolean(1);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+    // Whether an account id exists in the account table
+    public static boolean accountIdExists(int id, Connection c) {
+        // Get true or false value for where an id exists in the accounts table
+        String SQL = "SELECT EXISTS (SELECT id FROM accounts WHERE id = ?);";
+        try (PreparedStatement s = c.prepareStatement(SQL)) {
+            s.setInt(1, id);
+            ResultSet r = s.executeQuery();
+            r.next();
+            return r.getBoolean(1);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return false;
     }
 
 }

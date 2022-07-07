@@ -1,11 +1,14 @@
 package edu.uob.prototype;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class JuniorDoctor {
     private String name;
-    public Hashtable<LocalDate, Shifts> shifts;
+    private Hashtable<LocalDate, Shifts> shifts;
+    private final Hashtable<LocalDate, NotOnCallRequestType> notOnCallRequest;
+    private final Hashtable<LocalDate, LeaveType> studyOrAnnualLeave;
     private int longDays;
     private int nights;
     private int totalOnCall;
@@ -24,6 +27,8 @@ public class JuniorDoctor {
         this.setNights = 11;
         this.setTheatre = 32;
         this.setWeekends = 3;
+        notOnCallRequest = new Hashtable<>();
+        studyOrAnnualLeave = new Hashtable<>();
     }
 
     public void resetDoctor(){
@@ -110,6 +115,28 @@ public class JuniorDoctor {
 
     public void setPainWeekStartDate(LocalDate date){
         this.painWeekStartDate = date;
+    }
+
+    public void addNotOnCallRequest(LocalDate date, NotOnCallRequestType type){
+        this.notOnCallRequest.put(date, type);
+    }
+    public Hashtable<LocalDate, NotOnCallRequestType> getNotOnCallRequest(){
+        return this.notOnCallRequest;
+    }
+
+    public NotOnCallRequestType getNotOnCallRequestType(LocalDate date){
+        return this.notOnCallRequest.get(date);
+    }
+
+    public void addAnnualOrStudyLeaveRequest(LocalDate date, LeaveType type){
+        this.studyOrAnnualLeave.put(date, type);
+    }
+    public Hashtable<LocalDate, LeaveType> getAnnualOrStudyLeaveRequest(){
+        return this.studyOrAnnualLeave;
+    }
+
+    public LeaveType getAnnualOrStudyLeaveRequestType(LocalDate date){
+        return this.studyOrAnnualLeave.get(date);
     }
 
 }

@@ -27,13 +27,27 @@ public class Schedule {
             doc.setPainWeek();
         }
 
+        JuniorDoctor a = doctors.get(0);
+        a.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 18), LeaveType.STUDY);
+        a.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 19), LeaveType.STUDY);
+        a.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 20), LeaveType.STUDY);
+
+        a.addNotOnCallRequest(LocalDate.of(2021,10, 1), NotOnCallRequestType.DAY);
+        a.addNotOnCallRequest(LocalDate.of(2021,10, 2), NotOnCallRequestType.DAY);
+        a.addNotOnCallRequest(LocalDate.of(2021,10, 3), NotOnCallRequestType.DAY);
+
+        JuniorDoctor b = doctors.get(2);
+        b.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 18), LeaveType.ANNUAL);
+        b.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 19), LeaveType.ANNUAL);
+        b.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 20), LeaveType.ANNUAL);
+
+
 
 
         do {
             iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors);
             rules = iteration.getRulesCount();
-            System.out.println("rules  == " + rules);
-        }while(checkShiftHours(iteration.returnDoctors()) || rules > 0 || checkShiftCount(iteration.returnDoctors()));
+        }while(rules > 0 || checkShiftCount(iteration.returnDoctors()) || checkShiftHours(iteration.returnDoctors()));
 
         doctors = iteration.returnDoctors();
 
@@ -88,9 +102,11 @@ public class Schedule {
                 else if(doctor.getShiftType(date).equals(Shifts.THEATRE)){
                     hours = hours + 10;
                 }
+                else if(doctor.getShiftType(date).equals(Shifts.AorSL)){
+                    hours = hours + 10;
+                }
                 date = date.plusDays(1);
             }
-            //System.out.println("hours == " + hours);
             if(hours < 570){
                 return true;
             }
@@ -158,6 +174,9 @@ public class Schedule {
                     hours = hours + 12.5;
                 }
                 else if(doctor.getShiftType(date).equals(Shifts.THEATRE)){
+                    hours = hours + 10;
+                }
+                else if(doctor.getShiftType(date).equals(Shifts.AorSL)){
                     hours = hours + 10;
                 }
                 date = date.plusDays(1);

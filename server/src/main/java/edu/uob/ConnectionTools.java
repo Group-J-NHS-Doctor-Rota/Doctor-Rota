@@ -24,10 +24,9 @@ public class ConnectionTools {
         return JDBC_DATABASE_URL;
     }
 
-    // Whether an account id exists in the account table
-    public static boolean accountIdExists(int id, Connection c) {
-        // Get true or false value for where an id exists in the accounts table
-        String SQL = "SELECT EXISTS (SELECT id FROM accounts WHERE id = ?);";
+    public static boolean idExistInTable(int id, String columnName, String tableName, Connection c) {
+        // Get true or false value for where an id exists in the table
+        String SQL = "SELECT EXISTS (SELECT " + columnName + " FROM " + tableName + " WHERE " + columnName + " = ?);";
         try (PreparedStatement s = c.prepareStatement(SQL)) {
             s.setInt(1, id);
             ResultSet r = s.executeQuery();
@@ -36,6 +35,12 @@ public class ConnectionTools {
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    // Whether an account id exists in the account table
+    public static boolean accountIdExists(int id, Connection c) {
+        // Get true or false value for where an id exists in the accounts table
+        return idExistInTable(id, "id", "accounts", c);
     }
 
 }

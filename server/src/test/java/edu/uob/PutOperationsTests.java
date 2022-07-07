@@ -74,7 +74,7 @@ public class PutOperationsTests {
             // Check delete
             assertFalse(ConnectionTools.accountIdExists(999999999, c));
         } catch (SQLException e) {
-            fail("Database connection and SQL queries should have worked");
+            fail("Database connection and SQL queries should have worked\n" + e);
         }
     }
 }

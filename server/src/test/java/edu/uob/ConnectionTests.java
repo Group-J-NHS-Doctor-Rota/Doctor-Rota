@@ -31,7 +31,7 @@ public class ConnectionTests {
         try(Connection c = DriverManager.getConnection(connectionString)) {
             assertTrue(true, "Database connection should have worked");
         } catch (SQLException e) {
-            fail("Database connection should have worked");
+            fail("Database connection should have worked\n" + e);
         }
     }
 
@@ -42,7 +42,7 @@ public class ConnectionTests {
             s.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            fail("Create SQL query should be valid");
+            fail("Create SQL query should be valid\n" + e);
         }
     }
 
@@ -53,7 +53,7 @@ public class ConnectionTests {
             s.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            fail("Insert SQL query should be valid");
+            fail("Insert SQL query should be valid\n" + e);
         }
     }
 
@@ -70,7 +70,7 @@ public class ConnectionTests {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            fail("Insert SQL query should be valid");
+            fail("Insert SQL query should be valid\n" + e);
         }
     }
 
@@ -80,7 +80,7 @@ public class ConnectionTests {
         try (PreparedStatement s = c.prepareStatement(SQL)) {
             s.executeUpdate();
         } catch (SQLException e) {
-            fail("Drop SQL query should be valid");
+            fail("Drop SQL query should be valid\n" + e);
         }
     }
 
@@ -101,7 +101,7 @@ public class ConnectionTests {
         try(Connection c = DriverManager.getConnection(connectionString)) {
             testSQLQueries(c);
         } catch (SQLException e) {
-            fail("Database connection should have worked");
+            fail("Database connection should have worked\n" + e);
         }
     }
 
@@ -112,9 +112,10 @@ public class ConnectionTests {
         try(Connection c = DriverManager.getConnection(connectionString)) {
             //TODO What if account 1 has been deleted (maybe sql query to get first id?)
             assertTrue(ConnectionTools.accountIdExists(1, c), "There should always be at least one account in the database.");
+            assertTrue(ConnectionTools.idExistInTable(1, "id", "accounts", c), "There should always be at least one account in the database.");
             assertFalse(ConnectionTools.accountIdExists(1000000000, c), "We shouldn't have reached 1 billion accounts.");
         } catch (SQLException e) {
-            fail("Database connection should have worked");
+            fail("Database connection and queries should have worked\n" + e);
         }
     }
 }

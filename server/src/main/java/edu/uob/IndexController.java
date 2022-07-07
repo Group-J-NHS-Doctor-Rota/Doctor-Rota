@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Connection;
@@ -16,26 +14,26 @@ import java.sql.SQLException;
 @RestController
 public class IndexController {
 
-    @GetMapping("/")
+    @GetMapping(value = "/", produces = "application/json")
     public ResponseEntity<String> index() {
-        return ResponseEntity.status(HttpStatus.OK).body("Spring boot server running correctly (CODE 200)\n");
+        return ResponseEntity.status(HttpStatus.OK).body("Spring boot server running correctly\n");
     }
 
-    @GetMapping("/test")
+    @GetMapping(value = "/test", produces = "application/json")
     public ResponseEntity<String> getTest() {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             return ResponseEntity.status(HttpStatus.OK).body("Test ok (CODE 200)\n");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.toString().concat("\nThe request was not completed due to server issues (CODE 500)\n"));
+                    .body(e.toString().concat("\nThe request was not completed due to server issues\n"));
         }
     }
 
     // TODO maybe remove or improve this depending on usage
-    @GetMapping("/configvar")
+    @GetMapping(value = "/configvar", produces = "application/json")
     public ResponseEntity<String> getConfigVar() {
-        String url = System.getenv("JDBC_DATABASE_URL");
+        String url = ConnectionTools.getConnectionString();
         String lastFourChars;
         if (url.length() > 4) {
             lastFourChars = url.substring(url.length() - 4);
@@ -60,6 +58,14 @@ public class IndexController {
         objectNode2.put("item 3", 999.999);
         objectNode.putArray("array").add(objectNode2);
         return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+    }
+
+    @PutMapping(value = "/account/{id}/workingdays", produces = "application/json")
+    public ResponseEntity<String> putWorkingDays(@PathVariable int id, @RequestParam boolean monday, @RequestParam boolean tuesday,
+                                                 @RequestParam boolean wednesday, @RequestParam boolean thursday, @RequestParam boolean friday,
+                                                 @RequestParam boolean saturday, @RequestParam boolean sunday) {
+        //todo check token is valid
+        return PutOperations.putWorkingDays(id, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
     }
 
 }

@@ -37,6 +37,7 @@ export default function Navbar(){
             <div className="d-block">
                 <NavBar>
                     <div className="d-flex justify-content-end me-2">
+                        <Button className="m-2">Generate rota</Button>
                         <i id="icon_list" className="bi bi-list" style={{fontSize: '40px', cursor: 'pointer', color: '#168082'}} onClick={() => toggleList()}></i>
                     </div>
                 </NavBar>
@@ -130,6 +131,22 @@ const IconBackground = styled.div`
     cursor: pointer;
     &:hover{
         background-color: #EDFCF9;
+    }
+`
+
+const Button = styled.button`
+    min-width: 100px;
+    font-size: 20px;
+    background-color: #168082;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+
+    @media (max-width: 575px){
+        font-size: 16px;
+        min-width: 80px;
     }
 `
 

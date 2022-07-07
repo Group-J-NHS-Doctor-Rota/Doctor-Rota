@@ -52,7 +52,7 @@ export default function ShiftModal({ shift, setShift }){
                         </CloseButton>
 
                         <ConfirmButton className="m-2" onClick={() => setShift(false)}>
-                            Update
+                            Swap
                         </ConfirmButton>
                     </div>  
                 </Container>

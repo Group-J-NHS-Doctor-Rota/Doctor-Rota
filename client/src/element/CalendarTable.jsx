@@ -106,7 +106,7 @@ export default function CalendarTable({ year, month }){
                     ||
                     month == 2 && isLeap == true && getContent(29)
                     ||
-                    month == 2 && isLeap == false && getContent(29)
+                    month == 2 && isLeap == false && getContent(28)
                 }
             </CalendarGrid>
         </Table>

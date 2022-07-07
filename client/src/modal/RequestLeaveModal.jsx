@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Modal, Form } from 'react-bootstrap'
 
@@ -6,6 +6,10 @@ import '../css/general.css'
 import styled from 'styled-components'
 
 export default function RequestLeaveModal({ leave, setLeave }){
+    const [type, setType] = useState('single')
+    function getValue(e){
+        setType(e.target.value)
+    }
     return (
         <>
             <Modal show={leave}>
@@ -13,15 +17,8 @@ export default function RequestLeaveModal({ leave, setLeave }){
                     <Title className="my-5">Request Leave</Title>
 
                     <Form action="#">
-                        <div className="d-flex align-items-center my-3">
-                            <i className="bi bi-calendar3 me-3" style={{ fontSize: '30px' }}></i>
-
-                            <input type='date' className='time-field' />
-                            <input type='time' className='time-field' />
-                        </div>
-
                         <div className="d-block align-items-center my-3">
-                            <ColumnName>Type</ColumnName>
+                            <ColumnName className="mb-2">The type of leave</ColumnName>
                             <Form.Select aria-label="Default select example" className='drop-down'>
                                 <option>---please select---</option>
                                 <option value="Annual Leave">Annual Leave</option>
@@ -30,8 +27,63 @@ export default function RequestLeaveModal({ leave, setLeave }){
                             </Form.Select>
                         </div>
 
-                        <Form.Group className="mb-3 div-1" controlId="exampleForm.ControlTextarea1">
-                            <ColumnName>Comments</ColumnName>
+                        <div className="d-block align-items-center my-3">
+                            <ColumnName className="mb-2">Single day / Multiple days</ColumnName>
+                            <div className="d-flex align-items-center">
+                                <div className="me-3">
+                                    <input type="radio" id="single" name="type" value="single" onClick={(e) => getValue(e)} defaultChecked/>
+                                    <label htmlFor="single" className="ms-2">Single day</label>
+                                </div>
+
+                                <div>
+                                    <input type="radio" id="multiple" name="type" value="multiple" onClick={(e) => getValue(e)} />
+                                    <label htmlFor="multiple" className="ms-2">Multiple days</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        {
+                            type == "single" &&
+                            <div className="d-block">
+                                <ColumnName className="mb-2">The start day</ColumnName>
+                                <div className="d-flex">
+                                    <Form.Select className="p-2 me-1" name="single_half_full" id="half_full">
+                                        <option value="single_am">am</option>
+                                        <option value="single_pm">pm</option>
+                                        <option value="single_full">full</option>
+                                    </Form.Select>
+
+                                    <Form.Control type='date' className="w-100 p-2 ms-1" />
+                                </div>
+                            </div>
+                            ||
+                            type == "multiple" &&
+                            <div className="d-block">
+                                <ColumnName className="mb-2">The start day</ColumnName>
+                                <div className="d-flex">
+                                    <Form.Select className="p-2 me-1" name="multiple_start_half_full" id="half_full">
+                                        <option value="multiple_start_am">am</option>
+                                        <option value="multiple_start_pm">pm</option>
+                                        <option value="multiple_start_full">full</option>
+                                    </Form.Select>
+
+                                    <Form.Control type='date' className="w-100 p-2 ms-1"/>
+                                </div>
+                                <ColumnName className="mb-2">The end day</ColumnName>
+                                <div className="d-flex">
+                                    <Form.Select className="p-2 me-1" name="multiple_end_half_full" id="half_full">
+                                        <option value="multiple_end_am">am</option>
+                                        <option value="multiple_end_pm">pm</option>
+                                        <option value="multiple_end_full">full</option>
+                                    </Form.Select>
+
+                                    <Form.Control type='date' className="w-100 p-2 ms-1"/>
+                                </div>
+                            </div>
+                        }
+
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                            <ColumnName className="my-3">Comments</ColumnName>
                             <Form.Control as="textarea" rows={5}
                                 placeholder='This field is required, please include the date, time, and reason'
                              />

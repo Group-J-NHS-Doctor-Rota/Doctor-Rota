@@ -9,7 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.Date;
 
 @RestController
 public class IndexController {
@@ -66,6 +66,19 @@ public class IndexController {
                                                  @RequestParam boolean saturday, @RequestParam boolean sunday) {
         //todo check token is valid
         return PutOperations.putWorkingDays(id, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
+    }
+
+    @PutMapping("/account/{id}/fixedshift")
+    public ResponseEntity<String> putFixedShift(@PathVariable int id,
+                                                @RequestParam(value = "date", defaultValue = "1900/01/01") Date date,
+                                                @RequestParam(value = "shift", defaultValue = "1") int shift) {
+        //todo maybe the defaultValue shouldn't be hard code
+        if (shift > 4 || shift < 1) {
+            // todo Should I use 'status.CONFLICT' ?
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Shift number should between 1 and 4");
+        }
+        return PutOperations.putFixedShift(id, date, shift);
     }
 
 }

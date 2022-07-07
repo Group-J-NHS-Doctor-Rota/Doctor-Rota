@@ -4,6 +4,7 @@ package edu.uob;
 //https://www.javainuse.com/spring/springboot_testcases
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,6 +44,12 @@ public class MySpringApplicationTests {
 	public void testDbConnection() throws Exception {
 		// Check the /test url returns ok, so the server can connect to the database
 		mockMvc.perform(get("/test")).andExpect(status().isOk());
+	}
+
+	@Test
+	public void testPutFixedShift() throws Exception {
+//		int id = 1001;
+		mockMvc.perform(put("/account/{1001}/fixedshift")).andExpect(status().isOk());
 	}
 
 }

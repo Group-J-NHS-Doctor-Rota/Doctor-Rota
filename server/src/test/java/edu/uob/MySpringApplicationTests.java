@@ -49,6 +49,7 @@ public class MySpringApplicationTests {
 	@Test
 	public void testPutFixedShift() throws Exception {
 //		int id = 1001;
+		//todo more vars needed
 		mockMvc.perform(put("/account/{1001}/fixedshift")).andExpect(status().isOk());
 	}
 

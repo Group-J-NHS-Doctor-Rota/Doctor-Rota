@@ -70,9 +70,10 @@ public class IndexController {
 
     @PutMapping("/account/{id}/fixedshift")
     public ResponseEntity<String> putFixedShift(@PathVariable int id,
-                                                @RequestParam(value = "date", defaultValue = "1900/01/01") Date date,
+                                                @RequestParam(value = "date", defaultValue = "1900-01-01") Date date,
                                                 @RequestParam(value = "shift", defaultValue = "1") int shift) {
         //todo maybe the defaultValue shouldn't be hard code
+        //todo defaultValue spring boot will do it
         if (shift > 4 || shift < 1) {
             // todo Should I use 'status.CONFLICT' ?
             return ResponseEntity.status(HttpStatus.CONFLICT)

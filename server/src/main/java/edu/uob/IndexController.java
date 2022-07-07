@@ -14,12 +14,12 @@ import java.sql.SQLException;
 @RestController
 public class IndexController {
 
-    @GetMapping("/")
+    @GetMapping(value = "/", produces = "application/json")
     public ResponseEntity<String> index() {
         return ResponseEntity.status(HttpStatus.OK).body("Spring boot server running correctly\n");
     }
 
-    @GetMapping("/test")
+    @GetMapping(value = "/test", produces = "application/json")
     public ResponseEntity<String> getTest() {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
@@ -31,7 +31,7 @@ public class IndexController {
     }
 
     // TODO maybe remove or improve this depending on usage
-    @GetMapping("/configvar")
+    @GetMapping(value = "/configvar", produces = "application/json")
     public ResponseEntity<String> getConfigVar() {
         String url = ConnectionTools.getConnectionString();
         String lastFourChars;
@@ -60,7 +60,7 @@ public class IndexController {
         return ResponseEntity.status(HttpStatus.OK).body(objectNode);
     }
 
-    @PutMapping("/account/{id}/workingdays")
+    @PutMapping(value = "/account/{id}/workingdays", produces = "application/json")
     public ResponseEntity<String> putWorkingDays(@PathVariable int id, @RequestParam boolean monday, @RequestParam boolean tuesday,
                                                  @RequestParam boolean wednesday, @RequestParam boolean thursday, @RequestParam boolean friday,
                                                  @RequestParam boolean saturday, @RequestParam boolean sunday) {

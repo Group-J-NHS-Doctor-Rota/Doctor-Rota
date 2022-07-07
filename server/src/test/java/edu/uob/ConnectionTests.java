@@ -110,6 +110,7 @@ public class ConnectionTests {
         // Test two account ids: one of which should always exist and one which should never exist
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
+            //TODO What if account 1 has been deleted (maybe sql query to get first id?)
             assertTrue(ConnectionTools.accountIdExists(1, c), "There should always be at least one account in the database.");
             assertFalse(ConnectionTools.accountIdExists(1000000000, c), "We shouldn't have reached 1 billion accounts.");
         } catch (SQLException e) {

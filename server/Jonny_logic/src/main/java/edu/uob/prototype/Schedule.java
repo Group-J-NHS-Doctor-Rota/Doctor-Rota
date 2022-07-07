@@ -22,13 +22,20 @@ public class Schedule {
         int rules;
         BuildSchedule iteration;
 
-        System.out.println(doctors.size());
+        //testing pain week addition for first doctor
+        for(JuniorDoctor doc : doctors){
+            doc.setPainWeek();
+        }
+
+
 
         do {
             iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors);
             rules = iteration.getRulesCount();
             System.out.println("rules  == " + rules);
-        }while(checkShift(iteration.returnDoctors()) || rules > 0);
+        }while(checkShiftHours(iteration.returnDoctors()) || rules > 0 || checkShiftCount(iteration.returnDoctors()));
+
+        doctors = iteration.returnDoctors();
 
         ArrayList<String> des = iteration.getDescription();
 
@@ -36,16 +43,38 @@ public class Schedule {
             System.out.println(d);
         }
 
-//        printSchedule(names);
-//        checkNights(names);
-//        checkDays(names);
-//        printLeftovers(names);
-//        addShifts(names);
+        printSchedule(doctors);
+        checkNights(doctors);
+        checkDays(doctors);
+        printLeftovers(doctors);
+        addShifts(doctors);
 
 
     }
 
-    private static boolean checkShift(ArrayList<JuniorDoctor> doctors){
+    private static boolean checkShiftCount(ArrayList<JuniorDoctor> doctors){
+        for(JuniorDoctor doctor : doctors){
+            int days = 0;
+            int nights = 0;
+
+            LocalDate date = startDate;
+            while(!date.isEqual(endDate.plusDays(1))){
+                if(doctor.getShiftType(date).equals(Shifts.DAYON)){
+                    days++;
+                }
+                else if(doctor.getShiftType(date).equals(Shifts.NIGHT)){
+                    nights++;
+                }
+                date = date.plusDays(1);
+            }
+            if(days+nights > 22){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean checkShiftHours(ArrayList<JuniorDoctor> doctors){
         for(JuniorDoctor doctor : doctors){
             double hours = 0;
             LocalDate date = startDate;
@@ -102,6 +131,11 @@ public class Schedule {
             System.out.println("days = " + days);
             System.out.println("nights = " + nights);
             System.out.println("theatre = " + theatre);
+            if(doctor.getPainWeekStartDate() != null){
+                System.out.println("pain week start = " + doctor.getPainWeekStartDate());
+            }else{
+                System.out.println("no pain week");
+            }
         }
     }
 
@@ -169,7 +203,7 @@ public class Schedule {
         LocalDate endPrint = endDate.plusDays(1);
 
         while (!date.isEqual(endPrint)) {
-            if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY) || date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || date.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+            //if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY) || date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || date.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
                 int counter = 0;
                 for (JuniorDoctor doc : schedule) {
                     if (doc.getShiftType(date).equals(Shifts.DAYON)) {
@@ -183,7 +217,7 @@ public class Schedule {
                 if (counter > 1) {
                     System.out.println("too many days on - " + date + "amount = " + counter);
                 }
-            }
+            //}
             date = date.plusDays(1);
         }
     }

@@ -11,10 +11,12 @@ public class JuniorDoctor {
     private int totalOnCall;
     private int theatre;
     private int weekends;
+    private boolean painWeek;
     private final int setLongDays;
     private final int setNights;
     private final int setTheatre;
     private final int setWeekends;
+    private LocalDate painWeekStartDate;
 
     JuniorDoctor(){
         shifts = new Hashtable<>();
@@ -99,5 +101,15 @@ public class JuniorDoctor {
     public void reduceTotalOnCall(){this.totalOnCall--;}
 
     public void reduceTotalOnCall(int value ){this.totalOnCall = totalOnCall-value;}
+
+    public void setPainWeek(){this.painWeek = true;}
+
+    public boolean getPainWeek(){return this.painWeek;}
+
+    public LocalDate getPainWeekStartDate(){return this.painWeekStartDate;}
+
+    public void setPainWeekStartDate(LocalDate date){
+        this.painWeekStartDate = date;
+    }
 
 }

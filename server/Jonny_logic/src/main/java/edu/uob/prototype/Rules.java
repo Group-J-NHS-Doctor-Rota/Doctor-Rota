@@ -8,6 +8,7 @@ public class Rules {
     private static LocalDate startDate;
     private static LocalDate endDate;
     private static int rulesBroken;
+    private static ArrayList<JuniorDoctor> doctors;
     private static ArrayList<String> rulesBrokenDescription;
 
     public Rules(ArrayList<JuniorDoctor> doctorsList, LocalDate start, LocalDate end){
@@ -15,6 +16,7 @@ public class Rules {
         endDate = end;
         rulesBroken = 0;
         rulesBrokenDescription = new ArrayList<>();
+        doctors = doctorsList;
 
         for(JuniorDoctor doctor : doctorsList){
             fourLongDaysInARow(doctor);

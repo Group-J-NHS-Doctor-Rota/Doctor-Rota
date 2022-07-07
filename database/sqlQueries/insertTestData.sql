@@ -9,6 +9,9 @@ VALUES
 INSERT INTO accounts (username, password, salt, email, doctorId, annualLeave, studyLeave, workingHours, accountStatus, doctorStatus, level, rotaGroupId, timeWorked, fixedWorking)
 VALUES
     ('John Smith', 'sdafgndfjgn', '123', 'test@test.com', '9876', 15, 15, 48, 0, 0, 1, 1, 1, false);
+INSERT INTO accounts (username, password, salt, email, annualLeave, studyLeave, workingHours, level)
+VALUES
+    ('Jane Smith', 'qwererydf', '456', 'test2@test.com', 15, 15, 48, 0);
 
 /*shifts data*/
 INSERT INTO shifts (accountId, rotaGroupId, rotaTypeId, date, type, ruleNotes)

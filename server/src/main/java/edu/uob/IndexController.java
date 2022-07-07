@@ -4,14 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.Date;
 
 @RestController
 public class IndexController {
@@ -60,6 +57,19 @@ public class IndexController {
         objectNode2.put("item 3", 999.999);
         objectNode.putArray("array").add(objectNode2);
         return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+    }
+
+    @PutMapping("/account/{id}/fixedshift")
+    public ResponseEntity<String> putFixedShift(@PathVariable int id,
+                                                @RequestParam(value = "date", defaultValue = "1900/01/01") Date date,
+                                                @RequestParam(value = "shift", defaultValue = "1") int shift) {
+        //todo maybe the defaultValue shouldn't be hard code
+        if (shift > 4 || shift < 1) {
+            // todo Should I use 'status.CONFLICT' ?
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Shift number should between 1 and 4");
+        }
+        return PutMethod.putFixedShift(id, date, shift);
     }
 
 }

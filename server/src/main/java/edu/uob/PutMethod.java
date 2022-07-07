@@ -13,17 +13,17 @@ public class PutMethod {
 
     public static ResponseEntity<String> putFixedShift(int id, Date date, int shift) {
         String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString);) {
+        try(Connection c = DriverManager.getConnection(connectionString)) {
             try(PreparedStatement putStatement = c.prepareStatement(
                     "INSERT INTO table_name (date, shift) VALUES (?, ?);")) {
 //                putStatement.setInt(1, id); // todo where should I use id?
+                // todo id exists
                 putStatement.setDate(1, date);
                 putStatement.setInt(2, shift);
                 putStatement.executeUpdate();
                 putStatement.close();
                 return ResponseEntity.status(HttpStatus.OK).body("");
             }
-            // Have to catch SQLException exception here
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

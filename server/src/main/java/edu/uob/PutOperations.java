@@ -11,13 +11,13 @@ import java.sql.SQLException;
 
 public class PutOperations {
 
-    public static ResponseEntity<String> putWorkingDays(int id, boolean monday, boolean tuesday, boolean wednesday,
+    public static ResponseEntity<String> putWorkingDays(int accountId, boolean monday, boolean tuesday, boolean wednesday,
                                                      boolean thursday, boolean friday, boolean saturday, boolean sunday) {
 
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString);) {
-            if(!ConnectionTools.accountIdExists(id, c)) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+id+" does not exist");
+            if(!ConnectionTools.accountIdExists(accountId, c)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
             }
             // Only if account id exists, then try to insert data
             // Delete old data, if any, then insert new data
@@ -25,8 +25,8 @@ public class PutOperations {
                     "INSERT INTO partTimeDetails (accountId, monday, tuesday, wednesday, thursday, friday, saturday, sunday) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
-                s.setInt(1, id);
-                s.setInt(2, id);
+                s.setInt(1, accountId);
+                s.setInt(2, accountId);
                 s.setBoolean(3, monday);
                 s.setBoolean(4, tuesday);
                 s.setBoolean(5, wednesday);

@@ -47,7 +47,9 @@ public class Schedule {
         do {
             iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors);
             rules = iteration.getRulesCount();
-        }while(rules > 0 || checkShiftCount(iteration.returnDoctors()) || checkShiftHours(iteration.returnDoctors()));
+        }while(rules > 0 || checkShiftHours(iteration.returnDoctors()) || checkShiftCount(iteration.returnDoctors()));
+
+        //|| checkShiftCount(iteration.returnDoctors()) || checkShiftHours(iteration.returnDoctors())
 
         doctors = iteration.returnDoctors();
 
@@ -81,7 +83,7 @@ public class Schedule {
                 }
                 date = date.plusDays(1);
             }
-            if(days+nights > 22){
+            if((days + nights) < 22){
                 return true;
             }
         }
@@ -116,7 +118,8 @@ public class Schedule {
 
     private static void addDoctors(){
         for (String doctorsName : names) {
-            JuniorDoctor doctor = new JuniorDoctor();
+            JuniorDoctor doctor = new JuniorDoctor(1);
+            System.out.println(doctor.getNights());
             doctor.setName(doctorsName);
             doctors.add(doctor);
         }

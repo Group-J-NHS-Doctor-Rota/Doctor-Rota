@@ -21,12 +21,16 @@ public class JuniorDoctor {
     private final int setWeekends;
     private LocalDate painWeekStartDate;
 
-    JuniorDoctor(){
+    JuniorDoctor(int hours){
         shifts = new Hashtable<>();
-        this.setLongDays = 11;
-        this.setNights = 11;
-        this.setTheatre = 32;
-        this.setWeekends = 3;
+        this.setLongDays = 11 * hours;
+        this.setNights = 11 * hours;
+        this.setTheatre = 32 * hours;
+        if(hours == 1) {
+            this.setWeekends = 3;
+        }else{
+            this.setWeekends = 2;
+        }
         notOnCallRequest = new Hashtable<>();
         studyOrAnnualLeave = new Hashtable<>();
     }
@@ -87,6 +91,10 @@ public class JuniorDoctor {
 
     public void reduceTheatre() {
         this.theatre--;
+    }
+
+    public void reduceTheatre(int value) {
+        this.theatre = theatre-value;
     }
 
     public String getName() {

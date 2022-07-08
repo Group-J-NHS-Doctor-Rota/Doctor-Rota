@@ -133,8 +133,9 @@ public class BuildSchedule {
 
     private static boolean selectWeekends(){
         int counter = 0;
+        int weekendsCovered = getWeekendsCovered();
         LocalDate date = startDate;
-        while (date.isBefore(endDate) && counter < 12){
+        while (date.isBefore(endDate) && counter < weekendsCovered){
             if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY)){
                 if(addWeekends(date, Shifts.NIGHT) && addWeekends(date, Shifts.DAYON)){
                     date = date.plusDays(1);
@@ -144,6 +145,10 @@ public class BuildSchedule {
                 }
             }
             date =date.plusDays(1);
+        }
+        int totalWeekends = numberOfWeekends();
+        if(totalWeekends > weekendsCovered){
+            addExtraWeekends(totalWeekends-weekendsCovered, date);
         }
 
         return true;
@@ -203,6 +208,83 @@ public class BuildSchedule {
         return errorCounter != 50;
     }
 
+    private static int getWeekendsCovered(){
+        int counter = 0;
+        for(JuniorDoctor doctor: doctors){
+            counter += doctor.getWeekends();
+        }
+        return counter/2;
+    }
+
+    private static int numberOfWeekends(){
+        LocalDate date = startDate;
+        int counter = 0;
+        while(date.isBefore(endDate.plusDays(1))){
+            if(date.getDayOfWeek().equals(DayOfWeek.SATURDAY)){
+                counter++;
+            }
+            date = date.plusDays(1);
+        }
+        return counter;
+    }
+
+    private static void addExtraWeekends(int weekends, LocalDate date){
+        int counter = 0;
+        while(date.isBefore(endDate.plusDays(1)) && counter < weekends){
+            if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY)){
+                while(true){
+                    if(addExtraWeekendsNights(date)){
+                        break;
+                    }
+                }
+                while(true){
+                    if(addExtraWeekendsDays(date)){
+                        break;
+                    }
+                }
+                counter++;
+            }
+            date = date.plusDays(1);
+        }
+    }
+
+    private static boolean addExtraWeekendsNights(LocalDate date){
+        int selectDoctor1 = ThreadLocalRandom.current().nextInt(0, numberOfDoctors);
+        JuniorDoctor doctor = doctors.get(selectDoctor1);
+        if(!checkShiftFree(doctor, date, 6)){
+            return false;
+        }else{
+            for (int i=0; i<3; i++){
+                doctor.setShifts(date, Shifts.NIGHT);
+                date = date.plusDays(1);
+            }
+            for (int i=0; i<3; i++){
+                doctor.setShifts(date, Shifts.NAOFF);
+                date = date.plusDays(1);
+            }
+            doctor.reduceTheatre(3);
+        }
+        return true;
+    }
+
+    private static boolean addExtraWeekendsDays(LocalDate date){
+        int selectDoctor1 = ThreadLocalRandom.current().nextInt(0, numberOfDoctors);
+        JuniorDoctor doctor = doctors.get(selectDoctor1);
+        if(!checkShiftFree(doctor, date, 5)){
+            return false;
+        }else{
+            for (int i=0; i<3; i++){
+                doctor.setShifts(date, Shifts.DAYON);
+                date = date.plusDays(1);
+            }
+            for (int i=0; i<2; i++){
+                doctor.setShifts(date, Shifts.DAYOFF);
+                date = date.plusDays(1);
+            }
+            doctor.reduceTheatre(3);
+        }
+        return true;
+    }
 
     private static void reduceTheatreShifts(){
         for(JuniorDoctor doctor : doctors){
@@ -320,7 +402,6 @@ public class BuildSchedule {
             if(doctor.getLongDays() <= 0 || doctor.shiftTaken(date) || doctor.getTotalOnCall() <= 0){
                 errorCounter++;
             }else {
-
                 doctor.setShifts(date, Shifts.DAYON);
                 doctor.reduceLongDays();
                 doctor.reduceTotalOnCall();

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import ShiftModal from '../modal/ShiftModal'
+import ShiftDetailModal from '../modals/ShiftDetailModal'
 
 import styled from 'styled-components'
 
@@ -27,7 +27,7 @@ export default function Shift({ type }){
 
             </List>
 
-            <ShiftModal shift={shift} setShift={setShift}/>
+            <ShiftDetailModal shift={shift} setShift={setShift}/>
         </>
 
     )

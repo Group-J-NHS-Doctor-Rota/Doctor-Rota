@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import Calendar from './Calendar'
+import CalendarDay from './CalendarDay'
 import useWindowDimensions from '../hook/useWindowDimensions'
 
 import dayjs from 'dayjs'
@@ -69,7 +69,7 @@ export default function CalendarTable({ year, month }){
                 result == false &&
                 <GridItems key={i}>
                     <h3 className="mb-1 mx-2">{i}</h3>
-                    <Calendar />
+                    <CalendarDay />
                 </GridItems>
                 || result !== false &&
                 <GridItems key={i}>
@@ -89,7 +89,7 @@ export default function CalendarTable({ year, month }){
 
                         }
                     </div>
-                    <Calendar />
+                    <CalendarDay />
                 </GridItems>
             )
         }

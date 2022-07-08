@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 
 import styled from 'styled-components'
 
-import Navbar from '../element/Navbar'
-import Pagination from '../element/Pagination'
+import NavBar from '../components/NavBar'
+import Pagination from '../components/Pagination'
 
 export default function AccountPage(){
     const [currentPage, setCurrentPage] = useState(1)
@@ -12,12 +12,12 @@ export default function AccountPage(){
         let content = [];
         for (let i = 0; i < number; i++) {
             content.push(
-            <AccountCard key={i} onClick={()=>console.log(1)}>
-                <TableTd>Steven</TableTd>
-                <TableTd>stevenlin3263@gmail.com</TableTd>
-                <TableTd>1.0</TableTd>
-                <TableTd>employed</TableTd>
-            </AccountCard>
+                <AccountCard key={i} onClick={()=>console.log(1)}>
+                    <TableTd>Steven</TableTd>
+                    <TableTd>stevenlin3263@gmail.com</TableTd>
+                    <TableTd>1.0</TableTd>
+                    <TableTd>employed</TableTd>
+                </AccountCard>
             )
         }
         return content;
@@ -25,7 +25,7 @@ export default function AccountPage(){
 
     return (
         <div>
-            <Navbar />
+            <NavBar />
 
             <Container className="mt-3">
                 <form id="search_account_form" className="d-flex mb-3" action="#" method="POST">
@@ -36,7 +36,7 @@ export default function AccountPage(){
                             <Input />
                         </div>
                     </SearchRegion>
-                    <Button>Submit</Button>
+                    <Button type="submit">Submit</Button>
                 </form>
 
                 <table style={{width: '100%'}}>
@@ -54,7 +54,6 @@ export default function AccountPage(){
             </Container>
         
             <Pagination currentPage={currentPage} totalPage={10} setCurrentPage={setCurrentPage} />
-
         </div>
     )
 }

@@ -2,12 +2,12 @@ import React from 'react'
 
 import styled from 'styled-components'
 
-export default function DataCard(){
+export default function DataBar(){
     return (
         <div className="row">
             <div className="col-12 col-md-4">
                 <Card className="mt-3 p-3 d-flex justify-content-center align-items-center">
-                    <p style={{position: 'absolute', bottom: '50%', left: '5%'}}>Annual Leave:</p>
+                    <p style={{position: 'absolute', bottom: '50%', left: '5%'}}>Annual Leave</p>
                     <Text>
                         <p className="mb-0">XX days</p>
                     </Text>
@@ -15,7 +15,7 @@ export default function DataCard(){
             </div>
             <div className="col-12 col-md-4">
                 <Card className="mt-3 p-3 d-flex justify-content-center align-items-center"> 
-                    <p style={{position: 'absolute', bottom: '50%', left: '5%'}}>Study Leave:</p>
+                    <p style={{position: 'absolute', bottom: '50%', left: '5%'}}>Study Leave</p>
 
                     <Text>
                         <p className="mb-0">XX days</p>
@@ -24,7 +24,7 @@ export default function DataCard(){
             </div>
             <div className="col-12 col-md-4">     
                 <Card className="mt-3 p-3 d-flex justify-content-center align-items-center">
-                    <p style={{position: 'absolute', bottom: '50%', left: '5%'}}>Working Hours:</p>
+                    <p style={{position: 'absolute', bottom: '50%', left: '5%'}}>Weekly Worked</p>
 
                     <Text>
                         <p className="mb-0">XX hours</p>
@@ -50,7 +50,3 @@ const Text = styled.div`
         color: #168082;
     }
 `
-
-// position: absolute;
-// top: 35%;
-// left: 35%;

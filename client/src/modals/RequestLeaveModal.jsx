@@ -46,8 +46,9 @@ export default function RequestLeaveModal({ leave, setLeave }){
                             type == "single" &&
                             <div className="d-block">
                                 <ColumnName className="mb-2">The start day</ColumnName>
+
                                 <div className="d-flex">
-                                    <Form.Select className="p-2 me-1" name="single_half_full" id="half_full">
+                                    <Form.Select className="p-2 me-1" style={{width: '30%'}} name="single_half_full" id="half_full">
                                         <option value="single_am">am</option>
                                         <option value="single_pm">pm</option>
                                         <option value="single_full">full</option>
@@ -60,8 +61,9 @@ export default function RequestLeaveModal({ leave, setLeave }){
                             type == "multiple" &&
                             <div className="d-block">
                                 <ColumnName className="mb-2">The start day</ColumnName>
+
                                 <div className="d-flex">
-                                    <Form.Select className="p-2 me-1" name="multiple_start_half_full" id="half_full">
+                                    <Form.Select className="p-2 me-1" style={{width: '30%'}} name="multiple_start_half_full" id="half_full">
                                         <option value="multiple_start_am">am</option>
                                         <option value="multiple_start_pm">pm</option>
                                         <option value="multiple_start_full">full</option>
@@ -69,9 +71,11 @@ export default function RequestLeaveModal({ leave, setLeave }){
 
                                     <Form.Control type='date' className="w-100 p-2 ms-1"/>
                                 </div>
-                                <ColumnName className="mb-2">The end day</ColumnName>
+
+                                <ColumnName className="my-2">The end day</ColumnName>
+
                                 <div className="d-flex">
-                                    <Form.Select className="p-2 me-1" name="multiple_end_half_full" id="half_full">
+                                    <Form.Select className="p-2 me-1" style={{width: '30%'}} name="multiple_end_half_full" id="half_full">
                                         <option value="multiple_end_am">am</option>
                                         <option value="multiple_end_pm">pm</option>
                                         <option value="multiple_end_full">full</option>

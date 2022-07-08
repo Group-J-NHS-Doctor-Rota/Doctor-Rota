@@ -10,8 +10,8 @@ export default function ProfileModal({profile, setProfile}){
     return (
         <>
             <Modal show={profile}>
-                <Container>
-                    <Title className="my-5">Profile</Title>
+                <ModalContainer>
+                    <ModalTitle className="my-5">Profile</ModalTitle>
 
                     <Form action="#">
                         <div className="d-flex align-items-center my-3">
@@ -35,18 +35,17 @@ export default function ProfileModal({profile, setProfile}){
                         </div>
 
                         <div className="d-flex align-items-center my-3">
-                            <Form.Label className="d-flex">
+                            <Label className="d-flex">
                                 <ColumnName className="me-3">Department:</ColumnName>
-                               
-                            </Form.Label>
-                            <Form.Control type="text" placeholder="Anaesthesia Department"/>
+                            </Label>
+                            <Input type="text" placeholder="Anaesthesia Department"/>
                         </div>
 
                         <div className="d-flex align-items-center my-3">
-                            <Form.Label className="d-flex">
+                            <Label className="d-flex">
                                 <ColumnName className="me-3">Email:</ColumnName>
-                            </Form.Label>
-                            <Form.Control type="email" placeholder="email@nbt.nhs.uk"/>
+                            </Label>
+                            <Input type="email" placeholder="email@nbt.nhs.uk"/>
                         </div>
 
                         <div className="d-flex justify-content-center my-3">
@@ -59,18 +58,18 @@ export default function ProfileModal({profile, setProfile}){
                             </ConfirmButton>
                         </div>    
                     </Form>
-                </Container>
+                </ModalContainer>
             </Modal>
         </>
     )
 }
 
-const Container = styled.div`
+const ModalContainer = styled.div`
     width: 80%;
     margin: 0 auto;
 `
 
-const Title = styled.h1`
+const ModalTitle = styled.h1`
     font-size: 32px;
     font-weight: bold;
     color: #168082;
@@ -123,4 +122,20 @@ const Column = styled.p`
     font-size: 16px;
     color: #168082;
     margin-bottom: 0px;
+`
+
+
+const Label = styled.label`
+    font-size: 25px;
+    color: #168082;
+    font-weight: bold;
+`
+
+const Input = styled.input`
+    font-size: 18px;
+    width: 100%;
+    height: 36px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `

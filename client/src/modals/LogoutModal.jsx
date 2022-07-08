@@ -11,7 +11,7 @@ export default function LogoutModal({ logout, setLogout }){
         <>
             <Modal show={logout}>
                 <div className="d-flex justify-content-center mb-4 mt-5">
-                    <Title>Do you want to log out?</Title>
+                    <LogoutWarning>Do you want to log out?</LogoutWarning>
                 </div>
                 
                 <div className="d-flex justify-content-center my-3">
@@ -28,7 +28,7 @@ export default function LogoutModal({ logout, setLogout }){
     )
 }
 
-const Title = styled.h1`
+const LogoutWarning = styled.h1`
     font-size: 32px;
     font-weight: bold;
     color: #168082;

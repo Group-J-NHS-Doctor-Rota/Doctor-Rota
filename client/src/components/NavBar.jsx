@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 
 import { useHistory } from 'react-router-dom';
 
-import LogoutModal from '../modal/LogoutModal'
-import ProfileModal from '../modal/ProfileModal';
-import RequestLeaveModal from '../modal/RequestLeaveModal';
+import LogoutModal from '../modals/LogoutModal'
+import ProfileModal from '../modals/ProfileModal';
+import RequestLeaveModal from '../modals/RequestLeaveModal';
 
 import styled from 'styled-components'
 
-export default function Navbar(){
+export default function NavBar(){
     const [open, setOpen] = useState(false)
     const [profile, setProfile] = useState(false)
     const [logout, setLogout] = useState(false)
@@ -35,12 +35,12 @@ export default function Navbar(){
     return (
         <>
             <div className="d-block">
-                <NavBar>
+                <Navbar>
                     <div className="d-flex justify-content-end me-2">
                         <Button className="my-2 me-3">Generate rota</Button>
                         <i id="icon_list" className="bi bi-list" style={{fontSize: '40px', cursor: 'pointer', color: '#168082'}} onClick={() => toggleList()}></i>
                     </div>
-                </NavBar>
+                </Navbar>
 
                 {
                     open &&
@@ -109,7 +109,7 @@ export default function Navbar(){
     )
 }
 
-const NavBar = styled.div`
+const Navbar = styled.div`
     position: relative;
     width: 100%;
     height: 60px;

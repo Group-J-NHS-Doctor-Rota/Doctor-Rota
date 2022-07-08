@@ -4,7 +4,7 @@ import Shift from './Shift'
 
 import styled from 'styled-components'
 
-export default function Calendar(){
+export default function CalendarDay(){
     return (
         <div className="d-block px-2">
             <Shift type="night" />

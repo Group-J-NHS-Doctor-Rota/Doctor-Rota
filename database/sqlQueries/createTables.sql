@@ -39,6 +39,7 @@ CREATE TABLE accounts (
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
     UNIQUE (username),
+    UNIQUE (salt),
     FOREIGN KEY (rotaGroupId) REFERENCES rotagroups(id),
     FOREIGN KEY (level) REFERENCES levelTypes(id)
 );

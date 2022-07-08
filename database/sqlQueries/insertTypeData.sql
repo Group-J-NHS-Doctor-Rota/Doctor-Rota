@@ -9,10 +9,10 @@ VALUES
 /*rotaTypes data*/
 INSERT INTO rotaTypes (id, name)
 VALUES
-    (1, 'Type 1'),
-    (2, 'Type 2'),
-    (3, 'Type 3'),
-    (4, 'Type 4');
+    (1, 'First On'),
+    (2, 'Obstetrics'),
+    (3, 'Second On'),
+    (4, 'Third 0n');
 
 /*shiftTypes data*/
 INSERT INTO shiftTypes (id, name)
@@ -26,7 +26,9 @@ INSERT INTO leaveRequestTypes (id, name)
 VALUES
     (0, 'Annual Leave'),
     (1, 'Study Leave'),
-    (2, 'Request Not To Be On Call');
+    (2, 'Request Not To Be On Call'),
+    --Gap is to allow for any additions, as other should logically come at the end
+    (9, 'Other');
 
 /*statusTypes data*/
 INSERT INTO statusTypes (id, name)

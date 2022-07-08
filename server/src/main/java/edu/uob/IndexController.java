@@ -60,12 +60,12 @@ public class IndexController {
         return ResponseEntity.status(HttpStatus.OK).body(objectNode);
     }
 
-    @PutMapping(value = "/account/{id}/workingdays", produces = "application/json")
-    public ResponseEntity<String> putWorkingDays(@PathVariable int id, @RequestParam boolean monday, @RequestParam boolean tuesday,
+    @PutMapping(value = "/account/{accountId}/workingdays", produces = "application/json")
+    public ResponseEntity<String> putWorkingDays(@PathVariable int accountId, @RequestParam boolean monday, @RequestParam boolean tuesday,
                                                  @RequestParam boolean wednesday, @RequestParam boolean thursday, @RequestParam boolean friday,
                                                  @RequestParam boolean saturday, @RequestParam boolean sunday) {
         //todo check token is valid
-        return PutOperations.putWorkingDays(id, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
+        return PutOperations.putWorkingDays(accountId, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
     }
 
 }

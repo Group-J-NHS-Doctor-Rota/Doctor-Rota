@@ -68,4 +68,10 @@ public class IndexController {
         return PutOperations.putWorkingDays(accountId, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
     }
 
+    @GetMapping(value = "/notification", produces = "application/json")
+    public ResponseEntity<ObjectNode> getNotifications(@RequestParam int accountId) {
+        //todo check token is valid
+        return GetOperations.getNotifications(accountId);
+    }
+
 }

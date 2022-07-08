@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { useHistory } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import LogoutModal from '../modals/LogoutModal'
 import ProfileModal from '../modals/ProfileModal';
@@ -8,29 +8,29 @@ import RequestLeaveModal from '../modals/RequestLeaveModal';
 
 import styled from 'styled-components'
 
-export default function NavBar(){
+export default function NavBar() {
     const [open, setOpen] = useState(false)
     const [profile, setProfile] = useState(false)
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
 
-    function toggleList(type){
+    function toggleList(type) {
         setOpen(!open)
 
-        if(type == "profile"){
+        if (type == "profile") {
             setProfile(true)
         }
 
-        if(type == "leave"){
+        if (type == "leave") {
             setLeave(true)
         }
 
-        if(type == "logout"){
+        if (type == "logout") {
             setLogout(true)
         }
     }
 
-    const goPath = useHistory();
+    const navigate = useNavigate();
 
     return (
         <>
@@ -38,7 +38,7 @@ export default function NavBar(){
                 <Navbar>
                     <div className="d-flex justify-content-end me-2">
                         <Button className="my-2 me-3">Generate rota</Button>
-                        <i id="icon_list" className="bi bi-list" style={{fontSize: '40px', cursor: 'pointer', color: '#168082'}} onClick={() => toggleList()}></i>
+                        <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: '#168082' }} onClick={() => toggleList()}></i>
                     </div>
                 </Navbar>
 
@@ -46,7 +46,7 @@ export default function NavBar(){
                     open &&
                     <div className="d-flex justify-content-end">
                         <ListCard className="me-2 mt-2 p-3">
-                            <IconBackground className="d-flex my-2"  onClick={() => toggleList("profile")}>
+                            <IconBackground className="d-flex my-2" onClick={() => toggleList("profile")}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-person-fill" style={{ fontSize: '30px' }}></i>
                                 </div>
@@ -56,12 +56,12 @@ export default function NavBar(){
                                 </div>
                             </IconBackground>
 
-                            <IconBackground className="d-flex my-2" onClick={() => goPath.push('/account')}>
+                            <IconBackground className="d-flex my-2" onClick={() => navigate('/account')}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-people-fill" style={{ fontSize: '30px' }}></i>
                                 </div>
 
-                                <div className="d-flex align-items-center">
+                                <div className="d-flex align-items-center" onClick={() => navigate('account')}>
                                     <p className="mb-0">Manage accounts</p>
                                 </div>
                             </IconBackground>
@@ -83,7 +83,7 @@ export default function NavBar(){
                                     <i className="bi bi-bell-fill" style={{ fontSize: '30px' }}></i>
                                 </div>
 
-                                <div className="d-flex align-items-center">
+                                <div className="d-flex align-items-center" onClick={() => navigate('notification')}>
                                     <p className="mb-0">Nofitication</p>
                                 </div>
                             </IconBackground>
@@ -102,9 +102,11 @@ export default function NavBar(){
                 }
             </div>
 
-            <LogoutModal logout={logout} setLogout={setLogout}/>
-            <ProfileModal profile={profile} setProfile={setProfile}/>
-            <RequestLeaveModal leave={leave} setLeave={setLeave}/>
+            <LogoutModal logout={logout} setLogout={setLogout} />
+            <ProfileModal profile={profile} setProfile={setProfile} />
+            <RequestLeaveModal leave={leave} setLeave={setLeave} />
+
+            <Outlet />
         </>
     )
 }

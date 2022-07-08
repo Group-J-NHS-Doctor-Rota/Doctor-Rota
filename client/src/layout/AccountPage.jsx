@@ -5,14 +5,14 @@ import styled from 'styled-components'
 import NavBar from '../components/NavBar'
 import Pagination from '../components/Pagination'
 
-export default function AccountPage(){
+export default function AccountPage() {
     const [currentPage, setCurrentPage] = useState(1)
 
     const getContent = number => {
         let content = [];
         for (let i = 0; i < number; i++) {
             content.push(
-                <AccountCard key={i} onClick={()=>console.log(1)}>
+                <AccountCard key={i} onClick={() => console.log(1)}>
                     <TableTd>Steven</TableTd>
                     <TableTd>stevenlin3263@gmail.com</TableTd>
                     <TableTd>1.0</TableTd>
@@ -25,13 +25,12 @@ export default function AccountPage(){
 
     return (
         <div>
-            <NavBar />
 
             <Container className="mt-3">
                 <form id="search_account_form" className="d-flex mb-3" action="#" method="POST">
                     <SearchRegion className="me-3">
                         <div className="d-flex">
-                            <i className="bi bi-search me-3" style={{fontSize: '20px'}}></i>
+                            <i className="bi bi-search me-3" style={{ fontSize: '20px' }}></i>
 
                             <Input />
                         </div>
@@ -39,7 +38,7 @@ export default function AccountPage(){
                     <Button type="submit">Submit</Button>
                 </form>
 
-                <table style={{width: '100%'}}>
+                <table style={{ width: '100%' }}>
                     <tbody>
                         <AccountCard>
                             <TableTh>Name</TableTh>
@@ -52,7 +51,7 @@ export default function AccountPage(){
                     </tbody>
                 </table>
             </Container>
-        
+
             <Pagination currentPage={currentPage} totalPage={10} setCurrentPage={setCurrentPage} />
         </div>
     )

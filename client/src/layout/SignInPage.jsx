@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 
 import FormInput from '../components/FormInput';
 
+import { useNavigate } from 'react-router-dom';
+
 import styled from 'styled-components'
 
 import '../css/general.css'
 
-export default function SignIn(){
+export default function SignIn() {
     const [values, setValues] = useState({
         username: "",
         password: ""
@@ -14,26 +16,26 @@ export default function SignIn(){
 
     const inputs = [
         {
-          id: 1,
-          name: "username",
-          type: "text",
-          placeholder: "Username",
-          errorMessage:
-            "Username should be 3-16 characters and shouldn't include any special character!",
-          label: "Username",
-          pattern: "^[A-Za-z0-9]{3,16}$",
-          required: true,
+            id: 1,
+            name: "username",
+            type: "text",
+            placeholder: "Username",
+            errorMessage:
+                "Username should be 3-16 characters and shouldn't include any special character!",
+            label: "Username",
+            pattern: "^[A-Za-z0-9]{3,16}$",
+            required: true,
         },
         {
-          id: 2,
-          name: "password",
-          type: "password",
-          placeholder: "Password",
-          errorMessage:
-            "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
-          label: "Password",
-          pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
-          required: true,
+            id: 2,
+            name: "password",
+            type: "password",
+            placeholder: "Password",
+            errorMessage:
+                "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
+            label: "Password",
+            pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
+            required: true,
         }
     ];
 
@@ -44,6 +46,8 @@ export default function SignIn(){
     const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
     };
+
+    const navigate = useNavigate()
 
     return (
         <LoginCard>
@@ -65,12 +69,15 @@ export default function SignIn(){
                     <div className="d-flex justify-content-center mb-3">
                         <LoginBtn type="submit">LOGIN</LoginBtn>
                     </div>
-                    <div className="d-flex justify-content-center mb-3">
+                    <div className="d-flex justify-content-center mb-3"
+                        onClick={() => navigate('/reset-password')}>
                         <Link href="#">Forgot your password?</Link>
                     </div>
 
                     <div>
-                        <p>Don't have an account? <Link href="#">Sign up</Link></p>
+                        <p>Don't have an account? <Link
+                            onClick={() => navigate('/signup')}
+                            style={{ cursor: 'pointer' }}>Sign up</Link></p>
                     </div>
                 </form>
             </Container>

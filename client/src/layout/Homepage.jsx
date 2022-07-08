@@ -68,39 +68,39 @@ export default function Homgepage(){
                                 <div className="d-block">
                                     <div>
                                         <input type="radio" id="first_on" name="rota_type" value="first_on" />
-                                        <label for="first_on" className="ms-2">First on</label>
+                                        <label htmlFor="first_on" className="ms-2">First on</label>
                                     </div>
 
                                     <div>
                                         <input type="radio" id="obstetric" name="rota_type" value="obstetric" />
-                                        <label for="obstetric" className="ms-2">obstetric</label>
+                                        <label htmlFor="obstetric" className="ms-2">obstetric</label>
                                     </div>
 
                                     <div>
                                         <input type="radio" id="second_on" name="rota_type" value="second_on" />
-                                        <label for="second_on" className="ms-2">Second on</label>
+                                        <label htmlFor="second_on" className="ms-2">Second on</label>
                                     </div>
                                     
                                     <div>
                                         <input type="radio" id="third_on" name="rota_type" value="third_on" />
-                                        <label for="third_on" className="ms-2">Third on</label>
+                                        <label htmlFor="third_on" className="ms-2">Third on</label>
                                     </div>
                                 </div>
                                 <FilterTitle className="my-1">Types of shift</FilterTitle>
                                 <div className="d-block">
                                     <div>
                                         <input type="radio" id="day" name="shifts_type" value="day" />
-                                        <label for="day" className="ms-2">Day shifts</label>
+                                        <label htmlFor="day" className="ms-2">Day shifts</label>
                                     </div>
 
                                     <div>
                                         <input type="radio" id="night" name="shifts_type" value="night" />
-                                        <label for="night" className="ms-2">Night shifts</label>
+                                        <label htmlFor="night" className="ms-2">Night shifts</label>
                                     </div>
 
                                     <div>
                                         <input type="radio" id="call" name="shifts_type" value="call" />
-                                        <label for="call">On Call</label>
+                                        <label htmlFor="call">On Call</label>
                                     </div>
                                 </div>
 
@@ -108,22 +108,22 @@ export default function Homgepage(){
                                 <div className="d-block">
                                     <div>
                                         <input type="radio" id="individual" name="member" value="individual" />
-                                        <label for="individual" className="ms-2">Individual</label>
+                                        <label htmlFor="individual" className="ms-2">Individual</label>
                                     </div>
 
                                     <div>
                                         <input type="radio" id="trainees" name="member" value="trainees" />
-                                        <label for="trainees" className="ms-2">Trainees</label>
+                                        <label htmlFor="trainees" className="ms-2">Trainees</label>
                                     </div>
 
                                     <div>
                                         <input type="radio" id="admin" name="member" value="admin" />
-                                        <label for="admin" className="ms-2">Admin view</label>
+                                        <label htmlFor="admin" className="ms-2">Admin view</label>
                                     </div>
 
                                     <div>
                                         <input type="radio" id="all" name="member" value="all" />
-                                        <label for="all" className="ms-2">All</label>
+                                        <label htmlFor="all" className="ms-2">All</label>
                                     </div>
                                 </div>
 

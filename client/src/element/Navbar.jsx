@@ -37,7 +37,7 @@ export default function Navbar(){
             <div className="d-block">
                 <NavBar>
                     <div className="d-flex justify-content-end me-2">
-                        <Button className="m-2">Generate rota</Button>
+                        <Button className="my-2 me-3">Generate rota</Button>
                         <i id="icon_list" className="bi bi-list" style={{fontSize: '40px', cursor: 'pointer', color: '#168082'}} onClick={() => toggleList()}></i>
                     </div>
                 </NavBar>

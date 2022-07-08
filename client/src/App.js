@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import SignIn from './layout/SignIn'
+import SignUp from './layout/SignUp';
 import Homgepage from './layout/Homepage';
 import AccountPage from './layout/AccountPage';
 
@@ -14,6 +15,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={Homgepage} />
           <Route path="/signin" component={SignIn} />
+          <Route path="/signup" component={SignUp} />
           <Route path="/account" component={AccountPage} />
         </Switch>
       </Router>

@@ -4,30 +4,26 @@ import styled from 'styled-components'
 
 import '../css/general.css'
 
-export default function SignIn(){
+export default function SignUp(){
     return (
         <LoginCard>
             <Container>
-                <form id="signin_form" action="#" method="post">
+                <form id="signin_form" action="/" method="post">
                     <div className="mb-4">
-                        <Title className="mb-5">Login</Title>
+                        <Title className="mb-5">Sign up</Title>
 
                         <Label className="mt-2 mb-1" htmlFor="account">Username:</Label>
                         <Input id="account" type="text" className="mb-3"></Input>
 
                         <Label className="mt-2 mb-1" htmlFor="password">Password:</Label>
                         <Input id="password" type="password" className="mb-3"></Input>
+
+                        <Label className="mt-2 mb-1" htmlFor="confirm_password">Confirm Password:</Label>
+                        <Input id="confirm_password" type="password" className="mb-3"></Input>
                     </div>
 
                     <div className="d-flex justify-content-center mb-3">
                         <LoginBtn type="submit">Submit</LoginBtn>
-                    </div>
-                    <div className="d-flex justify-content-center mb-3">
-                        <Link href="#">Forget the password?</Link>
-                    </div>
-
-                    <div>
-                        <p>Don't have an account? <Link href="#">Sign up</Link></p>
                     </div>
                 </form>
             </Container>
@@ -88,4 +84,3 @@ const Link = styled.a`
     text-decoration: none;
     color: #168082;
 `
-

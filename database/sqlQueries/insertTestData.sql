@@ -22,7 +22,10 @@ VALUES
 INSERT INTO leaveRequests (accountId, date, type, note, status)
 VALUES
     (1, '2021-09-07', 0, '', 0),
-    (1, '2021-09-08', 1, '', 1);
+    (1, '2021-09-08', 1, '', 1),
+    (1, '2021-09-09', 2, '', 2),
+    (1, '2021-09-10', 9, '', 0),
+    (1, '2021-09-13', 0, '', 0);
 
 /*accountLeaveRequestRelationShips data*/
 INSERT INTO accountLeaveRequestRelationships (accountId, leaveRequestId, status)
@@ -47,4 +50,8 @@ VALUES
 /*notifications data*/
 INSERT INTO notifications (type, detailId)
 VALUES
-    (0, 1);
+    (0, 1),
+    (0, 2),
+    (0, 3),
+    (0, 4),
+    (0, 5);

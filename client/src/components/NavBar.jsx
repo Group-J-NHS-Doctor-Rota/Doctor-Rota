@@ -37,7 +37,7 @@ export default function NavBar() {
             <div className="d-block">
                 <Navbar>
                     <div className="d-flex justify-content-end me-2">
-                        <RefreshButton className="my-2 me-3">Refresh rota</RefreshButton>
+                        <RefreshButton className="my-2 me-3">Refresh Rota</RefreshButton>
                         <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: '#168082' }} onClick={() => toggleList()}></i>
                     </div>
                 </Navbar>

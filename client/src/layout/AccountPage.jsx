@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
-
 import styled from 'styled-components'
 
-import NavBar from '../components/NavBar'
 import Pagination from '../components/Pagination'
+import ManageModal from '../modals/ManageModal'
+import { useState } from 'react'
 
 export default function AccountPage() {
     const [currentPage, setCurrentPage] = useState(1)
+    const [manage, setManage] = useState(false)
 
     const getContent = number => {
         let content = [];
         for (let i = 0; i < number; i++) {
             content.push(
-                <AccountCard key={i} onClick={() => console.log(1)}>
+                <AccountCard key={i} onClick={() => setManage(true)}>
                     <TableTd>Steven</TableTd>
                     <TableTd>stevenlin3263@gmail.com</TableTd>
                     <TableTd>1.0</TableTd>
@@ -51,6 +51,7 @@ export default function AccountPage() {
                     </tbody>
                 </table>
             </Container>
+            <ManageModal manage={manage} setManage={setManage} />
 
             <Pagination currentPage={currentPage} totalPage={10} setCurrentPage={setCurrentPage} />
         </div>

@@ -74,4 +74,10 @@ public class IndexController {
         return GetOperations.getNotifications(accountId);
     }
 
+    @DeleteMapping(value = "/account/{accountId}", produces = "application/json")
+    public ResponseEntity<String> deleteAccount(@PathVariable int accountId) {
+        //todo check token is valid
+        return DeleteOperations.deleteAccount(accountId);
+    }
+
 }

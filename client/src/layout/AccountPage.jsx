@@ -35,7 +35,7 @@ export default function AccountPage() {
                             <Input />
                         </div>
                     </SearchRegion>
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit">Search</Button>
                 </form>
 
                 <table style={{ width: '100%' }}>

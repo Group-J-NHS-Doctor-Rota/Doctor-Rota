@@ -67,7 +67,7 @@ export default function NavBar() {
                                 </div>
 
                                 <div className="d-flex align-items-center" onClick={() => navigate('account')}>
-                                    <p className="mb-0">Manage accounts</p>
+                                    <p className="mb-0">Manage Accounts</p>
                                 </div>
                             </NavBarItem>
 

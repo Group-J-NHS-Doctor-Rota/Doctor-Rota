@@ -10,8 +10,8 @@ import styled from 'styled-components'
 // https://date.nager.at/swagger/index.html
 // https://day.js.org/docs/en/plugin/dev-helper
 
-export default function CalendarTable({ year, month }){
-    const { height, width } = useWindowDimensions();
+export default function CalendarTable({ year, month }) {
+    const { width } = useWindowDimensions();
 
     let isLeapYear = require('dayjs/plugin/isLeapYear')
     dayjs.extend(isLeapYear)
@@ -25,35 +25,35 @@ export default function CalendarTable({ year, month }){
 
     useEffect(() => {
         fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/GB`)
-          .then(response => response.json())
-          .then(data => {
-            const holidays = data.map((holiday) => ({
-                day: getDate(holiday.date),
-                month: getMonth(holiday.date),
-                name: holiday.localName
-            }))
+            .then(response => response.json())
+            .then(data => {
+                const holidays = data.map((holiday) => ({
+                    day: getDate(holiday.date),
+                    month: getMonth(holiday.date),
+                    name: holiday.localName
+                }))
 
-            setBankHolidays(holidays)
-        })
+                setBankHolidays(holidays)
+            })
     }, [year])
 
-    function getMonth(date){
-        if(date.slice(5, 7)[0] == 0){
+    function getMonth(date) {
+        if (date.slice(5, 7)[0] === 0) {
             return date.slice(6, 7)
         }
         return date.slice(5, 7)
     }
-    
-    function getDate(date){
-        if(date.slice(8, 10)[0] == 0){
+
+    function getDate(date) {
+        if (date.slice(8, 10)[0] === 0) {
             return date.slice(9, 10)
         }
         return date.slice(8, 10)
     }
 
-    function getHoliday(day){
-        for(let i = 0; i < bankHolidays.length; i++){
-            if(bankHolidays[i].day == day && bankHolidays[i].month == month){
+    function getHoliday(day) {
+        for (let i = 0; i < bankHolidays.length; i++) {
+            if (bankHolidays[i].day === day && bankHolidays[i].month === month) {
                 return bankHolidays[i].name
             }
         }
@@ -63,50 +63,49 @@ export default function CalendarTable({ year, month }){
     const getContent = number => {
         // maybe number is not int
         let content = [];
-        for (let i = 1; i < number+1; i++) {
+        for (let i = 1; i < number + 1; i++) {
             let result = getHoliday(i)
             content.push(
-                result == false &&
-                <GridItems key={i}>
-                    <h3 className="mb-1 mx-2">{i}</h3>
-                    <CalendarDay />
-                </GridItems>
-                || result !== false &&
-                <GridItems key={i}>
-                    <div className="d-flex">
+                ((result === false) &&
+                    (<GridItems key={i}>
                         <h3 className="mb-1 mx-2">{i}</h3>
-                        {
-                            result.length > 20 && width >= 1200 &&
-                            <h3 className="mb-1 mx-1">{result.slice(0, 18)} ...</h3>
-                            ||
-                            result.length > 14 && width >= 1100 && width < 1200 &&
-                            <h3 className="mb-1 mx-1">{result.slice(0, 12)} ...</h3>
-                            ||
-                            result.length > 8 && width >= 915 && width < 1200 &&
-                            <h3 className="mb-1 mx-1">{result.slice(0, 8)} ...</h3>
-                            || 
-                            <h3 className="mb-1 mx-1">{result}</h3>
-
-                        }
-                    </div>
-                    <CalendarDay />
-                </GridItems>
+                        <CalendarDay />
+                    </GridItems>))
+                || ((result !== false) &&
+                    (<GridItems key={i}>
+                        <div className="d-flex">
+                            <h3 className="mb-1 mx-2">{i}</h3>
+                            {
+                                (result.length > 20 && width >= 1200 &&
+                                    <h3 className="mb-1 mx-1">{result.slice(0, 18)} ...</h3>)
+                                ||
+                                (result.length > 14 && width >= 1100 && width < 1200 &&
+                                    <h3 className="mb-1 mx-1">{result.slice(0, 12)} ...</h3>)
+                                ||
+                                (result.length > 8 && width >= 915 && width < 1200 &&
+                                    <h3 className="mb-1 mx-1">{result.slice(0, 8)} ...</h3>)
+                                ||
+                                (<h3 className="mb-1 mx-1">{result}</h3>)
+                            }
+                        </div>
+                        <CalendarDay />
+                    </GridItems>))
             )
         }
         return content;
     }
 
     return (
-        <Table>
+        <Table className='mb-5'>
             <CalendarGrid>
-                {   
-                    bigMonth.includes(month) && getContent(31)
+                {
+                    (bigMonth.includes(month) && getContent(31))
                     ||
-                    smallMonth.includes(month) && getContent(30)
+                    (smallMonth.includes(month) && getContent(30))
                     ||
-                    month == 2 && isLeap == true && getContent(29)
+                    (month === 2 && isLeap === true && getContent(29))
                     ||
-                    month == 2 && isLeap == false && getContent(28)
+                    (month === 2 && isLeap === false && getContent(28))
                 }
             </CalendarGrid>
         </Table>

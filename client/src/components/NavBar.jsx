@@ -36,15 +36,20 @@ export default function NavBar() {
         <>
             <div className="d-block">
                 <Navbar>
-                    <div className="d-flex justify-content-end me-2">
-                        <RefreshButton className="my-2 me-3">Refresh rota</RefreshButton>
-                        <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: '#168082' }} onClick={() => toggleList()}></i>
+                    <div className='d-flex justify-content-between'>
+                        <div onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+                            <Logo src='https://www.england.nhs.uk/nhsidentity/wp-content/themes/nhsengland-identity/templates/assets/img/global/nhs-logo.svg' />
+                        </div>
+                        <div className="d-flex justify-content-end me-2">
+                            <RefreshButton className="my-2 me-3">Refresh Rota</RefreshButton>
+                            <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: '#168082' }} onClick={() => toggleList()}></i>
+                        </div>
                     </div>
                 </Navbar>
 
                 {
                     open &&
-                    <div className="d-flex justify-content-end">
+                    (<div className="d-flex justify-content-end">
                         <NavBarList className="me-2 mt-2 p-3">
                             <NavBarItem className="d-flex my-2" onClick={() => toggleList("profile")}>
                                 <div className="d-flex align-middle mx-2">
@@ -62,7 +67,7 @@ export default function NavBar() {
                                 </div>
 
                                 <div className="d-flex align-items-center" onClick={() => navigate('account')}>
-                                    <p className="mb-0">Manage accounts</p>
+                                    <p className="mb-0">Manage Accounts</p>
                                 </div>
                             </NavBarItem>
 
@@ -98,7 +103,7 @@ export default function NavBar() {
                                 </div>
                             </NavBarItem>
                         </NavBarList>
-                    </div>
+                    </div>)
                 }
             </div>
 
@@ -150,5 +155,9 @@ const RefreshButton = styled.button`
         font-size: 16px;
         min-width: 80px;
     }
+`
+
+const Logo = styled.img`
+    height: 100%;
 `
 

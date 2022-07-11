@@ -5,9 +5,9 @@ import { Modal, Form } from 'react-bootstrap'
 import '../css/general.css'
 import styled from 'styled-components'
 
-export default function RequestLeaveModal({ leave, setLeave }){
+export default function RequestLeaveModal({ leave, setLeave }) {
     const [type, setType] = useState('single')
-    function getValue(e){
+    function getValue(e) {
         setType(e.target.value)
     }
     return (
@@ -18,20 +18,21 @@ export default function RequestLeaveModal({ leave, setLeave }){
 
                     <Form action="#">
                         <div className="d-block align-items-center my-3">
-                            <ColumnName className="mb-2">The type of leave</ColumnName>
+                            <ColumnName className="mb-2">Type of Leave</ColumnName>
                             <Form.Select aria-label="Default select example" className='drop-down'>
-                                <option>---please select---</option>
+                                <option default>---please select---</option>
                                 <option value="Annual Leave">Annual Leave</option>
                                 <option value="Study Leave">Study Leave</option>
+                                <option value="Study Leave">Not On Call</option>
                                 <option value="Others">Others(specify below)</option>
                             </Form.Select>
                         </div>
 
                         <div className="d-block align-items-center my-3">
-                            <ColumnName className="mb-2">Single day / Multiple days</ColumnName>
+                            <ColumnName className="mb-2">Day Type</ColumnName>
                             <div className="d-flex align-items-center">
                                 <div className="me-3">
-                                    <input type="radio" id="single" name="type" value="single" onClick={(e) => getValue(e)} defaultChecked/>
+                                    <input type="radio" id="single" name="type" value="single" onClick={(e) => getValue(e)} defaultChecked />
                                     <label htmlFor="single" className="ms-2">Single day</label>
                                 </div>
 
@@ -43,63 +44,63 @@ export default function RequestLeaveModal({ leave, setLeave }){
                         </div>
 
                         {
-                            type == "single" &&
-                            <div className="d-block">
-                                <ColumnName className="mb-2">The start day</ColumnName>
+                            (type === "single" &&
+                                (<div className="d-block">
+                                    <ColumnName className="mb-2">Start Date</ColumnName>
 
-                                <div className="d-flex">
-                                    <Form.Select className="p-2 me-1" style={{width: '30%'}} name="single_half_full" id="half_full">
-                                        <option value="single_am">am</option>
-                                        <option value="single_pm">pm</option>
-                                        <option value="single_full">full</option>
-                                    </Form.Select>
+                                    <div className="d-flex">
+                                        <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="single_half_full" id="half_full">
+                                            <option value="single_am">a.m.</option>
+                                            <option value="single_pm">p.m.</option>
+                                            <option value="single_full" selected>Full Day</option>
+                                        </Form.Select>
 
-                                    <Form.Control type='date' className="w-100 p-2 ms-1" />
-                                </div>
-                            </div>
+                                        <Form.Control type='date' className="w-100 p-2 ms-1" />
+                                    </div>
+                                </div>))
                             ||
-                            type == "multiple" &&
-                            <div className="d-block">
-                                <ColumnName className="mb-2">The start day</ColumnName>
+                            (type === "multiple" &&
+                                (<div className="d-block">
+                                    <ColumnName className="mb-2">Start Date</ColumnName>
 
-                                <div className="d-flex">
-                                    <Form.Select className="p-2 me-1" style={{width: '30%'}} name="multiple_start_half_full" id="half_full">
-                                        <option value="multiple_start_am">am</option>
-                                        <option value="multiple_start_pm">pm</option>
-                                        <option value="multiple_start_full">full</option>
-                                    </Form.Select>
+                                    <div className="d-flex">
+                                        <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_start_half_full" id="half_full">
+                                            <option value="multiple_start_am">a.m.</option>
+                                            <option value="multiple_start_pm">p.m.</option>
+                                            <option value="multiple_start_full" selected>Full Day</option>
+                                        </Form.Select>
 
-                                    <Form.Control type='date' className="w-100 p-2 ms-1"/>
-                                </div>
+                                        <Form.Control type='date' className="w-100 p-2 ms-1" />
+                                    </div>
 
-                                <ColumnName className="my-2">The end day</ColumnName>
+                                    <ColumnName className="my-2">End Date</ColumnName>
 
-                                <div className="d-flex">
-                                    <Form.Select className="p-2 me-1" style={{width: '30%'}} name="multiple_end_half_full" id="half_full">
-                                        <option value="multiple_end_am">am</option>
-                                        <option value="multiple_end_pm">pm</option>
-                                        <option value="multiple_end_full">full</option>
-                                    </Form.Select>
+                                    <div className="d-flex">
+                                        <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_end_half_full" id="half_full">
+                                            <option value="multiple_end_am">a.m.</option>
+                                            <option value="multiple_end_pm">p.m.</option>
+                                            <option value="multiple_end_full" selected>Full Day</option>
+                                        </Form.Select>
 
-                                    <Form.Control type='date' className="w-100 p-2 ms-1"/>
-                                </div>
-                            </div>
+                                        <Form.Control type='date' className="w-100 p-2 ms-1" />
+                                    </div>
+                                </div>))
                         }
 
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <ColumnName className="my-3">Comments</ColumnName>
                             <Form.Control as="textarea" rows={5}
                                 placeholder='This field is required, please include the date, time, and reason'
-                             />
+                            />
                         </Form.Group>
 
                         <div className="d-flex justify-content-center my-3">
                             <CloseButton className="m-2" onClick={() => setLeave(false)}>
-                                Close
+                                Cancel
                             </CloseButton>
 
                             <ConfirmButton className="m-2" onClick={() => setLeave(false)}>
-                                Confirm
+                                Submit
                             </ConfirmButton>
                         </div>
                     </Form>
@@ -159,12 +160,6 @@ const ConfirmButton = styled.button`
 const ColumnName = styled.h3`
     font-size: 16px;
     font-weight: bold;
-    color: #168082;
-    margin-bottom: 0px;
-`
-
-const Column = styled.p`
-    font-size: 16px;
     color: #168082;
     margin-bottom: 0px;
 `

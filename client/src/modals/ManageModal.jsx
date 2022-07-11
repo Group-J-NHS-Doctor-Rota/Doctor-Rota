@@ -3,9 +3,10 @@ import { Modal, Row, Col } from "react-bootstrap"
 import { useState } from "react"
 
 const ManageModal = ({ manage, setManage }) => {
-    const [edit, setEdit] = useState(true)
+    const [disable, setDisable] = useState(true)
 
-    const toggleEdit = () => setEdit(!edit)
+    const toggleDisable = () => setDisable(!disable)
+    const handleSubmit = e => e.preventDefault()
 
     return (
         <>
@@ -16,7 +17,7 @@ const ManageModal = ({ manage, setManage }) => {
                         <ModalTitle className="my-5">
                             Dennis
                         </ModalTitle>
-                        <EditIcon onClick={toggleEdit}
+                        <EditIcon onClick={toggleDisable}
                         ><i className="bi bi-pencil-square" /></EditIcon>
                     </div>
                     <form action="#">
@@ -29,7 +30,7 @@ const ManageModal = ({ manage, setManage }) => {
                                 {/* right */}
                                 <Col xs={12} md={6}>
                                     <input type="text" placeholder="28 days/annum"
-                                        className="mt-0" id="field-1" disabled={edit}
+                                        className="mt-0" id="field-1" disabled={disable}
                                         autoFocus />
                                 </Col>
                             </Row>
@@ -40,7 +41,7 @@ const ManageModal = ({ manage, setManage }) => {
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <input type="text" placeholder="30 days/annum"
-                                        className="mt-2" id="field-2" disabled={edit} />
+                                        className="mt-2" id="field-2" disabled={disable} />
                                 </Col>
                             </Row>
 
@@ -50,7 +51,7 @@ const ManageModal = ({ manage, setManage }) => {
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <input type="text" placeholder="45 hours/week"
-                                        className="mt-2" id="field-3" disabled={edit} />
+                                        className="mt-2" id="field-3" disabled={disable} />
                                 </Col>
                             </Row>
 
@@ -59,7 +60,7 @@ const ManageModal = ({ manage, setManage }) => {
                                     <Label for="field-4">Level</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <Select className="mt-2" id="field-4" disabled={edit}>
+                                    <Select className="mt-2" id="field-4" disabled={disable}>
                                         <option value="default_level" selected>-Please select-</option>
                                         <option value="junior">Junior</option>
                                         <option value="senior">Senior</option>
@@ -73,7 +74,7 @@ const ManageModal = ({ manage, setManage }) => {
                                     <Label for="field-5">Job Type</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <Select className="mt-2" id="field-5" disabled={edit}>
+                                    <Select className="mt-2" id="field-5" disabled={disable}>
                                         <option value="default_type" selected>-Please select-</option>
                                         <option value="fulltime">Full-Time</option>
                                         <option value="parttime">Part-Time</option>
@@ -86,7 +87,7 @@ const ManageModal = ({ manage, setManage }) => {
                                     <Label for="field-6">Rota Type</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <Select className="mt-2" id="field-6" disabled={edit}>
+                                    <Select className="mt-2" id="field-6" disabled={disable}>
                                         <option value="default_rota" selected>-Please select-</option>
                                         <option value="first_on">First On</option>
                                         <option value="obstetric">Obstetric</option>
@@ -99,11 +100,17 @@ const ManageModal = ({ manage, setManage }) => {
                     </form>
 
                     <div className="d-flex justify-content-center my-3">
-                        <CloseButton className="m-2" onClick={() => setManage(false)}>
+                        <CloseButton className="m-2" onClick={() => {
+                            setManage(false)
+                            setDisable(true)
+                        }}>
                             Close
                         </CloseButton>
 
-                        <ConfirmButton className="m-2" onClick={() => setManage(false)}>
+                        <ConfirmButton className="m-2" onClick={() => {
+                            setManage(false)
+                            handleSubmit()
+                        }}>
                             Update
                         </ConfirmButton>
                     </div>
@@ -168,21 +175,6 @@ const Label = styled.label`
     font-weight: bold;
     color: #168082;
     margin: 13px 0;
-`
-
-const RowInfo = styled.p`
-    font-size: 18px;
-    color: #168082;
-    margin-bottom: 0px;
-`
-
-const Input = styled.input`
-    font-size: 18px;
-    width: 100%;
-    height: 36px;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `
 
 const EditIcon = styled.div`

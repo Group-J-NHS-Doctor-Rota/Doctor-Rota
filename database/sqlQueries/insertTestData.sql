@@ -25,7 +25,7 @@ VALUES
     (1, '2021-09-08', 1, '', 1),
     (1, '2021-09-09', 2, '', 2),
     (1, '2021-09-10', 9, '', 0),
-    (1, '2021-09-13', 0, '', 0);
+    (2, '2021-09-13', 0, '', 0);
 
 /*accountLeaveRequestRelationShips data*/
 INSERT INTO accountLeaveRequestRelationships (accountId, leaveRequestId, status)

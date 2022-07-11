@@ -12,7 +12,7 @@ const FormInput = (props) => {
 
   return (
     <div className="formInput">
-      <Label className="mt-2 mb-1">{label}</Label>
+      <Label className="mt-2 mb-0">{label}</Label>
       <input
         className="mb-2"
         {...inputProps}
@@ -31,7 +31,7 @@ const FormInput = (props) => {
 export default FormInput;
 
 const Label = styled.label`
-    font-size: 16px;
+    font-size: 18px;
     color: #168082;
     font-weight: bold;
 `

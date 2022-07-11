@@ -73,9 +73,13 @@ export default function SignUp() {
     return (
         <LoginCard>
             <Container>
+                <div className="d-flex justify-content-between">
+                    <Title>Sign up</Title>
+                    <img src="https://www.nbt.nhs.uk/themes/custom/nbt/logo.png"
+                        alt="logo" width="120px" />
+                </div>
                 <form id="signin_form" action="/" method="post" onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <Title className="mb-5">Sign up</Title>
 
                         {inputs.map((input) => (
                             <FormInput
@@ -98,9 +102,10 @@ export default function SignUp() {
 }
 
 const LoginCard = styled.div`
-    margin: 120px auto 0 auto;
+    margin: 90px auto 0 auto;
     max-width: 468px;
-    min-height: 475px;
+    min-height: 525px;
+    padding: 0 0 25px 0;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 5px;
     background-color: #EDFCF9;

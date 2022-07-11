@@ -1,5 +1,5 @@
-.modal-content{
-    background-color: #EDFCF9 !important; 
+.modal-content {
+    background-color: #EDFCF9 !important;
     border-radius: 5px;
 
 }
@@ -29,9 +29,12 @@
     border-radius: 5px;
 }
 
-input[type="text"], input[type="password"], input[type="email"]{
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    height: 36px !important;
     padding: 12px;
-    margin: 10px 0px;
+    margin: 5px 0px;
     font-size: 18px;
     width: 100%;
     border: none;
@@ -39,28 +42,28 @@ input[type="text"], input[type="password"], input[type="email"]{
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-label{
+label {
     font-size: 14px;
 }
 
-span{
+span {
     font-size: 12px;
     padding: 3px;
     color: red;
     display: none;
 }
 
-input:invalid[focused="true"]{
+input:invalid[focused="true"] {
     border: 1px solid red;
 }
 
-input:invalid[focused="true"] ~ span{
+input:invalid[focused="true"]~span {
     display: block;
 }
 
-@media (max-width: 575px){
+@media (max-width: 575px) {
     .modal-content {
-        margin:0 auto;
+        margin: 0 auto;
         width: 80% !important;
     }
 

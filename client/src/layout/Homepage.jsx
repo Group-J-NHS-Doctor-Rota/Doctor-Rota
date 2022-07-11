@@ -7,59 +7,58 @@ import FilterCard from '../components/FilterCard'
 
 import styled from 'styled-components'
 
-export default function Homgepage(){
+export default function Homgepage() {
     const today = new Date()
 
     const [year, setYear] = useState(today.getFullYear())
-    const [month, setMonth] = useState(today.getMonth()+1)
+    const [month, setMonth] = useState(today.getMonth() + 1)
     const [open, setOpen] = useState(false)
-    
-    function handleNextMonth(){
-        if(month == 12){
+
+    function handleNextMonth() {
+        if (month == 12) {
             setMonth(1)
-            setYear(year+1)
-        }else{
-            setMonth(month+1)
+            setYear(year + 1)
+        } else {
+            setMonth(month + 1)
         }
     }
 
-    function handlePreviousMonth(){
-        if(month == 1){
+    function handlePreviousMonth() {
+        if (month == 1) {
             setMonth(12)
-            setYear(year-1)
-        }else{
-            setMonth(month-1)
+            setYear(year - 1)
+        } else {
+            setMonth(month - 1)
         }
     }
 
     return (
         <div>
-            <NavBar />
 
             <Container>
                 <DataBar />
 
                 {/* Switch Calendar */}
-                <div className="d-flex justify-content-between align-items-center mt-3" style={{position: 'relative'}}>
+                <div className="d-flex justify-content-between align-items-center mt-3" style={{ position: 'relative' }}>
                     <div className="d-flex align-items-center">
                         <div className="m-1">
-                            <Icon className="bi bi-caret-left-fill" style={{cursor: 'pointer'}} onClick={() => handlePreviousMonth()}></Icon>
+                            <Icon className="bi bi-caret-left-fill" style={{ cursor: 'pointer' }} onClick={() => handlePreviousMonth()}></Icon>
                         </div>
                         <div className="m-1">
                             <p className="mb-0">{year}/{month}</p>
                         </div>
                         <div className="m-1">
-                            <Icon className="bi bi-caret-right-fill" style={{cursor: 'pointer'}} onClick={() => handleNextMonth()}></Icon>
+                            <Icon className="bi bi-caret-right-fill" style={{ cursor: 'pointer' }} onClick={() => handleNextMonth()}></Icon>
                         </div>
                     </div>
 
-                    <div style={{fontSize: '24px'}}>
-                        <Icon className="bi bi-funnel-fill" style={{cursor: 'pointer'}} onClick={() => setOpen(!open)}></Icon>
+                    <div style={{ fontSize: '24px' }}>
+                        <Icon className="bi bi-funnel-fill" style={{ cursor: 'pointer' }} onClick={() => setOpen(!open)}></Icon>
                     </div>
                 </div>
 
                 {
-                    open && <FilterCard setOpen={setOpen}/>
+                    open && <FilterCard setOpen={setOpen} />
                     // <div className="d-flex justify-content-end">
                     //     <FilterCard>
                     //         <form action="#">
@@ -79,7 +78,7 @@ export default function Homgepage(){
                     //                     <input type="radio" id="second_on" name="rota_type" value="second_on" />
                     //                     <label htmlFor="second_on" className="ms-2">Second on</label>
                     //                 </div>
-                                    
+
                     //                 <div className="d-flex align-items-center my-1">
                     //                     <input type="radio" id="third_on" name="rota_type" value="third_on" />
                     //                     <label htmlFor="third_on" className="ms-2">Third on</label>
@@ -143,7 +142,7 @@ export default function Homgepage(){
                     <div className="d-flex justify-content-center"><h3 className="fs-5">Sat</h3></div>
                     <div className="d-flex justify-content-center"><h3 className="fs-5">Sun</h3></div>
                 </Week>
-                
+
                 <CalendarTable year={year} month={month} />
             </Container>
         </div>

@@ -1,63 +1,67 @@
-import React from 'react'
+import { useState } from 'react'
+import { Modal } from 'react-bootstrap'
+// import FormInput from '../components/FormInput'
 
-import { Modal, Form } from 'react-bootstrap'
-
-import '../css/general.css'
 import styled from 'styled-components'
 
-export default function ProfileModal({profile, setProfile}){
+export default function ProfileModal({ profile, setProfile }) {
+    const [focused, setFocused] = useState(false)
+    const handleFocus = () => setFocused(true)
+    const handleSubmit = e => e.preventDefault()
 
     return (
         <>
             <Modal show={profile}>
                 <ModalContainer>
                     <ModalTitle className="my-5">Profile</ModalTitle>
+                    <form id="profile" action="#" onSubmit={handleSubmit}>
+                        <div className="d-block">
 
-                    <Form action="#">
-                        <div className="d-flex align-items-center my-3">
-                            <div className="d-flex">
-                                <ColumnName className="me-3">Name:</ColumnName>
+                            <div className="d-flex align-items-center my-3">
+                                <Label className="d-flex me-3">
+                                    <i className="bi bi-person-fill" style={{ fontSize: '30px' }} />
+                                </Label>
+                                <RowInfo className="d-flex mb-0">Dennis Liú</RowInfo>
                             </div>
 
-                            <div className="d-flex">
-                                <Column className="mb-0">Steven Lin</Column>
-                            </div>
-                        </div>
-
-                        <div className="d-flex align-items-center my-3">
-                            <div className="d-flex">
-                                <ColumnName className="me-3">Staff ID:</ColumnName>
+                            <div className="d-flex align-items-center my-3">
+                                <Label className="d-flex me-3">
+                                    <i className="bi bi-person-badge-fill" style={{ fontSize: '30px' }} />
+                                </Label>
+                                <RowInfo className="d-flex mb-0">GB12138</RowInfo>
                             </div>
 
-                            <div className="d-flex">
-                                <Column className="mb-0">GB12138</Column>
+                            <div className='d-block'>
+                                <div className="d-flex align-items-center my-3">
+                                    <Label className="d-flex me-3">
+                                        <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
+                                    </Label>
+                                    <Input type="email" placeholder="name@nbt.nhs.uk"
+                                        onBlur={e => { e.target.value != "" && handleFocus() }} />
+                                    <span className='errmsg'>
+                                        Invalid Email (This field is optional)
+                                    </span>
+                                </div>
+                                <span className='errmsg mt-0 ms-5'>
+                                    Invalid Email (This field is optional)
+                                </span>
+                            </div>
+                            <div className="d-flex align-items-center my-3">
+                                <Label className="d-flex me-3">
+                                    <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
+                                </Label>
+                                <Input type="tel" placeholder="+44 XXXXXXXXXX" />
+                            </div>
+                            <div className="d-flex justify-content-center my-5">
+                                <CloseButton className="m-2" onClick={() => setProfile(false)}>
+                                    Close
+                                </CloseButton>
+                                <ConfirmButton className="m-2" onClick={() => setProfile(false)}>
+                                    Update
+                                </ConfirmButton>
                             </div>
                         </div>
-
-                        <div className="d-flex align-items-center my-3">
-                            <Label className="d-flex">
-                                <ColumnName className="me-3">Department:</ColumnName>
-                            </Label>
-                            <Input type="text" placeholder="Anaesthesia Department"/>
-                        </div>
-
-                        <div className="d-flex align-items-center my-3">
-                            <Label className="d-flex">
-                                <ColumnName className="me-3">Email:</ColumnName>
-                            </Label>
-                            <Input type="email" placeholder="email@nbt.nhs.uk"/>
-                        </div>
-
-                        <div className="d-flex justify-content-center my-3">
-                            <CloseButton className="m-2" onClick={() => setProfile(false)}>
-                                Close
-                            </CloseButton>
-
-                            <ConfirmButton className="m-2" onClick={() => setProfile(false)}>
-                                Update
-                            </ConfirmButton>
-                        </div>    
-                    </Form>
+                    </form>
                 </ModalContainer>
             </Modal>
         </>
@@ -111,24 +115,16 @@ const ConfirmButton = styled.button`
     }
 `
 
-const ColumnName = styled.h3`
-    font-size: 16px;
-    font-weight: bold;
-    color: #168082;
-    margin-bottom: 0px;
-`
-
-const Column = styled.p`
-    font-size: 16px;
-    color: #168082;
-    margin-bottom: 0px;
-`
-
-
 const Label = styled.label`
     font-size: 25px;
     color: #168082;
     font-weight: bold;
+`
+
+const RowInfo = styled.p`
+    font-size: 18px;
+    color: #168082;
+    margin-bottom: 0px;
 `
 
 const Input = styled.input`

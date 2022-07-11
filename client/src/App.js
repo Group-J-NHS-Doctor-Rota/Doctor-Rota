@@ -1,23 +1,34 @@
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+// This app uses es6 new features
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import SignInPage from './layout/SignInPage'
+// install react-router-dom package 6.3.0
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from 'react-router-dom';
+
+import SignInPage from './layout/SignInPage';
 import SignUpPage from './layout/SignUpPage';
-import Homgepage from './layout/Homepage';
+import Homepage from './layout/Homepage';
 import AccountPage from './layout/AccountPage';
+import NotificationPage from './layout/NotificationPage';
+import NavBar from './components/NavBar';
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import "bootstrap-icons/font/bootstrap-icons.css";
-
-function App() {
+const App = () => {
   return (
     <div>
       <Router>
-        <Switch>
-          <Route exact path="/" component={Homgepage} />
-          <Route path="/signin" component={SignInPage} />
-          <Route path="/signup" component={SignUpPage} />
-          <Route path="/account" component={AccountPage} />
-        </Switch>
+        <Routes>
+          <Route path="/" element={<NavBar />}>
+            <Route index path="/" element={<Homepage />} />
+            <Route path="account" element={<AccountPage />} />
+            <Route path="notification" element={<NotificationPage />} />
+          </Route>
+          <Route path="signin" element={<SignInPage />} />
+          <Route path="signup" element={<SignUpPage />} />
+        </Routes>
       </Router>
     </div>
   );

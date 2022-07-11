@@ -2,10 +2,14 @@ import React from 'react'
 
 import { Modal } from 'react-bootstrap'
 
+import { useNavigate } from 'react-router-dom';
+
 import '../css/general.css'
 import styled from 'styled-components'
 
-export default function LogoutModal({ logout, setLogout }){
+export default function LogoutModal({ logout, setLogout }) {
+
+    const navigate = useNavigate()
 
     return (
         <>
@@ -13,13 +17,16 @@ export default function LogoutModal({ logout, setLogout }){
                 <div className="d-flex justify-content-center mb-4 mt-5">
                     <LogoutWarning>Do you want to log out?</LogoutWarning>
                 </div>
-                
+
                 <div className="d-flex justify-content-center my-3">
                     <CloseButton className="m-2" onClick={() => setLogout(false)}>
                         Close
                     </CloseButton>
 
-                    <ConfirmButton className="m-2" onClick={() => setLogout(false)}>
+                    <ConfirmButton className="m-2" onClick={() => {
+                        setLogout(false)
+                        navigate('signin')
+                    }}>
                         Confirm
                     </ConfirmButton>
                 </div>

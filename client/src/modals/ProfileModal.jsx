@@ -1,26 +1,32 @@
-import { Modal, Form } from "react-bootstrap"
+// import { useState } from 'react'
 
-import { useNavigate } from "react-router-dom";
+import { Modal, Form } from 'react-bootstrap'
 
-import styled from "styled-components";
+import '../css/general.css'
+import styled from 'styled-components'
 
-const ProfileModal = ({ profile, setProfile }) => {
-    const navigate = useNavigate();
+export default function ProfileModal({ profile, setProfile }) {
+
     return (
         <>
-            <Modal show={profile} style->
+            <Modal show={profile}>
                 <ModalContainer>
                     <ModalTitle className="my-5">Profile</ModalTitle>
                     <form id="profile" action="#">
                         <div className="d-block">
-                            {/* one line of info */}
+
                             <div className="d-flex align-items-center my-3">
-                                {/* icon */}
                                 <Label className="d-flex me-3">
                                     <i className="bi bi-person-fill" style={{ fontSize: '30px' }} />
                                 </Label>
-                                {/* detail */}
                                 <RowInfo className="d-flex mb-0">Dennis Liú</RowInfo>
+                            </div>
+
+                            <div className="d-flex align-items-center my-3">
+                                <Label className="d-flex me-3">
+                                    <i className="bi bi-person-badge-fill" style={{ fontSize: '30px' }} />
+                                </Label>
+                                <RowInfo className="d-flex mb-0">GB12138</RowInfo>
                             </div>
 
                             <div className="d-flex align-items-center my-3">
@@ -46,18 +52,14 @@ const ProfileModal = ({ profile, setProfile }) => {
                             </div>
                         </div>
                     </form>
-
                 </ModalContainer>
             </Modal>
         </>
     )
-
 }
 
-export default ProfileModal;
-
 const ModalContainer = styled.div`
-    min-height: 475px;
+    min-height: 525px;
     width: 80%;
     margin: 0 auto;
 `
@@ -67,7 +69,7 @@ const ModalTitle = styled.h1`
     font-weight: bold;
     color: #168082;
 
-    @media(max-width:575px) {
+    @media (max-width: 575px){
         font-size: 24px;
     }
 `
@@ -75,14 +77,14 @@ const ModalTitle = styled.h1`
 const CloseButton = styled.button`
     min-width: 100px;
     font-size: 20px;
-    background-color: #fff;
+    background-color: white;
     border-radius: 5px;
     border: none;
     color: #168082;
     font-weight: bold;
     padding: 5px 10px;
 
-    @media (max-width: 575px) {
+    @media (max-width: 575px){
         font-size: 16px;
         min-width: 80px;
     }
@@ -98,11 +100,25 @@ const ConfirmButton = styled.button`
     font-weight: bold;
     padding: 5px 10px;
 
-    @media (max-width: 575px) {
+    @media (max-width: 575px){
         font-size: 16px;
         min-width: 80px;
     }
 `
+
+const ColumnName = styled.h3`
+    font-size: 16px;
+    font-weight: bold;
+    color: #168082;
+    margin-bottom: 0px;
+`
+
+const Column = styled.p`
+    font-size: 16px;
+    color: #168082;
+    margin-bottom: 0px;
+`
+
 
 const Label = styled.label`
     font-size: 25px;
@@ -110,8 +126,8 @@ const Label = styled.label`
     font-weight: bold;
 `
 
-const RowInfo = styled.h3`
-    font-size: 20px;
+const RowInfo = styled.p`
+    font-size: 18px;
     color: #168082;
     margin-bottom: 0px;
 `
@@ -124,13 +140,3 @@ const Input = styled.input`
     border-radius: 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `
-
-// const ProfileButton = styled.button`
-//     padding: 5px 25px;
-//     color: white;
-//     font-size: 18px;
-//     font-weight: bold;
-//     background-color: #168082;
-//     border: none;
-//     border-radius: 5px;
-// `

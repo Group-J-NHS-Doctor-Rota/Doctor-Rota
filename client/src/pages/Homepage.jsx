@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 
 import DataBar from '../components/DataBar'
 import CalendarTable from '../components/CalendarTable'
-
 import styled from 'styled-components'
 
 const Homepage = () => {

@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 // useNavigate instead of useHistory
 import { Outlet, useNavigate } from 'react-router-dom'
-
+import ManageModal from '../modals/ManageModal'
 import LogoutModal from '../modals/LogoutModal'
 import ProfileModal from '../modals/ProfileModal'
 import RequestLeaveModal from '../modals/RequestLeaveModal'
@@ -14,6 +14,7 @@ const NavBar = () => {
     const [profile, setProfile] = useState(false)
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
+    const [manage, setManage] = useState(false)
 
     const toggleBarList = (select) => {
         setBarOpen(!barOpen) // bar toggle logic
@@ -35,8 +36,9 @@ const NavBar = () => {
                     {/* NHS logo goes here*/}
                     {/* bar list */}
                     <div className='d-flex justify-content-end me-2'>
-                        <GenerateButton className='my-2 me-3' onClick={
-                            () => navigate('')}>Home</GenerateButton>
+                        {/* <GenerateButton className='my-2 me-3' onClick={
+                            () => navigate('')}>Home</GenerateButton> */}
+                        <GenerateButton className='my-2 me-3' onClick={() => setManage(true)}>Manage</GenerateButton>
                         <GenerateButton className='my-2 me-3'>Generate Rota</GenerateButton>
                         <i id="icon-list" class="bi bi-list"
                             style={{
@@ -119,6 +121,7 @@ const NavBar = () => {
                 <LogoutModal logout={logout} setLogout={setLogout} />
                 <ProfileModal profile={profile} setProfile={setProfile} />
                 <RequestLeaveModal leave={leave} setLeave={setLeave} />
+                <ManageModal manage={manage} setManage={setManage} />
 
                 {/* stick the navbar at the top*/}
                 <Outlet />

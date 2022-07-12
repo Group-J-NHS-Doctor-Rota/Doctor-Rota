@@ -80,4 +80,12 @@ public class IndexController {
         return DeleteOperations.deleteAccount(accountId);
     }
 
+    @PatchMapping(value = "/account/{accountId}", produces = "application/json")
+    // Optional request parameters can't be primitives and no null value
+    // Better to have them as String and convert later
+    public ResponseEntity<String> patchAccount(@PathVariable int accountId, @RequestParam(required = false) String annualLeave) {
+        //todo check token is valid
+        return ResponseEntity.status(HttpStatus.OK).body(""+annualLeave+"\n");
+    }
+
 }

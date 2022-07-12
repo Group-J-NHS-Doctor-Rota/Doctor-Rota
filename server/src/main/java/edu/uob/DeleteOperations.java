@@ -41,7 +41,6 @@ public class DeleteOperations {
             }
             // Have to catch SQLException exception here
         } catch (SQLException e) {
-            System.out.println(e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

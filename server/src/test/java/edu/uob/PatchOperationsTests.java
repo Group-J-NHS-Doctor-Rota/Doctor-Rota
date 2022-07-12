@@ -14,16 +14,42 @@ import java.sql.ResultSet;
 public class PatchOperationsTests {
 
     @Test
-    //TODO this test
     void testUpdateVariable() {
-
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Create new account with id 998999999 (definitely unused), with some data
+            assertFalse(ConnectionTools.accountIdExists(998999999, c));
+            String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
+                    "VALUES (998999999, 'Test Person', 'sdfdfsgghndfh', '987', 'person@test.com', 15, 15, 48, 0); ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.executeUpdate();
+            }
+            // Change some data (3 bits)
+            PatchOperations.updateVariable("person2@test.com", "string", "email", "accounts", 998999999, c);
+            PatchOperations.updateVariable("true", "boolean", "fixedWorking", "accounts", 998999999, c);
+            PatchOperations.updateVariable("25", "int", "annualLeave", "accounts", 998999999, c);
+            // Confirm update has worked
+            SQL = "SELECT * FROM accounts WHERE id = 998999999;";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                r.next();
+                assertEquals("person2@test.com", r.getString("email"));
+                assertTrue(r.getBoolean("fixedWorking"));
+                assertEquals(25, r.getInt("annualLeave"));
+            }
+            // Delete account
+            DeleteOperations.deleteAccount(998999999);
+            assertFalse(ConnectionTools.accountIdExists(998999999, c));
+        } catch (SQLException e) {
+            fail("Database connection and SQL queries should have worked\n" + e);
+        }
     }
 
     @Test
     void testPatchAccount() {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // Create new account with id 991999999 (definitely unused)
+            // Create new account with id 919999999 (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(919999999, c));
             String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
                     "VALUES (919999999, 'Test T. Test', 'sdfdsh', '0987', 'ttt@test.com', 15, 15, 48, 0);";

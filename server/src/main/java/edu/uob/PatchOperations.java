@@ -41,7 +41,7 @@ public class PatchOperations {
     }
 
     // By design, this will not error if null but just won't run
-    public static void updateVariable(String value, String type, String name, String table, int accountId, Connection c) {
+    public static void updateVariable(String value, String type, String name, String table, int id, Connection c) {
         if(value != null) {
             String SQL = "UPDATE " + table + " SET " + name + " = ?, timestamp = now() WHERE id = ?;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
@@ -52,7 +52,7 @@ public class PatchOperations {
                     case "boolean" -> s.setBoolean(1, Boolean.parseBoolean(value));
                     default -> s.setString(1, value);
                 }
-                s.setInt(2, accountId);
+                s.setInt(2, id);
                 s.executeUpdate();
             } catch (SQLException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());

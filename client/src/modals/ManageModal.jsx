@@ -25,7 +25,7 @@ const ManageModal = ({ manage, setManage }) => {
                             <Row>
                                 {/* left */}
                                 <Col xs={12} md={6}>
-                                    <Label for="field-1" className="mt-0">Annual Leave</Label>
+                                    <Label htmlFor="field-1" className="mt-0">Annual Leave</Label>
                                 </Col>
                                 {/* right */}
                                 <Col xs={12} md={6}>
@@ -37,7 +37,7 @@ const ManageModal = ({ manage, setManage }) => {
 
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <Label for="field-2">Study Leave</Label>
+                                    <Label htmlFor="field-2">Study Leave</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <input type="text" placeholder="30 days/annum"
@@ -47,7 +47,7 @@ const ManageModal = ({ manage, setManage }) => {
 
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <Label for="field-3">Hours Required</Label>
+                                    <Label htmlFor="field-3">Hours Required</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <input type="text" placeholder="45 hours/week"
@@ -57,11 +57,11 @@ const ManageModal = ({ manage, setManage }) => {
 
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <Label for="field-4">Level</Label>
+                                    <Label htmlFor="field-4">Level</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <Select className="mt-2" id="field-4" disabled={disable}>
-                                        <option value="default_level" selected>-Please select-</option>
+                                        <option value="default_level" defaultValue>-Please select-</option>
                                         <option value="junior">Junior</option>
                                         <option value="senior">Senior</option>
                                         <option value="admin">Admin</option>
@@ -71,11 +71,11 @@ const ManageModal = ({ manage, setManage }) => {
 
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <Label for="field-5">Job Type</Label>
+                                    <Label htmlFor="field-5">Job Type</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <Select className="mt-2" id="field-5" disabled={disable}>
-                                        <option value="default_type" selected>-Please select-</option>
+                                        <option value="default_type" defaultValue>-Please select-</option>
                                         <option value="fulltime">Full-Time</option>
                                         <option value="parttime">Part-Time</option>
                                     </Select>
@@ -84,11 +84,11 @@ const ManageModal = ({ manage, setManage }) => {
 
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <Label for="field-6">Rota Type</Label>
+                                    <Label htmlFor="field-6">Rota Type</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <Select className="mt-2" id="field-6" disabled={disable}>
-                                        <option value="default_rota" selected>-Please select-</option>
+                                        <option value="default_rota" defaultValue>-Please select-</option>
                                         <option value="first_on">First On</option>
                                         <option value="obstetric">Obstetric</option>
                                         <option value="third_on">Third On</option>

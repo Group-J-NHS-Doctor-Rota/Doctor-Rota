@@ -1,20 +1,25 @@
-import styled from 'styled-components'
+import { useState } from 'react'
 
 import Pagination from '../components/Pagination'
 import ManageModal from '../modals/ManageModal'
-import { useState } from 'react'
+
+import useWindowDimensions from '../hook/useWindowDimensions'
+
+import styled from 'styled-components'
 
 export default function AccountPage() {
     const [currentPage, setCurrentPage] = useState(1)
     const [manage, setManage] = useState(false)
 
-    const getContent = number => {
+    const { width } = useWindowDimensions();
+
+    const getTableContent = number => {
         let content = [];
         for (let i = 0; i < number; i++) {
             content.push(
                 <AccountCard key={i} onClick={() => setManage(true)}>
                     <TableTd>Steven</TableTd>
-                    <TableTd>stevenlin3263@gmail.com</TableTd>
+                    <TableTd>steven@nhs.com</TableTd>
                     <TableTd>1.0</TableTd>
                     <TableTd>employed</TableTd>
                 </AccountCard>
@@ -23,9 +28,35 @@ export default function AccountPage() {
         return content;
     }
 
+    const getCardContent = number => {
+        let content = [];
+        for (let i = 0; i < number; i++) {
+            content.push(
+                <AccountCardV2 key={i} className="d-block m-1 p-3" onClick={() => setManage(true)}>
+                    <div className="d-flex justify-content-between">
+                        <div>Name</div>
+                        <div>Steven</div>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                        <div>Email</div>
+                        <div>steven@nhs.com</div>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                        <div>Time worked</div>
+                        <div>1.0</div>
+                    </div>
+                    <div className="d-flex justify-content-between">
+                        <div>Status</div>
+                        <div>employed</div>
+                    </div>
+                </AccountCardV2>
+            )
+        }
+        return content;
+    }
+
     return (
         <div>
-
             <PageContainer className="mt-3">
                 <form id="search_account_form" className="d-flex mb-3" action="#" method="POST">
                     <SearchRegion className="me-3">
@@ -38,19 +69,28 @@ export default function AccountPage() {
                     <Button type="submit">Search</Button>
                 </form>
 
-                <table style={{ width: '100%' }}>
-                    <tbody>
-                        <AccountCard>
-                            <TableTh>Name</TableTh>
-                            <TableTh>Email</TableTh>
-                            <TableTh>Time worked</TableTh>
-                            <TableTh>Status</TableTh>
-                        </AccountCard>
+                {
+                    width > 765 &&
+                    <table style={{ width: '100%' }}>
+                        <tbody>
+                            <AccountCard>
+                                <TableTh>Name</TableTh>
+                                <TableTh>Email</TableTh>
+                                <TableTh>Time worked</TableTh>
+                                <TableTh>Status</TableTh>
+                            </AccountCard>
 
-                        {getContent(6)}
-                    </tbody>
-                </table>
+                            {getTableContent(6)}
+                        </tbody>
+                    </table>
+                    ||
+                    <AccountGrid>
+                        {getCardContent(6)}
+                    </AccountGrid>
+                }
+
             </PageContainer>
+
             <ManageModal manage={manage} setManage={setManage} />
 
             <Pagination currentPage={currentPage} totalPage={10} setCurrentPage={setCurrentPage} />
@@ -107,4 +147,22 @@ const TableTh = styled.th`
 
 const TableTd = styled.td`
     padding: 10px;
+`
+
+const AccountGrid = styled.div`
+    display: grid;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 575px){
+        grid-template-columns: repeat(2, 1fr)
+    }
+
+`
+
+const AccountCardV2 = styled.div`
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    cursor: pointer;
 `

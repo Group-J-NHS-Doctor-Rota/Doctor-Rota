@@ -94,6 +94,7 @@ const LoginCard = styled.div`
     margin: 90px auto 0 auto;
     max-width: 468px;
     min-height: 525px;
+    padding: 0 0 25px 0;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 5px;
     background-color: #EDFCF9;

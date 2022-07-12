@@ -26,7 +26,7 @@ export default function AccountPage() {
     return (
         <div>
 
-            <Container className="mt-3">
+            <PageContainer className="mt-3">
                 <form id="search_account_form" className="d-flex mb-3" action="#" method="POST">
                     <SearchRegion className="me-3">
                         <div className="d-flex">
@@ -50,7 +50,7 @@ export default function AccountPage() {
                         {getContent(6)}
                     </tbody>
                 </table>
-            </Container>
+            </PageContainer>
             <ManageModal manage={manage} setManage={setManage} />
 
             <Pagination currentPage={currentPage} totalPage={10} setCurrentPage={setCurrentPage} />
@@ -58,7 +58,7 @@ export default function AccountPage() {
     )
 }
 
-const Container = styled.div`
+const PageContainer = styled.div`
     margin: 0 auto;
     width: 90%;
 `

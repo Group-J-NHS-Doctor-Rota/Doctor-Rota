@@ -2,32 +2,32 @@ import React from 'react'
 
 import styled from 'styled-components'
 
-export default function DataBar(){
+export default function DataBar() {
     return (
         <div className="row">
             <div className="col-12 col-md-4">
                 <Card className="mt-3 p-3 d-flex justify-content-center align-items-center">
-                    <p style={{position: 'absolute', bottom: '50%', left: '5%'}}>Annual Leave</p>
+                    <p style={{ position: 'absolute', bottom: '50%', left: '5%' }}>Annual Leave</p>
                     <Text>
-                        <p className="mb-0">XX days</p>
+                        <p className="mb-0">11.5 days</p>
                     </Text>
                 </Card>
             </div>
             <div className="col-12 col-md-4">
-                <Card className="mt-3 p-3 d-flex justify-content-center align-items-center"> 
-                    <p style={{position: 'absolute', bottom: '50%', left: '5%'}}>Study Leave</p>
+                <Card className="mt-3 p-3 d-flex justify-content-center align-items-center">
+                    <p style={{ position: 'absolute', bottom: '50%', left: '5%' }}>Study Leave</p>
 
                     <Text>
-                        <p className="mb-0">XX days</p>
+                        <p className="mb-0">7 days</p>
                     </Text>
                 </Card>
             </div>
-            <div className="col-12 col-md-4">     
+            <div className="col-12 col-md-4">
                 <Card className="mt-3 p-3 d-flex justify-content-center align-items-center">
-                    <p style={{position: 'absolute', bottom: '50%', left: '5%'}}>Weekly Worked</p>
+                    <p style={{ position: 'absolute', bottom: '50%', left: '5%' }}>Weekly Worked</p>
 
                     <Text>
-                        <p className="mb-0">XX hours</p>
+                        <p className="mb-0">25 hours</p>
                     </Text>
                 </Card>
             </div>

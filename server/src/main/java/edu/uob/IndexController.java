@@ -83,9 +83,20 @@ public class IndexController {
     @PatchMapping(value = "/account/{accountId}", produces = "application/json")
     // Optional request parameters can't be primitives and no null value
     // Better to have them as String and convert later
-    public ResponseEntity<String> patchAccount(@PathVariable int accountId, @RequestParam(required = false) String annualLeave) {
+    public ResponseEntity<String> patchAccount(@PathVariable int accountId, @RequestParam(required = false) String annualLeave,
+                                               @RequestParam(required = false) String studyLeave,
+                                               @RequestParam(required = false) String workingHours,
+                                               @RequestParam(required = false) String level,
+                                               @RequestParam(required = false) String email,
+                                               @RequestParam(required = false) String phone,
+                                               @RequestParam(required = false) String doctorId,
+                                               @RequestParam(required = false) String accountStatus,
+                                               @RequestParam(required = false) String doctorStatus,
+                                               @RequestParam(required = false) String timeWorked,
+                                               @RequestParam(required = false) String fixedWorking) {
         //todo check token is valid
-        return PatchOperations.patchAccount(accountId, annualLeave);
+        return PatchOperations.patchAccount(accountId, annualLeave, studyLeave, workingHours, level, email,
+                phone, doctorId, accountStatus, doctorStatus, timeWorked, fixedWorking);
     }
 
 }

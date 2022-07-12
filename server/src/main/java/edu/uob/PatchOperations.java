@@ -17,6 +17,10 @@ public class PatchOperations {
                                                       String timeWorked, String fixedWorking) {
         String connectionString = ConnectionTools.getConnectionString();
         try (Connection c = DriverManager.getConnection(connectionString)) {
+            if(!ConnectionTools.accountIdExists(accountId, c)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
+            }
+            // Only if account id exists, then try to put data
             // Update all variables (only non-null ones actually get updated)
             updateVariable(annualLeave, "int", "annualLeave", "accounts", accountId, c);
             updateVariable(studyLeave, "int", "studyLeave", "accounts", accountId, c);

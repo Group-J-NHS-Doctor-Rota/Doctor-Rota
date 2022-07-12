@@ -68,4 +68,9 @@ public class IndexController {
         return PutOperations.putWorkingDays(id, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
     }
 
+    @GetMapping(value = "/shift/{year}", produces = "application/json")
+    public ResponseEntity<ObjectNode> getShifts(@RequestParam int accountId, @RequestParam int year) {
+        return GetOperations.getShifts(accountId, year);
+    }
+
 }

@@ -26,6 +26,8 @@ CREATE TABLE accounts (
     password varchar NOT NULL,
     salt varchar NOT NULL,
     email varchar,
+    -- phone is varchar so it copes regardless of format
+    phone varchar,
     doctorId varchar,
     annualLeave int NOT NULL,
     studyLeave int NOT NULL,

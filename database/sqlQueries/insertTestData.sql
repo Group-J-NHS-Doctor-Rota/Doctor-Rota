@@ -6,9 +6,9 @@ VALUES
     ('2021-08-04', '2021-11-02', true);
 
 /*accounts data*/
-INSERT INTO accounts (username, password, salt, email, doctorId, annualLeave, studyLeave, workingHours, accountStatus, doctorStatus, level, rotaGroupId, timeWorked, fixedWorking)
+INSERT INTO accounts (username, password, salt, email, phone, doctorId, annualLeave, studyLeave, workingHours, accountStatus, doctorStatus, level, rotaGroupId, timeWorked, fixedWorking)
 VALUES
-    ('John Smith', 'sdafgndfjgn', '123', 'test@test.com', '9876', 15, 15, 48, 0, 0, 1, 1, 1, false);
+    ('John Smith', 'sdafgndfjgn', '123', 'test@test.com', '07777 777 777', '9876', 15, 15, 48, 0, 0, 1, 1, 1, false);
 INSERT INTO accounts (username, password, salt, email, annualLeave, studyLeave, workingHours, level)
 VALUES
     ('Jane Smith', 'qwererydf', '456', 'test2@test.com', 15, 15, 48, 0);

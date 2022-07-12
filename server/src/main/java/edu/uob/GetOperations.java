@@ -52,25 +52,22 @@ public class GetOperations {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
 //id int
-//
 //accountId int
-//
-//username varchar
-//
+//username varchar -- 需要join？？
 //rotaType int
-//
 //date date
-//
 //type int
-//
 //ruleNotes varchar
-//
-//accountLevel
-            String SQL = "SELECT;";
+//accountLevel int -- 需要join？？
+            String SQL = "SELECT S.id, S.accountId, A.username, S.rotaTypeId, " +
+                    "S.date, S.type, S.ruleNotes, A.level" +
+                    "FROM shifts S" +
+                    "LEFT JOIN accounts A on S.id = A.id " +
+                    "WHERE S.date LIKE '" + year + "%';";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 ObjectNode objectNode = objectMapper.createObjectNode();
-                ArrayNode arrayNode = objectNode.putArray("leaveRequests");
+                ArrayNode arrayNode = objectNode.putArray("shifts");
                 s.setInt(1, accountId); // id
                 s.setInt(2, accountId); // accountId
                 ResultSet r = s.executeQuery();
@@ -81,6 +78,7 @@ public class GetOperations {
                     objectNodeRow.put("username", r.getString("username"));
                     objectNodeRow.put("rotaType", r.getInt("rotaType"));
                     objectNodeRow.put("date", r.getString("date"));
+                    // type: 0: Normal working day 1: Long Day 2: Night
                     objectNodeRow.put("type", r.getInt("type"));
                     objectNodeRow.put("ruleNotes", r.getString("ruleNotes"));
                     objectNodeRow.put("accountLevel", r.getInt("accountLevel"));
@@ -91,13 +89,5 @@ public class GetOperations {
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    int aaa(int a, int b) {
-        return a + b;
-    }
-
-    int aaa(int a, int b, int c) {
-        return a + b + c;
     }
 }

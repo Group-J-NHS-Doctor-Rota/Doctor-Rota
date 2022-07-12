@@ -13,7 +13,7 @@ public class DeleteOperations {
 
     public static ResponseEntity<String> deleteAccount(int accountId) {
         String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString);) {
+        try(Connection c = DriverManager.getConnection(connectionString)) {
             if(!ConnectionTools.accountIdExists(accountId, c)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
             }
@@ -23,7 +23,7 @@ public class DeleteOperations {
                     "DELETE FROM partTimeDetails WHERE accountId = ?; " +
                     "DELETE FROM fixedRotaShifts WHERE accountId = ?; " +
                     "DELETE FROM accountRotaTypes WHERE accountId = ?; " +
-                    "DELETE FROM accountLeaveRequestRelationship WHERE accountId = ?; " +
+                    "DELETE FROM accountLeaveRequestRelationships WHERE accountId = ?; " +
                     "DELETE FROM leaveRequests WHERE accountId = ?; " +
                     "DELETE FROM shifts  WHERE accountId = ?; " +
                     "DELETE FROM accounts WHERE id = ?;";
@@ -41,6 +41,7 @@ public class DeleteOperations {
             }
             // Have to catch SQLException exception here
         } catch (SQLException e) {
+            System.out.println(e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

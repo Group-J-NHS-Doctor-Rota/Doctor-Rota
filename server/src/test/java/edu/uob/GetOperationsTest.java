@@ -29,8 +29,8 @@ public class GetOperationsTest {
             assertFalse(ConnectionTools.accountIdExists(999999299, c));
             assertFalse(ConnectionTools.accountIdExists(1000000000, c));
             String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
-                    "VALUES (999999199, 'Test McTester', 'ndsjkfgndsfpgn', '4567', 'mctester@test.com', 15, 15, 48, 0), " +
-                    "(999999299, 'Testie McTest', 'sdfgsdfgdfs', '4568', 'mctest@test.com', 15, 15, 48, 1);";
+                    "VALUES (999999199, 'Test McTester', 'ndsjkfgndsfpgn', '45678', 'mctester@test.com', 15, 15, 48, 0), " +
+                    "(999999299, 'Testie McTest', 'sdfgsdfgdfs', '45689', 'mctest@test.com', 15, 15, 48, 1);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.executeUpdate();
             }

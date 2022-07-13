@@ -5,6 +5,7 @@ public enum Shifts {
     NIGHT,
     THEATRE,
     DAYOFF,
+    DAOFF,
     NAOFF,
     AorSL,
     NOCR,
@@ -14,4 +15,5 @@ public enum Shifts {
     //AorSl - annual or study leave
     //NOCR not on call request
     //THNOCR - theatre / not on call request - used for half day requests
+    //DAOFF - day after off - for when time is required off after consecutive day shifts
 }

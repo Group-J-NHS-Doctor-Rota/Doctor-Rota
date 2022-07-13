@@ -15,51 +15,32 @@ public class Schedule {
 
         startDate = LocalDate.of(2021, 8, 4);
         endDate = LocalDate.of(2021, 11, 2);
-        setNumberOfDays();
+        numberOfDays = setNumberOfDays(startDate, endDate);
+
+        long startTime = System.nanoTime();
+
         doctors = new ArrayList<>();
-
-        addDoctors();
-        int rules;
-        BuildSchedule iteration;
-
-        //testing pain week addition for first doctor
-        for(JuniorDoctor doc : doctors){
-            doc.setPainWeek();
-        }
-
-        JuniorDoctor a = doctors.get(0);
-        a.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 18), LeaveType.STUDY);
-        a.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 19), LeaveType.STUDY);
-        a.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 20), LeaveType.STUDY);
-
-        a.addNotOnCallRequest(LocalDate.of(2021,10, 1), NotOnCallRequestType.DAY);
-        a.addNotOnCallRequest(LocalDate.of(2021,10, 2), NotOnCallRequestType.DAY);
-        a.addNotOnCallRequest(LocalDate.of(2021,10, 3), NotOnCallRequestType.DAY);
-
-        JuniorDoctor b = doctors.get(2);
-        b.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 18), LeaveType.ANNUAL);
-        b.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 19), LeaveType.ANNUAL);
-        b.addAnnualOrStudyLeaveRequest(LocalDate.of(2021,10, 20), LeaveType.ANNUAL);
+        doctors = addDoctors();
 
 
+        //addLeave();
 
-
+        int rulesBroken;
+        int counter = 0;
         do {
-            iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors);
-            rules = iteration.getRulesCount();
-        }while(rules > 0 || checkShiftHours(iteration.returnDoctors()) || checkShiftCount(iteration.returnDoctors()));
+            BuildSchedule iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors);
+            rulesBroken = iteration.getRulesCount();
+            counter++;
+        } while (rulesBroken > 0);
 
-        //|| checkShiftCount(iteration.returnDoctors()) || checkShiftHours(iteration.returnDoctors())
 
-        doctors = iteration.returnDoctors();
+        long endTime = System.nanoTime();
+        long totalTime = endTime - startTime;
+        double elapsedTimeInSecond = (double) totalTime / 1_000_000_000;
+        System.out.println(elapsedTimeInSecond);
 
-        ArrayList<String> des = iteration.getDescription();
 
-        for (String d : des){
-            System.out.println(d);
-        }
-
-        printSchedule(doctors);
+        printSchedule(doctors, startDate, endDate);
         checkNights(doctors);
         checkDays(doctors);
         printLeftovers(doctors);
@@ -68,61 +49,53 @@ public class Schedule {
 
     }
 
-    private static boolean checkShiftCount(ArrayList<JuniorDoctor> doctors){
-        for(JuniorDoctor doctor : doctors){
-            int days = 0;
-            int nights = 0;
+    public static void addLeave(){
+        doctors.get(0).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 16), LeaveType.STUDY);
+        doctors.get(0).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 17), LeaveType.STUDY);
 
-            LocalDate date = startDate;
-            while(!date.isEqual(endDate.plusDays(1))){
-                if(doctor.getShiftType(date).equals(Shifts.DAYON)){
-                    days++;
-                }
-                else if(doctor.getShiftType(date).equals(Shifts.NIGHT)){
-                    nights++;
-                }
-                date = date.plusDays(1);
-            }
-            if((days + nights) < 22){
-                return true;
-            }
-        }
-        return false;
+
+
+        doctors.get(1).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 22), LeaveType.ANNUAL);
+        doctors.get(1).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 23), LeaveType.ANNUAL);
+        doctors.get(1).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 24), LeaveType.ANNUAL);
+
+
+
+        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 27), LeaveType.ANNUAL);
+        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 28), LeaveType.ANNUAL);
+        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 29), LeaveType.ANNUAL);
+        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 30), LeaveType.ANNUAL);
+        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 1), LeaveType.ANNUAL);
+
+        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 14), LeaveType.STUDY);
+
+        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 27), LeaveType.ANNUAL);
+        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 28), LeaveType.ANNUAL);
+        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 29), LeaveType.ANNUAL);
+
+        doctors.get(5).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 16), LeaveType.ANNUAL);
+        doctors.get(5).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 17), LeaveType.ANNUAL);
+        doctors.get(5).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 19), LeaveType.ANNUAL);
+        doctors.get(5).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 20), LeaveType.ANNUAL);
+
+        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 16), LeaveType.ANNUAL);
+        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 17), LeaveType.ANNUAL);
+        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 19), LeaveType.ANNUAL);
+        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 20), LeaveType.ANNUAL);
+        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 18), LeaveType.ANNUAL);
+        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 25), LeaveType.ANNUAL);
+        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 26), LeaveType.ANNUAL);
     }
 
-    private static boolean checkShiftHours(ArrayList<JuniorDoctor> doctors){
-        for(JuniorDoctor doctor : doctors){
-            double hours = 0;
-            LocalDate date = startDate;
-            while(!date.isEqual(endDate.plusDays(1))){
-                if(doctor.getShiftType(date).equals(Shifts.DAYON)){
-                    hours = hours + 12.5;
-                }
-                else if(doctor.getShiftType(date).equals(Shifts.NIGHT)){
-                    hours = hours + 12.5;
-                }
-                else if(doctor.getShiftType(date).equals(Shifts.THEATRE)){
-                    hours = hours + 10;
-                }
-                else if(doctor.getShiftType(date).equals(Shifts.AorSL)){
-                    hours = hours + 10;
-                }
-                date = date.plusDays(1);
-            }
-            if(hours < 570){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static void addDoctors(){
+    public static ArrayList<JuniorDoctor> addDoctors(){
+        ArrayList<JuniorDoctor> doctors = new ArrayList<>();
         for (String doctorsName : names) {
             JuniorDoctor doctor = new JuniorDoctor(1);
-            System.out.println(doctor.getNights());
             doctor.setName(doctorsName);
             doctors.add(doctor);
+            //doctor.setPainWeek();
         }
+        return doctors;
     }
 
     private static void addShifts(ArrayList<JuniorDoctor> doctors){
@@ -189,12 +162,14 @@ public class Schedule {
         }
     }
 
-    private static void setNumberOfDays(){
+    public static int setNumberOfDays(LocalDate startDate, LocalDate endDate){
         LocalDate date = startDate;
+        int counter = 0;
         while (!date.isEqual(endDate)) {
             date = date.plusDays(1);
-            numberOfDays++;
+            counter++;
         }
+        return counter;
     }
 
     private static void checkNights(ArrayList<JuniorDoctor> schedule){
@@ -245,14 +220,14 @@ public class Schedule {
     }
 
 
-    private static void printSchedule(ArrayList<JuniorDoctor> schedule){
+    public static void printSchedule(ArrayList<JuniorDoctor> schedule, LocalDate startDate, LocalDate endDate){
 
         System.out.println("DATE                  |  " + names[0] + "    |  " + names[1] + "    |  " + names[2] + "     |  " + names[3] + "     |  "
                 + names[4] + "     |  " + names[5] + "    |  " + names[6] + "     |  " + names[7] + "    |  ");
         LocalDate date = startDate;
         LocalDate endPrint = endDate.plusDays(1);
 
-        while (!date.isEqual(endPrint)) {
+        while (date.isBefore(endDate.plusDays(1))) {
             System.out.print(date.getDayOfWeek() + "-> " + date);
             System.out.print("  |  ");
             System.out.print(schedule.get(0).getShiftType(date));

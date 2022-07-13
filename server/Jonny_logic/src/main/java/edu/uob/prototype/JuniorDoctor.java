@@ -1,7 +1,6 @@
 package edu.uob.prototype;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class JuniorDoctor {
@@ -103,10 +102,6 @@ public class JuniorDoctor {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getNumberOfShifts(){
-        return shifts.size();
     }
 
     public int getTotalOnCall(){return totalOnCall;}

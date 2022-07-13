@@ -21,7 +21,7 @@ public class PutOperationsTests {
             // Create new account with id 999999999 (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(999999999, c));
             String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
-                    "VALUES (999999999, 'Test McTester', 'ndsjkfgndsfpgn', '4567', 'mctester@test.com', 15, 15, 48, 0);";
+                    "VALUES (999999999, 'Test McTester', 'ndsjkfgndsfpgn', '98765', 'mctester@test.com', 15, 15, 48, 0);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.executeUpdate();
             }

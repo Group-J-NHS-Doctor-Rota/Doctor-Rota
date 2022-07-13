@@ -44,7 +44,7 @@ public class GetOperations {
             }
             // Have to catch SQLException exception here
         } catch (SQLException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
 }

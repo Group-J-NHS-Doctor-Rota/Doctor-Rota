@@ -44,5 +44,4 @@ const List = styled.div`
         transform: scale(1.05);
         font-weight: bold;
     }
-
 `

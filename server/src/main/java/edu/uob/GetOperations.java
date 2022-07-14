@@ -47,4 +47,16 @@ public class GetOperations {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
+
+    public static ResponseEntity<ObjectNode> getAccount(int accountId) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+    }
+
+    public static ResponseEntity<ObjectNode> getAllAccounts() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+    }
 }

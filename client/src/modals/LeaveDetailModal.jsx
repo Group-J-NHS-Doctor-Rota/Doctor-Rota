@@ -1,17 +1,13 @@
-import React from 'react'
+import styled from "styled-components";
+import { Modal } from "react-bootstrap"
 
-import { Modal } from 'react-bootstrap'
-
-import styled from 'styled-components'
-
-export default function ShiftModal({ shift, setShift }) {
+const LeaveDetailModal = ({ leaveDetail, setLeaveDetail }) => {
 
     return (
         <>
-            <Modal show={shift}>
+            <Modal show={leaveDetail}>
                 <ModalContainer>
-                    <ModalTitle className="my-5">Shift details</ModalTitle>
-
+                    <ModalTitle className="my-5">Request Detail</ModalTitle>
                     <div className="d-block">
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
@@ -19,7 +15,7 @@ export default function ShiftModal({ shift, setShift }) {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">Steven Lin</RowInfo>
+                                <RowInfo className="mb-0">Dennis Liú</RowInfo>
                             </div>
                         </div>
 
@@ -29,47 +25,45 @@ export default function ShiftModal({ shift, setShift }) {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">2022/06/21 08.00-18.00</RowInfo>
+                                <RowInfo className="mb-0">Jul 25th - Jul 27th (a.m.)</RowInfo>
                             </div>
                         </div>
 
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
-                                <i className="bi bi-clipboard2-check-fill" style={{ fontSize: '30px' }}></i>
+                                <i className="bi bi-clipboard2-minus-fill" style={{ fontSize: '30px' }}></i>
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">First On</RowInfo>
+                                <RowInfo className="mb-0">Study Leave</RowInfo>
                             </div>
                         </div>
 
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
-                                <i className="bi bi-person-workspace" style={{ fontSize: '30px' }}></i>
+                                <i className="bi bi-chat-dots-fill" style={{ fontSize: '30px' }}></i>
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">Request/review blood tests</RowInfo>
+                                <RowInfo className="mb-0">I am attending a 3-day first aid course in Cardiff, it is a mandantory step to pass the DBS check so that I can start working with vulnerable people. I will return to work on Wednesday afternoon.</RowInfo>
                             </div>
                         </div>
-
-
                     </div>
 
                     <div className="d-flex justify-content-center my-3">
-                        <CloseButton className="m-2" onClick={() => setShift(false)}>
-                            Close
-                        </CloseButton>
-
-                        <ConfirmButton className="m-2" onClick={() => setShift(false)}>
-                            Swap
+                        <ConfirmButton className="m-2" onClick={() => setLeaveDetail(false)}>
+                            OK
                         </ConfirmButton>
                     </div>
                 </ModalContainer>
+
             </Modal>
         </>
     )
+
 }
+
+export default LeaveDetailModal
 
 const ModalContainer = styled.div`
     width: 80%;
@@ -83,22 +77,6 @@ const ModalTitle = styled.h1`
 
     @media (max-width: 575px){
         font-size: 24px;
-    }
-`
-
-const CloseButton = styled.button`
-    min-width: 100px;
-    font-size: 20px;
-    background-color: white;
-    border-radius: 5px;
-    border: none;
-    color: #168082;
-    font-weight: bold;
-    padding: 5px 10px;
-
-    @media (max-width: 575px){
-        font-size: 16px;
-        min-width: 80px;
     }
 `
 

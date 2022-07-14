@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import Pagination from "../components/Pagination"
 import { useState } from "react"
+import LeaveDetailModal from "../modals/LeaveDetailModal"
 
 const NotificationPage = () => {
     // only admin make decisions
@@ -26,6 +27,8 @@ const NotificationPage = () => {
         border-radius: 4px;
         `
 
+    const [leaveDetail, setLeaveDetail] = useState(false);
+
     const getContent = number => {
         let content = [];
         for (let i = 1; i <= number; i++) {
@@ -37,17 +40,20 @@ const NotificationPage = () => {
                         </SenderTag>
                     </div>
                     <MessageInfo className="d-flex col-12 pe-2 justify-content-between">
-                        <div className="pt-4 ps-3 col-sm-4">
+                        <div className="pt-4 ps-3 col-sm-3">
                             {(((i % 3) === 0) && <p>2022/07/28 - 2022/08/01</p>)
                                 || ((i % 3 === 1) && <p>2022/07/21 - 2022/07/21</p>)
                                 || ((i % 3 === 2) && <p>2022/07/15 - 2022/07/19</p>)}
                         </div>
-                        <div className="pt-4 col-sm-2">
-                            {(((i % 3) === 0) && <p>Study Leave</p>)
-                                || ((i % 3 === 1) && <p>OnCall Leave</p>)
-                                || ((i % 3 === 2) && <p>Annual Leave</p>)}
+                        <div className="pt-4 col-sm-2" onClick={() => setLeaveDetail(true)}
+                            style={{ cursor: 'pointer' }}>
+                            {(((i % 3) === 0) && <p>Study Leave&nbsp;&nbsp;
+                                <i className="bi bi-search" /></p>)
+                                || ((i % 3 === 1) && <p>Not On Call&nbsp;&nbsp;
+                                    <i className="bi bi-search" /></p>)
+                                || ((i % 3 === 2) && <p>Annual Leave&nbsp;&nbsp;
+                                    <i className="bi bi-search" /></p>)}
                         </div>
-
                         {
                             (isAdmin &&
                                 (
@@ -57,11 +63,15 @@ const NotificationPage = () => {
                                                 onClick={() => setDecision("Rejected")}>
                                                 Reject
                                             </DenialButton>
-
                                             <ApprovalButton className="my-3"
                                                 onClick={() => setDecision("Approved")}>
                                                 Approve
                                             </ApprovalButton>
+
+                                            {/* <ViewButton className="my-3"
+                                                onClick={() => setLeaveDetail(true)}>
+                                                View
+                                            </ViewButton> */}
                                         </div>
                                     </>
                                 ))
@@ -76,7 +86,6 @@ const NotificationPage = () => {
                             )
                         }
                     </MessageInfo >
-
                 </AlertMessage >
             )
         }
@@ -89,6 +98,7 @@ const NotificationPage = () => {
         <div>
             <PageContainer>
                 {getContent(6)}
+                <LeaveDetailModal leaveDetail={leaveDetail} setLeaveDetail={setLeaveDetail} />
             </PageContainer>
             <Pagination currentPage={currentPage} totalPage={10} setCurrentPage={setCurrentPage} />
         </div>
@@ -147,3 +157,10 @@ const ApprovalButton = styled.button`
     border: none;
     border-radius: 4px;
 `
+
+// const ViewButton = styled.button`
+//     background-color: lightyellow;
+//     color: orange;
+//     border: none;
+//     border-radius: 4px;
+// `

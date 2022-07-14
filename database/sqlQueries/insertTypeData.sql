@@ -19,7 +19,10 @@ INSERT INTO shiftTypes (id, name)
 VALUES
     (0, 'Normal Working Day'),
     (1, 'Long Day'),
-    (2, 'Night');
+    (2, 'Night'),
+    (3, 'Trainee Off Day'),
+    --Gap is to allow for any additions, as other should logically come at the end
+    (9, 'Other');
 
 /*leaveRequestTypes data*/
 INSERT INTO leaveRequestTypes (id, name)

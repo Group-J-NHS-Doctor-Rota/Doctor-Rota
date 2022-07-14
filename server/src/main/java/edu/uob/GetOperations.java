@@ -53,23 +53,21 @@ public class GetOperations {
         try(Connection c = DriverManager.getConnection(connectionString)) {
 //id int
 //accountId int
-//username varchar -- 需要join？？
+//username varchar -- 需要left join？？
 //rotaType int
 //date date
 //type int
 //ruleNotes varchar
-//accountLevel int -- 需要join？？
+//accountLevel int -- 需要left join？？
             String SQL = "SELECT S.id, S.accountId, A.username, S.rotaTypeId, " +
-                    "S.date, S.type, S.ruleNotes, A.level" +
-                    "FROM shifts S" +
-                    "LEFT JOIN accounts A on S.id = A.id " +
-                    "WHERE S.date LIKE '" + year + "%';";
+                    "S.date, S.type, S.ruleNotes, A.level " +
+                    "FROM shifts S " +
+                    "LEFT JOIN accounts A ON S.accountId = A.id " +
+                    "WHERE S.date LIKE '" + year + "%'; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 ObjectNode objectNode = objectMapper.createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("shifts");
-                s.setInt(1, accountId); // id
-                s.setInt(2, accountId); // accountId
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
                     ObjectNode objectNodeRow = objectMapper.createObjectNode();
@@ -78,7 +76,7 @@ public class GetOperations {
                     objectNodeRow.put("username", r.getString("username"));
                     objectNodeRow.put("rotaType", r.getInt("rotaType"));
                     objectNodeRow.put("date", r.getString("date"));
-                    // type: 0: Normal working day 1: Long Day 2: Night
+                    // type: 0: Normal working day, 1: Long Day, 2: Night
                     objectNodeRow.put("type", r.getInt("type"));
                     objectNodeRow.put("ruleNotes", r.getString("ruleNotes"));
                     objectNodeRow.put("accountLevel", r.getInt("accountLevel"));

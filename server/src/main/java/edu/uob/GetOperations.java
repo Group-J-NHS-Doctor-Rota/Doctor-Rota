@@ -47,4 +47,37 @@ public class GetOperations {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
+
+//    public static ResponseEntity<ObjectNode> getLeaves(int accountId) {
+//        String connectionString = ConnectionTools.getConnectionString();
+//        try(Connection c = DriverManager.getConnection(connectionString)) {
+//            String SQL = "SELECT S.id, S.accountId, A.username, S.rotaTypeId, " +
+//                    "S.date, S.type, S.ruleNotes, A.level " +
+//                    "FROM shifts S " +
+//                    "LEFT JOIN accounts A ON S.accountId = A.id " +
+//                    "WHERE S.date LIKE '%'; ";
+//            try(PreparedStatement s = c.prepareStatement(SQL)) {
+//                ObjectMapper objectMapper = new ObjectMapper();
+//                ObjectNode objectNode = objectMapper.createObjectNode();
+//                ArrayNode arrayNode = objectNode.putArray("shifts");
+//                ResultSet r = s.executeQuery();
+//                while(r.next()) {
+//                    ObjectNode objectNodeRow = objectMapper.createObjectNode();
+//                    objectNodeRow.put("id", r.getInt("id"));
+//                    objectNodeRow.put("accountId", r.getInt("accountId"));
+//                    objectNodeRow.put("username", r.getString("username"));
+//                    objectNodeRow.put("rotaType", r.getInt("rotaType"));
+//                    objectNodeRow.put("date", r.getString("date"));
+//                    // type: 0: Normal working day, 1: Long Day, 2: Night
+//                    objectNodeRow.put("type", r.getInt("type"));
+//                    objectNodeRow.put("ruleNotes", r.getString("ruleNotes"));
+//                    objectNodeRow.put("accountLevel", r.getInt("accountLevel"));
+//                    arrayNode.add(objectNodeRow);
+//                }
+//                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+//            }
+//        } catch (SQLException e) {
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }

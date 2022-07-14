@@ -61,7 +61,10 @@ export default function NavBar() {
                                 </div>
                             </NavBarItem>
 
-                            <NavBarItem className="d-flex my-2" onClick={() => navigate('/account')}>
+                            <NavBarItem className="d-flex my-2" onClick={() => {
+                                navigate('/account')
+                                toggleList()
+                            }}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-people-fill" style={{ fontSize: '30px' }}></i>
                                 </div>
@@ -83,7 +86,10 @@ export default function NavBar() {
                             </NavBarItem>
 
 
-                            <NavBarItem className="d-flex my-2" onClick={() => navigate('/notification')}>
+                            <NavBarItem className="d-flex my-2" onClick={() => {
+                                navigate('/notification')
+                                toggleList()
+                            }}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-bell-fill" style={{ fontSize: '30px' }}></i>
                                 </div>

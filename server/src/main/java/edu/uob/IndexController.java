@@ -105,7 +105,7 @@ public class IndexController {
         return GetOperations.getAccount(accountId);
     }
 
-    @GetMapping(value = "/account}", produces = "application/json")
+    @GetMapping(value = "/account", produces = "application/json")
     public ResponseEntity<ObjectNode> getAllAccounts() {
         //todo check token is valid
         return GetOperations.getAllAccounts();

@@ -41,6 +41,8 @@ export default function SignIn() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        navigate('/')
     };
 
     const onChange = (e) => {

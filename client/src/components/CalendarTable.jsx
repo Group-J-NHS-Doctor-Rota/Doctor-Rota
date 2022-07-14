@@ -43,17 +43,17 @@ export default function CalendarTable({ year, month }) {
         }
         return date.slice(5, 7)
     }
-
+    
     function getDate(date) {
         if (date.slice(8, 10)[0] === 0) {
             return date.slice(9, 10)
         }
         return date.slice(8, 10)
     }
-
+    
     function getHoliday(day) {
         for (let i = 0; i < bankHolidays.length; i++) {
-            if (bankHolidays[i].day === day && bankHolidays[i].month === month) {
+            if (bankHolidays[i].day == day && bankHolidays[i].month == month) {
                 return bankHolidays[i].name
             }
         }
@@ -61,34 +61,34 @@ export default function CalendarTable({ year, month }) {
     }
 
     const getContent = number => {
-        // maybe number is not int
         let content = [];
         for (let i = 1; i < number + 1; i++) {
             let result = getHoliday(i)
+
             content.push(
-                ((result === false) &&
+                ((result == false) &&
                     (<GridItems key={i}>
-                        <h3 className="mb-1 mx-2">{i}</h3>
-                        <CalendarDay />
+                        <h3 className="my-2 mx-2">{i}</h3>
+                        <CalendarDay month={month} day={i}/>
                     </GridItems>))
-                || ((result !== false) &&
+                || ((result != false) &&
                     (<GridItems key={i}>
                         <div className="d-flex">
-                            <h3 className="mb-1 mx-2">{i}</h3>
+                            <h3 className="my-2 mx-2">{i}</h3>
                             {
                                 (result.length > 20 && width >= 1200 &&
-                                    <h3 className="mb-1 mx-1">{result.slice(0, 18)} ...</h3>)
+                                    <h3 className="my-2 mx-1">{result.slice(0, 18)} ...</h3>)
                                 ||
                                 (result.length > 14 && width >= 1100 && width < 1200 &&
-                                    <h3 className="mb-1 mx-1">{result.slice(0, 12)} ...</h3>)
+                                    <h3 className="my-2 mx-1">{result.slice(0, 12)} ...</h3>)
                                 ||
                                 (result.length > 8 && width >= 915 && width < 1200 &&
-                                    <h3 className="mb-1 mx-1">{result.slice(0, 8)} ...</h3>)
+                                    <h3 className="my-2 mx-1">{result.slice(0, 8)} ...</h3>)
                                 ||
-                                (<h3 className="mb-1 mx-1">{result}</h3>)
+                                (<h3 className="my-2 mx-1">{result}</h3>)
                             }
                         </div>
-                        <CalendarDay />
+                        <CalendarDay month={month} day={i} holiday={result}/>
                     </GridItems>))
             )
         }
@@ -132,6 +132,7 @@ const CalendarGrid = styled.div`
 const GridItems = styled.div`
     padding: 5px;
     border-radius: 5px;
+    cursor: pointer;
 
     &:hover {
         background-color: #EDFCF9;

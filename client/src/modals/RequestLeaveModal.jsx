@@ -49,6 +49,7 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                 <option default>---please select---</option>
                                 <option value="Annual Leave">Annual Leave</option>
                                 <option value="Study Leave">Study Leave</option>
+
                                 <option value="Not On Call">Not On Call</option>
                                 <option value="Others">Others(specify below)</option>
                             </Form.Select>
@@ -102,7 +103,7 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                                     <option value="full" selected>Full Day</option>  
                                             </Form.Select>
                                         }
-
+                                        
                                         {
                                             values.single_day != "" &&
                                             <Form.Control type='date' name="single_day" value={values.single_day} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)} />
@@ -146,12 +147,12 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                             ||
                                             <Form.Control type='date' name="multiple_start_day" value="0" className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
                                         }
-
                                     </div>
 
                                     <ColumnName className="my-2">End Date</ColumnName>
 
                                     <div className="d-flex">
+
                                         {
                                             values.multiple_end_half_full == "am" &&
                                             <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_end_half_full" id="multiple_end_half_full" onChange={(e) => setValue(e)}>
@@ -187,8 +188,8 @@ export default function RequestLeaveModal({ leave, setLeave }) {
 
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <ColumnName className="my-3">Comments</ColumnName>
-                            <Form.Control as="textarea" rows={5}
-                                placeholder='This field is required, please include the date, time, and reason'
+                            <Form.Control as="textarea" rows={5} maxlength="10"
+                                placeholder='Please leave your reason here, no more than 2000 characters'
                             />
                         </Form.Group>
 

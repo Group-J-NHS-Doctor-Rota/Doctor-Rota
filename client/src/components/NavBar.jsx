@@ -72,6 +72,7 @@ export default function NavBar() {
                                 </div>
                             </NavBarItem>
 
+
                             <NavBarItem className="d-flex my-2" onClick={() => redirectPage('account')}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-people-fill" style={{ fontSize: '30px' }}></i>

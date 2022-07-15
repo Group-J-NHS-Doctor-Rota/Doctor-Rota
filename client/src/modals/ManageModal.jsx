@@ -14,9 +14,7 @@ const ManageModal = ({ manage, setManage }) => {
                 <ModalContainer>
 
                     <div className="d-flex justify-content-between align-items-center">
-                        <ModalTitle className="my-5">
-                            Dennis
-                        </ModalTitle>
+                        <ModalTitle className="my-5">Dennis  Liú</ModalTitle>
                         <EditIcon onClick={toggleDisable}
                         ><i className="bi bi-pencil-square" /></EditIcon>
                     </div>
@@ -25,11 +23,11 @@ const ManageModal = ({ manage, setManage }) => {
                             <Row>
                                 {/* left */}
                                 <Col xs={12} md={6}>
-                                    <Label htmlFor="field-1" className="mt-0">Annual Leave</Label>
+                                    <Label htmlFor="field-1" className="mt-0">Annual Leave Entitled</Label>
                                 </Col>
                                 {/* right */}
                                 <Col xs={12} md={6}>
-                                    <input type="text" placeholder="28 days/annum"
+                                    <input type="text" placeholder="32 days/annum"
                                         className="mt-0" id="field-1" disabled={disable}
                                         autoFocus />
                                 </Col>
@@ -37,7 +35,7 @@ const ManageModal = ({ manage, setManage }) => {
 
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <Label htmlFor="field-2">Study Leave</Label>
+                                    <Label htmlFor="field-2">Study Leave Entitled</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <input type="text" placeholder="30 days/annum"
@@ -50,34 +48,30 @@ const ManageModal = ({ manage, setManage }) => {
                                     <Label htmlFor="field-3">Hours Required</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <input type="text" placeholder="45 hours/week"
+                                    <input type="text" placeholder="48 hours/week"
                                         className="mt-2" id="field-3" disabled={disable} />
                                 </Col>
                             </Row>
 
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <Label htmlFor="field-4">Level</Label>
+                                    <Label htmlFor="field-3">WTE/FTE</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <Select className="mt-2" id="field-4" disabled={disable}>
-                                        <option value="default_level" defaultValue>-Please select-</option>
-                                        <option value="junior">Junior</option>
-                                        <option value="senior">Senior</option>
-                                        <option value="admin">Admin</option>
-                                    </Select>
+                                    <input type="text" placeholder="0.6 LTFT"
+                                        className="mt-2" id="field-3" disabled={disable} />
                                 </Col>
                             </Row>
 
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <Label htmlFor="field-5">Job Type</Label>
+                                    <Label htmlFor="field-4">Account Type</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <Select className="mt-2" id="field-5" disabled={disable}>
-                                        <option value="default_type" defaultValue>-Please select-</option>
-                                        <option value="fulltime">Full-Time</option>
-                                        <option value="parttime">Part-Time</option>
+                                    <Select className="mt-2" id="field-4" disabled={disable}>
+                                        <option value="default_level" defaultValue>-Please select-</option>
+                                        <option value="junior">Standard</option>
+                                        <option value="admin">Admin</option>
                                     </Select>
                                 </Col>
                             </Row>
@@ -171,7 +165,7 @@ const ConfirmButton = styled.button`
 
 const Label = styled.label`
     display: block;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: bold;
     color: #168082;
     margin: 13px 0;

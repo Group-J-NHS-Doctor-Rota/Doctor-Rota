@@ -80,7 +80,6 @@ export default function SignUp() {
                 </div>
                 <form id="signin_form" action="/" method="post" onSubmit={handleSubmit}>
                     <div className="mb-4">
-
                         {inputs.map((input) => (
                             <FormInput
                                 key={input.id}
@@ -89,7 +88,6 @@ export default function SignUp() {
                                 onChange={onChange}
                             />
                         ))}
-
                     </div>
 
                     <div className="d-flex justify-content-center mb-3">

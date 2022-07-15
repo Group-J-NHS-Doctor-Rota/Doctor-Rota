@@ -33,7 +33,7 @@ const NotificationPage = () => {
         let content = [];
         for (let i = 1; i <= number; i++) {
             content.push(
-                <AlertMessage className="mt-3">
+                <AlertMessage key={i} className="mt-3">
                     <div className="d-flex">
                         <SenderTag className="col-sm-1">
                             {((i % 2 === 0) && <p className="mb-0">Dennis</p>) || <p className="mb-0">Admin</p>}

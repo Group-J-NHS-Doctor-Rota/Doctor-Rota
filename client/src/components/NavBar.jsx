@@ -30,6 +30,17 @@ export default function NavBar() {
         }
     }
 
+    function redirectPage(type){
+        setOpen(!open)
+        if(type == "account"){
+            navigate('/account')
+        }
+
+        if(type == "notification"){
+            navigate('/notification')
+        }
+    }
+
     const navigate = useNavigate();
 
     return (
@@ -61,10 +72,8 @@ export default function NavBar() {
                                 </div>
                             </NavBarItem>
 
-                            <NavBarItem className="d-flex my-2" onClick={() => {
-                                navigate('/account')
-                                toggleList()
-                            }}>
+
+                            <NavBarItem className="d-flex my-2" onClick={() => redirectPage('account')}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-people-fill" style={{ fontSize: '30px' }}></i>
                                 </div>
@@ -86,10 +95,7 @@ export default function NavBar() {
                             </NavBarItem>
 
 
-                            <NavBarItem className="d-flex my-2" onClick={() => {
-                                navigate('/notification')
-                                toggleList()
-                            }}>
+                            <NavBarItem className="d-flex my-2" onClick={() => redirectPage('notification')}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-bell-fill" style={{ fontSize: '30px' }}></i>
                                 </div>
@@ -142,6 +148,7 @@ const NavBarList = styled.div`
 const NavBarItem = styled.div`
     border-radius: 5px;
     cursor: pointer;
+
     &:hover{
         background-color: #EDFCF9;
     }

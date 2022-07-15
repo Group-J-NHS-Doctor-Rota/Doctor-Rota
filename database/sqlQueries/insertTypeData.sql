@@ -40,6 +40,13 @@ VALUES
     (1, 'Approved'),
     (2, 'Rejected');
 
+/*statusTypes data*/
+INSERT INTO lengthTypes (id, name)
+VALUES
+    (0, 'Full day'),
+    (1, 'AM'),
+    (2, 'PM');
+
 /*notificationTypes data*/
 INSERT INTO notificationTypes (id, name)
 VALUES

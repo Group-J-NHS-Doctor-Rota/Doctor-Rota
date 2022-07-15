@@ -1,5 +1,6 @@
 package edu.uob;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -81,4 +82,44 @@ public class GetOperationsTest {
         }
 
     }
+
+    @Test
+    void testGetAccount() {
+        // Get first accountId (should always be at least one account)
+        int accountId = 0;
+        boolean foundId = false;
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            while(!foundId) {
+                accountId++;
+                foundId = ConnectionTools.accountIdExists(accountId, c);
+                // Cap search at 1000 to avoid test running on too long
+                if(accountId >= 1000) {
+                    return;
+                }
+            }
+            ResponseEntity<ObjectNode> response = GetOperations.getAccount(accountId);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
+            // Check response has all the required fields
+            assertTrue(rootNode.has("id"));
+            assertTrue(rootNode.has("username"));
+            assertTrue(rootNode.has("email"));
+            assertTrue(rootNode.has("phone"));
+            assertTrue(rootNode.has("doctorId"));
+            assertTrue(rootNode.has("annualLeave"));
+            assertTrue(rootNode.has("studyLeave"));
+            assertTrue(rootNode.has("workingHours"));
+            assertTrue(rootNode.has("accountStatus"));
+            assertTrue(rootNode.has("doctorStatus"));
+            assertTrue(rootNode.has("level"));
+            assertTrue(rootNode.has("timeWorked"));
+            assertTrue(rootNode.has("fixedWorking"));
+            // Check the id field aligns
+            assertEquals(accountId, rootNode.get("id").asInt());
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
 }

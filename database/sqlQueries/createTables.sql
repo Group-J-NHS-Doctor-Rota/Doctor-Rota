@@ -96,12 +96,23 @@ CREATE TABLE statusTypes (
     PRIMARY KEY (id)
 );
 
+/*Different types of request lengths*/
+CREATE TABLE lengthTypes (
+    id int NOT NULL,
+    name varchar,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id)
+);
+
 /*Details about days off and whether they are confirmed*/
 CREATE TABLE leaveRequests (
     id SERIAL NOT NULL,
     accountId int NOT NULL,
     date date NOT NULL,
     type int NOT NULL,
+    -- length type as not always a full day
+    -- int is not the length but the key for length varchar
+    length int NOT NULL DEFAULT 0,
     note varchar,
     status int NOT NULL,
     timestamp timestamp DEFAULT now(),
@@ -109,6 +120,7 @@ CREATE TABLE leaveRequests (
     UNIQUE (accountId, date),
     FOREIGN KEY (accountId) REFERENCES accounts(id),
     FOREIGN KEY (type) REFERENCES leaveRequestTypes(id),
+    FOREIGN KEY (length) REFERENCES lengthTypes(id),
     FOREIGN KEY (status) REFERENCES statusTypes(id)
 );
 

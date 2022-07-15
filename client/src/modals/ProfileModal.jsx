@@ -1,12 +1,9 @@
-import { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 // import FormInput from '../components/FormInput'
 
 import styled from 'styled-components'
 
 export default function ProfileModal({ profile, setProfile }) {
-    const [focused, setFocused] = useState(false)
-    const handleFocus = () => setFocused(true)
     const handleSubmit = e => e.preventDefault()
 
     return (
@@ -36,21 +33,17 @@ export default function ProfileModal({ profile, setProfile }) {
                                     <Label className="d-flex me-3">
                                         <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
                                     </Label>
-                                    <Input type="email" placeholder="name@nbt.nhs.uk"
-                                        onBlur={e => { e.target.value != "" && handleFocus() }} />
-                                    <span className='errmsg'>
-                                        Invalid Email (This field is optional)
-                                    </span>
+                                    <Input type="email" placeholder="name@gmail.com (public)" />
+                                    <LockIcon className="bi bi-unlock-fill ms-2" />
                                 </div>
-                                <span className='errmsg mt-0 ms-5'>
-                                    Invalid Email (This field is optional)
-                                </span>
-                            </div>
-                            <div className="d-flex align-items-center my-3">
-                                <Label className="d-flex me-3">
-                                    <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
-                                </Label>
-                                <Input type="tel" placeholder="+44 XXXXXXXXXX" />
+
+                                <div className="d-flex align-items-center my-3">
+                                    <Label className="d-flex me-3">
+                                        <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
+                                    </Label>
+                                    <Input type="tel" placeholder="&nbsp;&nbsp;+44 XXXXXXXXXX (only me and admin)" />
+                                    <LockIcon className="bi bi-lock-fill ms-2" />
+                                </div>
                             </div>
                             <div className="d-flex justify-content-center my-5">
                                 <CloseButton className="m-2" onClick={() => setProfile(false)}>
@@ -128,10 +121,15 @@ const RowInfo = styled.p`
 `
 
 const Input = styled.input`
-    font-size: 18px;
+    font-size: 16px !important;
     width: 100%;
     height: 36px;
     border: none;
     border-radius: 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+`
+
+const LockIcon = styled.i`
+    font-size: 20px;
+    cursor: pointer;
 `

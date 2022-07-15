@@ -23,8 +23,8 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                 <option default>---please select---</option>
                                 <option value="Annual Leave">Annual Leave</option>
                                 <option value="Study Leave">Study Leave</option>
-                                <option value="Study Leave">Not On Call</option>
-                                <option value="Others">Others(specify below)</option>
+                                <option value="Study Leave">NOC Request</option>
+                                <option value="Others">Others (specify below)</option>
                             </Form.Select>
                         </div>
 

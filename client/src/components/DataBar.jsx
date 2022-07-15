@@ -7,7 +7,7 @@ export default function DataBar() {
         <div className="row">
             <div className="col-12 col-md-4">
                 <Card className="mt-3 p-3 d-flex justify-content-center align-items-center">
-                    <p style={{ position: 'absolute', bottom: '50%', left: '5%' }}>Annual Leave</p>
+                    <p style={{ position: 'absolute', bottom: '50%', left: '5%' }}>Annual Leave Remaining</p>
                     <Text>
                         <p className="mb-0">11.5 days</p>
                     </Text>
@@ -15,7 +15,7 @@ export default function DataBar() {
             </div>
             <div className="col-12 col-md-4">
                 <Card className="mt-3 p-3 d-flex justify-content-center align-items-center">
-                    <p style={{ position: 'absolute', bottom: '50%', left: '5%' }}>Study Leave</p>
+                    <p style={{ position: 'absolute', bottom: '50%', left: '5%' }}>Study Leave Remaining</p>
 
                     <Text>
                         <p className="mb-0">7 days</p>
@@ -24,10 +24,10 @@ export default function DataBar() {
             </div>
             <div className="col-12 col-md-4">
                 <Card className="mt-3 p-3 d-flex justify-content-center align-items-center">
-                    <p style={{ position: 'absolute', bottom: '50%', left: '5%' }}>Weekly Worked</p>
+                    <p style={{ position: 'absolute', bottom: '50%', left: '5%' }}>Avg Weekly Hours</p>
 
                     <Text>
-                        <p className="mb-0">25 hours</p>
+                        <p className="mb-0">48 hours</p>
                     </Text>
                 </Card>
             </div>

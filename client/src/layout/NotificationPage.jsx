@@ -49,7 +49,7 @@ const NotificationPage = () => {
                             style={{ cursor: 'pointer' }}>
                             {(((i % 3) === 0) && <p>Study Leave&nbsp;&nbsp;
                                 <i className="bi bi-search" /></p>)
-                                || ((i % 3 === 1) && <p>Not On Call&nbsp;&nbsp;
+                                || ((i % 3 === 1) && <p>NOC Request&nbsp;&nbsp;
                                     <i className="bi bi-search" /></p>)
                                 || ((i % 3 === 2) && <p>Annual Leave&nbsp;&nbsp;
                                     <i className="bi bi-search" /></p>)}

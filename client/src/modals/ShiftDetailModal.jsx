@@ -45,15 +45,13 @@ export default function ShiftModal({ shift, setShift }) {
 
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
-                                <i className="bi bi-person-workspace" style={{ fontSize: '30px' }}></i>
+                                <i className="bi bi-clock-history" style={{ fontSize: '30px' }}></i>
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">Request/review blood tests</RowInfo>
+                                <RowInfo className="mb-0">Long Day (12.5hrs)</RowInfo>
                             </div>
                         </div>
-
-
                     </div>
 
                     <div className="d-flex justify-content-center my-3">

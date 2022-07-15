@@ -19,7 +19,7 @@ export default function AccountPage() {
             content.push(
                 <AccountCard key={i} onClick={() => setManage(true)}>
                     <TableTd>Steven</TableTd>
-                    <TableTd>steven@nhs.com</TableTd>
+                    <TableTd>steven@gmail.com</TableTd>
                     <TableTd>1.0</TableTd>
                     <TableTd>employed</TableTd>
                 </AccountCard>
@@ -39,10 +39,10 @@ export default function AccountPage() {
                     </div>
                     <div className="d-flex justify-content-between">
                         <div>Email</div>
-                        <div>steven@nhs.com</div>
+                        <div>steven@gmail.com</div>
                     </div>
                     <div className="d-flex justify-content-between">
-                        <div>Time worked</div>
+                        <div>WTE</div>
                         <div>1.0</div>
                     </div>
                     <div className="d-flex justify-content-between">
@@ -76,7 +76,7 @@ export default function AccountPage() {
                             <AccountCard>
                                 <TableTh>Name</TableTh>
                                 <TableTh>Email</TableTh>
-                                <TableTh>Time worked</TableTh>
+                                <TableTh>WTE</TableTh>
                                 <TableTh>Status</TableTh>
                             </AccountCard>
 

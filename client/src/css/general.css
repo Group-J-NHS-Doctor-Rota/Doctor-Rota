@@ -31,7 +31,8 @@
 
 input[type="text"],
 input[type="password"],
-input[type="email"] {
+input[type="email"],
+input[type="tel"] {
     height: 36px !important;
     padding: 12px;
     margin: 5px 0px;
@@ -66,9 +67,8 @@ input:invalid[focused="true"]~span {
         margin: 0 auto;
         width: 80% !important;
     }
-
 }
 
-i {
+/* i {
     color: #168082;
-}
+} */

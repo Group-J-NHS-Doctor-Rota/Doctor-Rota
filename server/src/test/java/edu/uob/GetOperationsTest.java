@@ -122,4 +122,51 @@ public class GetOperationsTest {
         }
     }
 
+    @Test
+    void getMissingAccount() {
+        // Currently, a missing account will return an empty OK response
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            assertFalse(ConnectionTools.accountIdExists(919919919, c));
+        } catch (SQLException e) {
+                fail(e);
+        }
+        ResponseEntity<ObjectNode> response = GetOperations.getAccount(919919919);
+        assertTrue(response.toString().contains("<200 OK OK,{},[]>"));
+    }
+
+    @Test
+    void getAllAccounts() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            ResponseEntity<ObjectNode> response = GetOperations.getAllAccounts();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
+            int numberOfAccounts = rootNode.get("accounts").size();
+            // If there are no accounts, then empty list
+            if(numberOfAccounts <= 0) {
+                return;
+            }
+            // Check all accounts
+            for(int i = 0; i < numberOfAccounts; i++) {
+                JsonNode account = rootNode.get("accounts").get(0);
+                assertTrue(account.has("id"));
+                assertTrue(account.has("username"));
+                assertTrue(account.has("email"));
+                assertTrue(account.has("phone"));
+                assertTrue(account.has("doctorId"));
+                assertTrue(account.has("annualLeave"));
+                assertTrue(account.has("studyLeave"));
+                assertTrue(account.has("workingHours"));
+                assertTrue(account.has("accountStatus"));
+                assertTrue(account.has("doctorStatus"));
+                assertTrue(account.has("level"));
+                assertTrue(account.has("timeWorked"));
+                assertTrue(account.has("fixedWorking"));
+            }
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
+
 }

@@ -15,7 +15,6 @@ public class GetOperations {
 
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString);) {
-            //
             String SQL = "SELECT N.id, L.id AS leaveRequestId, L.accountId, L.date, L.type, L.note, L.status " +
                     "FROM notifications N " +
                     "LEFT JOIN leaveRequests L on N.detailId = L.id " +
@@ -30,6 +29,7 @@ public class GetOperations {
                 s.setInt(1, accountId);
                 s.setInt(2, accountId);
                 ResultSet r = s.executeQuery();
+                // Store each notification information in a list
                 while(r.next()) {
                     ObjectNode objectNodeRow = objectMapper.createObjectNode();
                     objectNodeRow.put("id", r.getInt("id"));
@@ -52,7 +52,7 @@ public class GetOperations {
     public static ResponseEntity<ObjectNode> getAccount(int accountId) {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString);) {
-            //
+            // Get single account and store as key value
             String SQL = "SELECT * FROM accounts WHERE id = ?;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, accountId);
@@ -73,7 +73,7 @@ public class GetOperations {
     public static ResponseEntity<ObjectNode> getAllAccounts() {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString);) {
-            //
+            // Get al accounts and store in list
             String SQL = "SELECT * FROM accounts ORDER BY id;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -93,6 +93,7 @@ public class GetOperations {
         }
     }
 
+    // Needed for get account and get all accounts
     private static void addAccountDetailsToObjectNode(ResultSet r, ObjectNode objectNode) throws SQLException {
         objectNode.put("id", r.getInt("id"));
         objectNode.put("username", r.getString("username"));

@@ -147,7 +147,7 @@ public class GetOperationsTest {
             if(numberOfAccounts <= 0) {
                 return;
             }
-            // Check all accounts
+            // Check all accounts, have all the fields
             for(int i = 0; i < numberOfAccounts; i++) {
                 JsonNode account = rootNode.get("accounts").get(0);
                 assertTrue(account.has("id"));

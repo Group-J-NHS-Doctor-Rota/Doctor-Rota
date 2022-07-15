@@ -246,12 +246,12 @@ final class RotaTests {
         doctors3.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 26), LeaveType.ANNUAL);
 
 
-        BuildSchedule iteration3;
-        int rules3;
-        do {
-            iteration3 = new BuildSchedule(startDate, endDate, numberOfDays, doctors3);
-            rules3 = iteration3.getRulesCount();
-        } while (rules3 > 0);
+//        BuildSchedule iteration3;
+//        int rules3;
+//        do {
+//            iteration3 = new BuildSchedule(startDate, endDate, numberOfDays, doctors3);
+//            rules3 = iteration3.getRulesCount();
+//        } while (rules3 > 0);
 
 
 
@@ -351,6 +351,32 @@ final class RotaTests {
 
 
 
+    }
+
+    @Test
+    void painWeek(){
+        ArrayList<JuniorDoctor> doctors = Schedule.addDoctors();
+
+        for(JuniorDoctor doctor : doctors){
+            doctor.setPainWeek();
+        }
+
+        int numberOfDays = Schedule.setNumberOfDays(startDate, endDate);
+
+        BuildSchedule iteration;
+        int rules;
+        do {
+            iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors);
+            rules = iteration.getRulesCount();
+        } while (rules > 0);
+
+        for(int i=0; i< doctors.size(); i++){
+            for(int j=0; j< doctors.size(); j++){
+                if(i != j){
+                    assertNotEquals(doctors.get(i).getPainWeekStartDate(), doctors.get(j).getPainWeekStartDate());
+                }
+            }
+        }
     }
 
 

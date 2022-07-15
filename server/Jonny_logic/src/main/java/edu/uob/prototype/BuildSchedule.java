@@ -90,19 +90,21 @@ public class BuildSchedule {
     }
 
     private static void painWeekCheck(){
+        ArrayList<LocalDate> painWeeksTaken = new ArrayList<>();
         for(JuniorDoctor doctor : doctors){
             if(doctor.getPainWeek()){
-                addPainWeek(doctor);
+                painWeeksTaken.add(addPainWeek(doctor, painWeeksTaken));
             }
         }
     }
 
-    private static void addPainWeek(JuniorDoctor doctor){
+    private static LocalDate addPainWeek(JuniorDoctor doctor, ArrayList<LocalDate> painWeeksTaken){
+        LocalDate date;
         while(true){
             int daySelection = ThreadLocalRandom.current().nextInt(0, numberOfDays +1);
-            LocalDate date = startDate.plusDays(daySelection);
+            date = startDate.plusDays(daySelection);
             if(date.getDayOfWeek().equals(DayOfWeek.SATURDAY) && date.plusDays(8).isBefore(endDate)
-                    && checkShiftFree(doctor,date, 8)){
+                    && checkShiftFree(doctor,date, 8) && !painWeeksTaken.contains(date.plusDays(2))){
                 doctor.setPainWeekStartDate(date.plusDays(2));
                 for(int i=0; i< 9; i++){
                     if(i<2 || i > 6) {
@@ -116,6 +118,7 @@ public class BuildSchedule {
                 break;
             }
         }
+        return doctor.getPainWeekStartDate();
     }
 
     private static boolean selectWeekends(){

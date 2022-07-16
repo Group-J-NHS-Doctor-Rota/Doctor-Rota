@@ -63,11 +63,15 @@ public class GetOperations {
                     "S.date, S.type, S.ruleNotes, A.level " +
                     "FROM shifts S " +
                     "LEFT JOIN accounts A ON S.accountId = A.id " +
-                    "WHERE S.date::text LIKE '" + year + "%'; ";
+                    "WHERE S.date::text LIKE '" + year + "%' " +
+                    // If account is admin, get all notifications, else get other their notifications
+                    "AND ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR S.accountId = ? );";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 ObjectNode objectNode = objectMapper.createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("shifts");
+                s.setInt(1, accountId);
+                s.setInt(2, accountId);
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
                     ObjectNode objectNodeRow = objectMapper.createObjectNode();

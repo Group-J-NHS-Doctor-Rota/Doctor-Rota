@@ -89,26 +89,6 @@ public class GetOperationsTest {
         int year = 1922;
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // delete all test data in table 'shifts'
-            String SQL1 = "DELETE FROM shifts WHERE accountId IN (999999001, 999999077); ";
-            try (PreparedStatement s = c.prepareStatement(SQL1)) {
-//                s.executeUpdate();
-            }
-            // Delete all test data in table 'account'
-            SQL1 = "DELETE FROM accounts WHERE id IN (999999001, 999999077); ";
-            try (PreparedStatement s = c.prepareStatement(SQL1)) {
-//                s.executeUpdate();
-            }
-            // Delete all test data in table 'rotaTypes'
-            SQL1 = "DELETE FROM rotaTypes WHERE id IN(901, 977); ";
-            try (PreparedStatement s = c.prepareStatement(SQL1)) {
-//                s.executeUpdate();
-            }
-            // Delete all test data in table 'rotaGroups'
-            SQL1 = "DELETE FROM rotaGroups WHERE id IN(901, 977); ";
-            try (PreparedStatement s = c.prepareStatement(SQL1)) {
-//                s.executeUpdate();
-            }
             // Create new accounts with ids 999999001 and 999999077 (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             assertFalse(ConnectionTools.accountIdExists(id2, c));
@@ -122,8 +102,7 @@ public class GetOperationsTest {
             // Check account creation
             assertTrue(ConnectionTools.accountIdExists(id1, c));
             assertTrue(ConnectionTools.accountIdExists(id2, c));
-
-            // Add test data for shifts
+            // Add test data in table 'shifts'
             SQL = "INSERT INTO shifts (id, accountId, rotaGroupId, rotaTypeId, date, type, ruleNotes) " +
                     "VALUES (999999901, 999999001, 1, 4, '1922-09-01'::date, 0, 'rule'), " +
                     "(999999977, 999999077, 1, 4, '1922-09-07'::date, 1, 'note'); ";
@@ -142,20 +121,18 @@ public class GetOperationsTest {
             assertTrue(response.getBody().toString().contains(
                     "{\"id\":999999977,\"accountId\":999999077,\"username\":\"testuser2\",\"rotaType\":4,\"date\":\"1922-09-07\",\"type\":1,\"ruleNotes\":\"note\",\"accountLevel\":1}"
             ));
-//            // Check response expecting one shift (level 0 account) //todo 怎么做到的level0账户只返回自己的？
-//            response = GetOperations.getShifts(id1, year);
-//            rootNode = mapper.readTree(String.valueOf(response.getBody()));
-//            assertEquals(1, rootNode.get("shifts").size());
-//            assertTrue(response.getBody().toString().contains(
-//                    "{\"id\":999999901,\"accountId\":999999001,\"username\":\"testuser1\",\"rotaType\":4,\"date\":\"1922-09-01\",\"type\":0,\"ruleNotes\":\"rule\",\"accountLevel\":0}"
-//            ));
-
-//            // Check response expecting no shifts (no account)
-//            response = GetOperations.getShifts(999999333, year);
-//            rootNode = mapper.readTree(String.valueOf(response.getBody()));
-//            assertEquals(0, rootNode.get("shifts").size());
-//            assertTrue(response.getBody().toString().contains("{\"shifts\":[]"));
-
+            // Check response expecting one shift (level 0 account)
+            response = GetOperations.getShifts(id1, year);
+            rootNode = mapper.readTree(String.valueOf(response.getBody()));
+            assertEquals(1, rootNode.get("shifts").size());
+            assertTrue(response.getBody().toString().contains(
+                    "{\"id\":999999901,\"accountId\":999999001,\"username\":\"testuser1\",\"rotaType\":4,\"date\":\"1922-09-01\",\"type\":0,\"ruleNotes\":\"rule\",\"accountLevel\":0}"
+            ));
+            // Check response expecting no shifts (no account)
+            response = GetOperations.getShifts(999999333, year);
+            rootNode = mapper.readTree(String.valueOf(response.getBody()));
+            assertEquals(0, rootNode.get("shifts").size());
+            assertTrue(response.getBody().toString().contains("{\"shifts\":[]}"));
             // Delete all test data
             SQL = "DELETE FROM shifts WHERE accountId IN (999999001,999999077); " +
                     "DELETE FROM accounts WHERE id IN (999999001,999999077);" +

@@ -111,7 +111,7 @@ public class GetOperationsTest {
             }
             // Check response:
             // level 1 account 999999077 will get all the shift data from table 'shift'
-            ResponseEntity<ObjectNode> response = GetOperations.getShifts(id2, year);
+            ResponseEntity<ObjectNode> response = GetOperations.getShifts(year, id2);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertTrue(rootNode.get("shifts").size() >= 2);// Might be greater than 2 as data may already be in table
@@ -122,14 +122,14 @@ public class GetOperationsTest {
                     "{\"id\":999999977,\"accountId\":999999077,\"username\":\"testuser2\",\"rotaType\":4,\"date\":\"1922-09-07\",\"type\":1,\"ruleNotes\":\"note\",\"accountLevel\":1}"
             ));
             // Check response expecting one shift (level 0 account)
-            response = GetOperations.getShifts(id1, year);
+            response = GetOperations.getShifts(year, id1);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertEquals(1, rootNode.get("shifts").size());
             assertTrue(response.getBody().toString().contains(
                     "{\"id\":999999901,\"accountId\":999999001,\"username\":\"testuser1\",\"rotaType\":4,\"date\":\"1922-09-01\",\"type\":0,\"ruleNotes\":\"rule\",\"accountLevel\":0}"
             ));
             // Check response expecting no shifts (no account)
-            response = GetOperations.getShifts(999999333, year);
+            response = GetOperations.getShifts(year, 999999333);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertEquals(0, rootNode.get("shifts").size());
             assertTrue(response.getBody().toString().contains("{\"shifts\":[]}"));

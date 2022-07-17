@@ -51,9 +51,7 @@ public class GetOperations {
     public static ResponseEntity<ObjectNode> getLeaves(int accountId) {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            //studyLeave int
-            //annualLeave int
-            String SQL = "SELECT annualLeave, studyLeave FROM accounts " +
+            String SQL = "SELECT id, annualLeave, studyLeave FROM accounts " +
                     "WHERE ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR id = ?) ; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -64,6 +62,7 @@ public class GetOperations {
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
                     ObjectNode objectNodeRow = objectMapper.createObjectNode();
+                    objectNodeRow.put("id", r.getInt("id"));
                     objectNodeRow.put("studyLeave", r.getInt("studyLeave"));
                     objectNodeRow.put("annualLeave", r.getInt("annualLeave"));
                     arrayNode.add(objectNodeRow);

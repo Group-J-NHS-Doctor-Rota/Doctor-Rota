@@ -1,13 +1,13 @@
 package edu.uob;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class PatchOperations {
 
@@ -57,6 +57,44 @@ public class PatchOperations {
             } catch (SQLException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
             }
+        }
+    }
+
+    public static ResponseEntity<String> patchNotification(int notificationId, int accountId, String status) {
+        String connectionString = ConnectionTools.getConnectionString();
+        try (Connection c = DriverManager.getConnection(connectionString)) {
+            // Only if account id exists, then try to patch data
+            if(!ConnectionTools.accountIdExists(accountId, c)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
+            }
+            String SQL = "SELECT type, detailId FROM notifications " +
+                    "WHERE id = ? "; //todo in one sentence
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, notificationId);
+                ResultSet r = s.executeQuery();
+                int type = r.getInt("type");
+                int detailId = r.getInt("detailId");
+                String tableName;
+                switch (type) {
+                    case 0 -> tableName = "leaveRequests"; //todo not hard code
+                    case 1 -> tableName = ""; // '1' refers to other requests currently
+                    default -> tableName = "";
+                }
+                if (tableName.isEmpty()) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong type value: " + type);
+                }
+                if (ConnectionTools.idExistInTable(accountId, "accountId", tableName, c) ||
+                ConnectionTools.idExistInTable(detailId, "id", tableName, c)) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Cannot find an id in table " + tableName);
+                }
+                // Update status in target table
+                updateVariable(status, "int", "status", tableName, detailId, c);
+            }
+            return ResponseEntity.status(HttpStatus.OK).body("");
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
 

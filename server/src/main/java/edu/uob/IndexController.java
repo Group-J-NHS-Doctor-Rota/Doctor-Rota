@@ -111,4 +111,11 @@ public class IndexController {
         return GetOperations.getAllAccounts();
     }
 
+    @PostMapping(value = "/request/leave", produces = "application/json")
+    public ResponseEntity<String> postRequestLeave(@RequestParam int accountId, @RequestParam String date,
+                                                   @RequestParam int type, @RequestParam String note) {
+        //todo check token is valid
+        return PostOperations.postRequestLeave(accountId, date, type, note);
+    }
+
 }

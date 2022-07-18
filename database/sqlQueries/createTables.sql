@@ -195,5 +195,6 @@ CREATE TABLE notifications (
     detailId int NOT NULL,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
+    UNIQUE(type, detailId),
     FOREIGN KEY (type) REFERENCES notificationTypes(id)
 );

@@ -112,10 +112,10 @@ public class IndexController {
     }
 
     @PostMapping(value = "/request/leave", produces = "application/json")
-    public ResponseEntity<String> postRequestLeave(@RequestParam int accountId, @RequestParam String date,
-                                                   @RequestParam int type, @RequestParam String note) {
+    public ResponseEntity<String> postRequestLeave(@RequestParam int accountId, @RequestParam String date, @RequestParam int type,
+                                                   @RequestParam int length, @RequestParam String note) {
         //todo check token is valid
-        return PostOperations.postRequestLeave(accountId, date, type, note);
+        return PostOperations.postRequestLeave(accountId, date, type, length, note);
     }
 
 }

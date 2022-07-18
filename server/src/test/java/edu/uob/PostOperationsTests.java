@@ -44,8 +44,18 @@ public class PostOperationsTests {
                 assertEquals("Note here", r.getString("note"));
 
             }
+            // Check notification was created
+            SQL = "SELECT EXISTS ( SELECT n.id FROM notifications n " +
+                    "LEFT OUTER JOIN leaverequests l on n.detailid = l.id " +
+                    "WHERE n.type = 0 AND l.accountId = 929929929 AND l.date = cast('2020-02-02' AS date) ); ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                r.next();
+                assertTrue(r.getBoolean(1));
+            }
             // Try to post a leave request for same id and date
             PostOperations.postRequestLeave(929929929, "2020-02-02", 2, 1, "Comments");
+            SQL = "SELECT * FROM leaveRequests WHERE accountId = 929929929;";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 ResultSet r = s.executeQuery();
                 r.next();

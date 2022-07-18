@@ -20,18 +20,25 @@ public class PostOperations {
             }
             // Only if account id exists, then try to insert data
             // Delete old data, if any, then insert new data
-            //TODO delete data in notifications too?
-            String SQL = "DELETE FROM leaveRequests WHERE accountId = ? AND date = ?;" +
+            String SQL = "DELETE FROM notifications WHERE detailId IN (SELECT detailId FROM notifications n " +
+                    "LEFT JOIN leaveRequests l ON n.detailId = l.id WHERE accountId = ? AND date = ?) AND type = 0; " +
+                    "DELETE FROM leaveRequests WHERE accountId = ? AND date = ?; " +
                     "INSERT INTO leaveRequests (accountId, date, type, length, note, status) " +
-                    "VALUES (?, ?, ?, ?, ?, 0);";
+                    "VALUES (?, ?, ?, ?, ?, 0); " +
+                    "INSERT INTO notifications (type, detailId) VALUES " +
+                    "(0, (SELECT id FROM leaveRequests WHERE accountId = ? AND date = ?) ); ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, accountId);
                 s.setDate(2, Date.valueOf(date));
                 s.setInt(3, accountId);
                 s.setDate(4, Date.valueOf(date));
-                s.setInt(5, type);
-                s.setInt(6, length);
-                s.setString(7, note);
+                s.setInt(5, accountId);
+                s.setDate(6, Date.valueOf(date));
+                s.setInt(7, type);
+                s.setInt(8, length);
+                s.setString(9, note);
+                s.setInt(10, accountId);
+                s.setDate(11, Date.valueOf(date));
                 s.executeUpdate();
                 return ResponseEntity.status(HttpStatus.OK).body("");
             }

@@ -123,7 +123,7 @@ public class GetOperationsTest {
     }
 
     @Test
-    void getMissingAccount() {
+    void testGetMissingAccount() {
         // Currently, a missing account will return an empty OK response
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
@@ -136,7 +136,7 @@ public class GetOperationsTest {
     }
 
     @Test
-    void getAllAccounts() {
+    void testGetAllAccounts() {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             ResponseEntity<ObjectNode> response = GetOperations.getAllAccounts();

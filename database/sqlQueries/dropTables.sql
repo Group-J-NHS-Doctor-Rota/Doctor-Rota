@@ -14,6 +14,8 @@ DROP TABLE accountLeaveRequestRelationships;
 
 DROP TABLE leaveRequests;
 
+DROP TABLE lengthTypes;
+
 DROP TABLE statusTypes;
 
 DROP TABLE leaveRequestTypes;

@@ -3,11 +3,11 @@ package edu.uob.prototype;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 public class Schedule {
     private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "Hugh", "Michael"};
     private static ArrayList<JuniorDoctor> doctors;
-    private static int numberOfDays;
     private static LocalDate startDate;
     private static LocalDate endDate;
 
@@ -15,20 +15,19 @@ public class Schedule {
 
         startDate = LocalDate.of(2021, 8, 4);
         endDate = LocalDate.of(2021, 11, 2);
-        numberOfDays = setNumberOfDays(startDate, endDate);
+        int numberOfDays = setNumberOfDays(startDate, endDate);
 
         long startTime = System.nanoTime();
 
         doctors = new ArrayList<>();
         doctors = addDoctors();
 
-
-        //addLeave();
+        Hashtable<LocalDate, ArrayList<Shifts>> fixedWorkingPattern = new Hashtable<>();
 
         int rulesBroken;
         int counter = 0;
         do {
-            BuildSchedule iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors);
+            BuildSchedule iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors, fixedWorkingPattern);
             rulesBroken = iteration.getRulesCount();
             counter++;
         } while (rulesBroken > 0);

@@ -14,17 +14,20 @@ public class BuildSchedule {
     private static int numberOfDays;
     private static int rulesBroken;
     private static ArrayList<JuniorDoctor> doctors;
+    private static Hashtable<LocalDate, ArrayList<Shifts>> fwp;
 
-    public BuildSchedule(LocalDate start, LocalDate end, int days, ArrayList<JuniorDoctor> doc){
+    public BuildSchedule(LocalDate start, LocalDate end, int days, ArrayList<JuniorDoctor> doc,
+                         Hashtable<LocalDate, ArrayList<Shifts>> fixedWorkingPattern){
         startDate = start;
         endDate = end;
         numberOfDays = days;
         numberOfDoctors = doc.size();
         doctors = doc;
+        fwp = fixedWorkingPattern;
 
 
         addShifts();
-        Rules rulesBrokenCount = new Rules(doctors, startDate, endDate);
+        Rules rulesBrokenCount = new Rules(doctors, startDate, endDate, fwp);
         rulesBroken = rulesBrokenCount.getRulesBroken();
 
     }
@@ -43,7 +46,7 @@ public class BuildSchedule {
             if(selectWeekends()){
                if (calculateNightShifts()) {
                     if (addLongDayShifts()) {
-                        reduceTheatreShifts();
+                        //reduceTheatreShifts();
                         if(addTheatreShifts()) {
                             setOffDays(startDate, endDate, doctors);
                             break;
@@ -127,11 +130,31 @@ public class BuildSchedule {
         LocalDate date = startDate;
         while (date.isBefore(endDate.plusDays(1)) && counter < weekendsCovered){
             if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY)){
-                if(addWeekends(date, Shifts.NIGHT) && addWeekends(date, Shifts.DAYON)){
-                    date = date.plusDays(1);
-                    counter++;
-                }else{
-                    return false;
+                if(fwp.containsKey(date)) {
+                    ArrayList<Shifts> shiftType = fwp.get(date);
+                    if (shiftType.contains(Shifts.NIGHT) && !shiftType.contains(Shifts.DAYON)) {
+                        if (addWeekends(date, Shifts.DAYON)) {
+                            date = date.plusDays(1);
+                            counter++;
+                        } else {
+                            return false;
+                        }
+                    }
+                    if (shiftType.contains(Shifts.DAYON) && !shiftType.contains(Shifts.NIGHT)) {
+                        if (addWeekends(date, Shifts.NIGHT)) {
+                            date = date.plusDays(1);
+                            counter++;
+                        } else {
+                            return false;
+                        }
+                    }
+                }else {
+                    if (addWeekends(date, Shifts.NIGHT) && addWeekends(date, Shifts.DAYON)) {
+                        date = date.plusDays(1);
+                        counter++;
+                    } else {
+                        return false;
+                    }
                 }
             }
             date =date.plusDays(1);
@@ -221,15 +244,32 @@ public class BuildSchedule {
     private static void addExtraWeekends(int weekends, LocalDate date){
         int counter = 0;
         while(date.isBefore(endDate.plusDays(1)) && counter < weekends){
-            if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY)){
-                while(true){
-                    if(addExtraWeekendsNights(date)){
-                        break;
+            if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY)) {
+                if (fwp.containsKey(date)) {
+                    ArrayList<Shifts> shiftType = fwp.get(date);
+                    if (shiftType.contains(Shifts.NIGHT) && !shiftType.contains(Shifts.DAYON)) {
+                        while (true) {
+                            if (addExtraWeekendsDays(date)) {
+                                break;
+                            }
+                        }
+                    }else if (!shiftType.contains(Shifts.NIGHT) && shiftType.contains(Shifts.DAYON)) {
+                        while (true) {
+                            if (addExtraWeekendsNights(date)) {
+                                break;
+                            }
+                        }
                     }
-                }
-                while(true){
-                    if(addExtraWeekendsDays(date)){
-                        break;
+                }else {
+                    while (true) {
+                        if (addExtraWeekendsNights(date)) {
+                            break;
+                        }
+                    }
+                    while (true) {
+                        if (addExtraWeekendsDays(date)) {
+                            break;
+                        }
                     }
                 }
                 counter++;
@@ -252,7 +292,7 @@ public class BuildSchedule {
                 doctor.setShifts(date, Shifts.NAOFF);
                 date = date.plusDays(1);
             }
-            doctor.reduceTheatre(3);
+            //doctor.reduceTheatre(3);
         }
         return true;
     }
@@ -271,31 +311,40 @@ public class BuildSchedule {
                 doctor.setShifts(date, Shifts.DAOFF);
                 date = date.plusDays(1);
             }
-            doctor.reduceTheatre(3);
+            //doctor.reduceTheatre(3);
         }
         return true;
     }
 
-    private static void reduceTheatreShifts(){
-        for(JuniorDoctor doctor : doctors){
-            int nights = doctor.getNights();
-            while(nights < 0){
-                doctor.reduceTheatre();
-                nights++;
-            }
-            int days = doctor.getLongDays();
-            while(days < 0){
-                doctor.reduceTheatre();
-                days++;
-            }
-        }
-    }
+//    private static void reduceTheatreShifts(){
+//        for(JuniorDoctor doctor : doctors){
+//            int nights = doctor.getNights();
+//            while(nights < 0){
+//                doctor.reduceTheatre();
+//                nights++;
+//            }
+//            int days = doctor.getLongDays();
+//            while(days < 0){
+//                doctor.reduceTheatre();
+//                days++;
+//            }
+//        }
+//    }
 
     private static boolean calculateNightShifts(){
         int errorCounter = 0;
         LocalDate date = startDate;
 
         while (date.isBefore(endDate) && errorCounter < 500) {
+
+            if(fwp.containsKey(date)){
+                ArrayList<Shifts> shiftTypes = fwp.get(date);
+                if(shiftTypes.contains(Shifts.NIGHT)){
+                    date = date.plusDays(1);
+                    continue;
+                }
+            }
+
             int shiftPairing = ThreadLocalRandom.current().nextInt(0, numberOfDoctors);
             JuniorDoctor doctor = doctors.get(shiftPairing);
 
@@ -374,12 +423,41 @@ public class BuildSchedule {
         }
     }
 
+    private static int fwpShiftsTake(){
+        int counter = 0;
+        Set<LocalDate> setOfKeys = fwp.keySet();
+
+        for (LocalDate date : setOfKeys) {
+            ArrayList<Shifts> type = fwp.get(date);
+            if (type.contains(Shifts.DAYON)) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
     private static boolean addLongDayShifts(){
         LocalDate date = startDate;
-        int difference = numberOfDays - (numberOfDoctors * 11);
+        int taken = fwpShiftsTake();
+        int difference = (numberOfDays - (numberOfDoctors * 11)) - taken;
+        if(difference < 0){
+            difference = 0;
+        }
         int errorCounter = 0;
 
         while (date.isBefore(endDate.minusDays(difference)) && errorCounter < 500) {
+
+            if(fwp.containsKey(date)){
+                ArrayList<Shifts> shiftType = fwp.get(date);
+                if(shiftType.contains(Shifts.DAYON) && date.getDayOfWeek().equals(DayOfWeek.FRIDAY)){
+                    date = date.plusDays(3);
+                    continue;
+                }else if(shiftType.contains(Shifts.DAYON)){
+                    date = date.plusDays(1);
+                    continue;
+                }
+            }
+
             if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY)){
                 date = date.plusDays(3);
                 continue;

@@ -3,6 +3,8 @@ package edu.uob.prototype;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Rules {
@@ -12,19 +14,27 @@ public class Rules {
     private static ArrayList<JuniorDoctor> doctors;
     private static int numberOfDays;
     private static boolean swaps;
+    private static Hashtable<LocalDate, ArrayList<Shifts>> fwp;
+    private static int numberOfDoctors;
 
 
-    public Rules(ArrayList<JuniorDoctor> doctorsList, LocalDate start, LocalDate end){
+    public Rules(ArrayList<JuniorDoctor> doctorsList, LocalDate start, LocalDate end, Hashtable<LocalDate, ArrayList<Shifts>> fixedWorkingPattern){
         startDate = start;
         endDate = end;
         doctors = doctorsList;
         numberOfDays = setNumberOfDays(startDate, endDate);
+        fwp = fixedWorkingPattern;
+        numberOfDoctors = doctorsList.size();
 
-        rulesBroken(doctorsList, start, end);
+        rulesBroken(doctorsList, start, end, 0);
 
     }
 
-    private static void rulesBroken(ArrayList<JuniorDoctor> doctors, LocalDate start, LocalDate end){
+    private static void rulesBroken(ArrayList<JuniorDoctor> doctors, LocalDate start, LocalDate end, int count){
+        if(count == 10){
+            rulesBroken = 100;
+            return;
+        }
         rulesBroken = 0;
         for(JuniorDoctor doctor : doctors){
             rulesBroken += fourLongDaysInARow(doctor, start, end);
@@ -33,12 +43,15 @@ public class Rules {
             rulesBroken += checkShiftCount(doctor);
         }
 
+        //rulesBroken += checkShiftHours(doctors);
+
+
         if(rulesBroken == 0){
             for(JuniorDoctor doctor : doctors) {
                 swaps = false;
                 int counter = seventyTwoHourWorkWeek(doctor, start, end);
                 if(swaps && counter == 0){
-                    rulesBroken(doctors, start, end);
+                    rulesBroken(doctors, start, end, count+1);
                 }else{
                     rulesBroken += counter;
                 }
@@ -277,7 +290,8 @@ public class Rules {
 
     private static int checkShiftCount(JuniorDoctor doctor){
         //change calculate to add together all doctors hours - either 1, 0.6 or 0.8
-        int required =  (numberOfDays/doctors.size()) *2;
+        int taken = fwpShiftsCovered();
+        int required = ((numberOfDays*2) - taken)/numberOfDoctors;
         int errorCounter = 0;
         int days = 0;
         int nights = 0;
@@ -298,28 +312,60 @@ public class Rules {
         return errorCounter;
     }
 
-    private static int checkShiftHours(JuniorDoctor doctor){
-        int errorCounter = 0;
-        double hours = 0;
-        LocalDate date = startDate;
-        while(!date.isEqual(endDate.plusDays(1))){
-            if(doctor.getShiftType(date).equals(Shifts.DAYON)){
-                hours = hours + 12.5;
+    private static int fwpShiftsCovered() {
+        int total = 0;
+        Set<LocalDate> setOfKeys = fwp.keySet();
+
+        for (LocalDate date : setOfKeys) {
+            ArrayList<Shifts> type = fwp.get(date);
+            if (type.contains(Shifts.DAYON)) {
+                total++;
+            } else if (type.contains(Shifts.NIGHT)) {
+
+                total++;
             }
-            else if(doctor.getShiftType(date).equals(Shifts.NIGHT)){
-                hours = hours + 12.5;
-            }
-            else if(doctor.getShiftType(date).equals(Shifts.THEATRE)){
-                hours = hours + 10;
-            }
-            else if(doctor.getShiftType(date).equals(Shifts.AorSL)){
-                hours = hours + 10;
-            }
-            date = date.plusDays(1);
         }
-        if(hours < 570){
-            errorCounter++;
-            //rulesBroken++;
+
+        return total;
+    }
+
+    private static int checkShiftHours(ArrayList<JuniorDoctor> doctors){
+        int errorCounter = 0;
+        ArrayList<Double> doctorsHours = new ArrayList<>();
+        for(JuniorDoctor doctor : doctors) {
+            double hours = 0;
+            LocalDate date = startDate;
+            while (!date.isEqual(endDate.plusDays(1))) {
+                if (doctor.getShiftType(date).equals(Shifts.DAYON)) {
+                    hours = hours + 12.5;
+                } else if (doctor.getShiftType(date).equals(Shifts.NIGHT)) {
+                    hours = hours + 12.5;
+                } else if (doctor.getShiftType(date).equals(Shifts.THEATRE)) {
+                    hours = hours + 10;
+                } else if (doctor.getShiftType(date).equals(Shifts.AorSL)) {
+                    hours = hours + 10;
+                }
+                date = date.plusDays(1);
+            }
+            doctorsHours.add(hours);
+        }
+
+        for(int i=0; i<doctors.size(); i++){
+            for(int j=0; j< doctors.size(); j++){
+                double a = doctorsHours.get(i);
+                double b = doctorsHours.get(j);
+                if(a>b){
+                    a = a-b;
+                    if(a > 10){
+                        errorCounter++;
+                    }
+                }else{
+                    b = b-a;
+                    if( b > 10){
+                        errorCounter++;
+                    }
+                }
+            }
         }
         return errorCounter;
     }

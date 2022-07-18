@@ -7,11 +7,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 final class RotaTests {
     private static final LocalDate startDate = LocalDate.of(2021, 8, 4);;
     private static final LocalDate endDate = LocalDate.of(2021, 11, 2);;
     private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "Hugh", "Michael"};
+    private static final Hashtable<LocalDate, ArrayList<Shifts>> fwp = new Hashtable<>();
 
     @Test
     void basicInitialisation() {
@@ -24,16 +26,18 @@ final class RotaTests {
         assertEquals(doctors.size(), 8);
 
         int numberOfDays = Schedule.setNumberOfDays(startDate, endDate);
-
-        BuildSchedule iteration;
-        int rulesBroken;
-        do {
-            iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors);
-            rulesBroken = iteration.getRulesCount();
-        } while (rulesBroken > 0);
+        assertEquals(numberOfDays, 90);
 
 
-        assertEquals(0, iteration.getRulesCount());
+            BuildSchedule iteration;
+            int rules;
+            do {
+                iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors, fwp);
+                rules = iteration.getRulesCount();
+            } while (rules > 0);
+
+
+            assertEquals(0, iteration.getRulesCount());
 
         for (JuniorDoctor doctor : doctors) {
             assertEquals(0, Rules.fourLongDaysInARow(doctor, startDate, endDate));
@@ -157,7 +161,7 @@ final class RotaTests {
         BuildSchedule iteration;
         int rules;
         do {
-            iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors);
+            iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors, fwp);
             rules = iteration.getRulesCount();
         } while (rules > 0);
 
@@ -194,7 +198,7 @@ final class RotaTests {
         BuildSchedule iteration2;
         int rules2;
         do {
-            iteration2 = new BuildSchedule(startDate, endDate, numberOfDays, doctors2);
+            iteration2 = new BuildSchedule(startDate, endDate, numberOfDays, doctors2, fwp);
             rules2 = iteration2.getRulesCount();
         } while (rules2 > 0);
 //
@@ -366,7 +370,7 @@ final class RotaTests {
         BuildSchedule iteration;
         int rules;
         do {
-            iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors);
+            iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors, fwp);
             rules = iteration.getRulesCount();
         } while (rules > 0);
 
@@ -377,6 +381,44 @@ final class RotaTests {
                 }
             }
         }
+    }
+
+    @Test
+    void fixedWorkingPattern(){
+        ArrayList<JuniorDoctor> doctors = Schedule.addDoctors();
+        int numberOfDays = Schedule.setNumberOfDays(startDate, endDate);
+
+        Hashtable<LocalDate, ArrayList<Shifts>> fixedWorkingPattern = new Hashtable<>();
+
+        ArrayList<Shifts> s = new ArrayList<>();
+        s.add(Shifts.NIGHT);
+        fixedWorkingPattern.put(LocalDate.of(2021, 8, 20), s);
+        fixedWorkingPattern.put(LocalDate.of(2021, 8, 21), s);
+        fixedWorkingPattern.put(LocalDate.of(2021, 8, 22), s);
+
+        fixedWorkingPattern.put(LocalDate.of(2021, 9, 17), s);
+        fixedWorkingPattern.put(LocalDate.of(2021, 9, 18), s);
+        fixedWorkingPattern.put(LocalDate.of(2021, 9, 19), s);
+
+        fixedWorkingPattern.put(LocalDate.of(2021, 10, 15), s);
+        fixedWorkingPattern.put(LocalDate.of(2021, 10, 16), s);
+        fixedWorkingPattern.put(LocalDate.of(2021, 10, 17), s);
+
+        BuildSchedule iteration;
+        int rules;
+        do {
+            iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors, fixedWorkingPattern);
+            rules = iteration.getRulesCount();
+        } while (rules > 0);
+
+        for(JuniorDoctor doctor : doctors){
+            assertNotEquals(doctor.getShiftType(LocalDate.of(2021,8,20)), Shifts.NIGHT);
+            assertNotEquals(doctor.getShiftType(LocalDate.of(2021,8,21)), Shifts.NIGHT);
+            assertNotEquals(doctor.getShiftType(LocalDate.of(2021,8,22)), Shifts.NIGHT);
+
+            assertNotEquals(doctor.getShiftType(LocalDate.of(2021, 9, 17)), Shifts.NIGHT);
+        }
+
     }
 
 

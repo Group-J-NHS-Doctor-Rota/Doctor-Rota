@@ -68,18 +68,15 @@ public class IndexController {
         return PutOperations.putWorkingDays(id, monday, tuesday, wednesday, thursday, friday, saturday, sunday);
     }
 
-    @PutMapping("/account/{id}/fixedshift")
-    public ResponseEntity<String> putFixedShift(@PathVariable int id,
-                                                @RequestParam(value = "date", defaultValue = "1900-01-01") Date date,
-                                                @RequestParam(value = "shift", defaultValue = "1") int shift) {
-        //todo maybe the defaultValue shouldn't be hard code
-        //todo defaultValue spring boot will do it
-        if (shift > 4 || shift < 1) {
-            // todo Should I use 'status.CONFLICT' ?
+    @PutMapping("/account/{accountId}/fixedshift")
+    public ResponseEntity<String> putFixedShift(@PathVariable int accountId,
+                                                @RequestParam Date date,
+                                                @RequestParam int shiftType) {
+        if (shiftType > 2 || shiftType < 0) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Shift number should between 1 and 4");
+                    .body("The value of shiftType should from 0 to 2");
         }
-        return PutOperations.putFixedShift(id, date, shift);
+        return PutOperations.putFixedShift(accountId, date, shiftType);
     }
 
 }

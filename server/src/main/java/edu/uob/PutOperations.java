@@ -40,21 +40,28 @@ public class PutOperations {
         }
     }
 
-    public static ResponseEntity<String> putFixedShift(int id, Date date, int shift) {
+    public static ResponseEntity<String> putFixedShift(int accountId, Date date, int shiftType) {
         String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString);) {
-            try(PreparedStatement putStatement = c.prepareStatement(
-                    "INSERT INTO table_name (date, shift) VALUES (?, ?);")) {
-//                putStatement.setInt(1, id); // todo where should I use id?
-                putStatement.setDate(1, date);
-                putStatement.setInt(2, shift);
-                putStatement.executeUpdate();
-                putStatement.close();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Only if account id exists, then try to insert data
+            if(!ConnectionTools.accountIdExists(accountId, c)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Account with id "+accountId+" does not exist");
+            }
+            // Delete old data, if any, then insert new data
+            String SQL = "DELETE FROM fixedRotaShifts WHERE accountId = ?;" +
+                    "INSERT INTO fixedRotaShifts (accountId, date, shiftType) VALUES (?, ?, ?);";
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, accountId);
+                s.setInt(2, accountId);
+                s.setDate(3, date);
+//              shiftType: 0: 'Normal Working Day', 1: 'Long Day', 2: 'Night'
+                s.setInt(4, shiftType);
+                s.executeUpdate();
                 return ResponseEntity.status(HttpStatus.OK).body("");
             }
-            // Have to catch SQLException exception here
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
 

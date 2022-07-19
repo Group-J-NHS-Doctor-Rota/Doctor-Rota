@@ -79,13 +79,7 @@ public class PutOperationsTests {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             int id = 999999070;
-            String date = "1922-07-18";
-//            // todo delete old account
-//            String SQL1 = "DELETE FROM fixedRotaShifts WHERE accountId = 999999070; " +
-//                    "DELETE FROM accounts WHERE id = 999999070;";
-//            try (PreparedStatement s = c.prepareStatement(SQL1)) {
-//                s.executeUpdate();
-//            }
+            Date date1 = Date.valueOf("1922-07-18");
 
             // Create new account with id 999999070 (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id, c));
@@ -96,21 +90,24 @@ public class PutOperationsTests {
             }
             // Check account creation
             assertTrue(ConnectionTools.accountIdExists(id, c));
+
             // Try to put fixed rota shifts for an account id which doesn't exist (1000000001)
             assertFalse(ConnectionTools.accountIdExists(1000000001, c));
             assertThrows(ResponseStatusException.class,
-                    ()-> PutOperations.putFixedShift(1000000001, Date.valueOf(date), 1));
+                    ()-> PutOperations.putFixedShift(1000000001, date1, 1));
+
             // Try to put fixed rota shifts for new account 999999070
-            PutOperations.putFixedShift(id, Date.valueOf(date), 1);
+            PutOperations.putFixedShift(id, date1, 1);
             // Check row exists and values are correct
             SQL = "SELECT accountId, date, shiftType FROM fixedRotaShifts WHERE accountId = 999999070; ";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 ResultSet r = s.executeQuery();
                 r.next();
                 assertEquals(id, r.getInt("accountId"));
-                assertEquals(Date.valueOf("1922-07-18"), r.getDate("date"));
+                assertEquals(date1, r.getDate("date"));
                 assertEquals(1, r.getInt("shiftType"));
             }
+
             // Try to put fixed shift for same id
             Date date2 = Date.valueOf("1922-07-19");
             PutOperations.putFixedShift(id, date2,2);
@@ -123,6 +120,7 @@ public class PutOperationsTests {
                 assertEquals(date2, r.getDate("date"));
                 assertEquals(2, r.getInt("shiftType"));
             }
+            
             // Delete all test data
             SQL = "DELETE FROM fixedRotaShifts WHERE accountId = 999999070; " +
                     "DELETE FROM accounts WHERE id = 999999070;";
@@ -131,6 +129,8 @@ public class PutOperationsTests {
             }
             // Check delete
             assertFalse(ConnectionTools.accountIdExists(id, c));
+            assertFalse(ConnectionTools.idExistInTable(id,
+                    "accountId", "fixedRotaShifts", c));
         } catch (SQLException e) {
             fail("Database connection and SQL queries should have worked\n" + e);
         }

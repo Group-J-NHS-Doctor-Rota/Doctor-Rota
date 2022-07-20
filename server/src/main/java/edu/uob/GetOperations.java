@@ -111,10 +111,9 @@ public class GetOperations {
 
     }
 
-
     public static ResponseEntity<ObjectNode> getShifts(int year, int accountId) {
         String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString)) {
+        try (Connection c = DriverManager.getConnection(connectionString)) {
             String SQL = "SELECT S.id, S.accountId, A.username, S.rotaTypeId, " +
                     "S.date, S.type, S.ruleNotes, A.level " +
                     "FROM shifts S " +
@@ -122,14 +121,14 @@ public class GetOperations {
                     "WHERE S.date::text LIKE '" + year + "%' " +
                     // If account is admin, get all shifts, else get other their shifts
                     "AND ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR S.accountId = ? );";
-            try(PreparedStatement s = c.prepareStatement(SQL)) {
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 ObjectNode objectNode = objectMapper.createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("shifts");
                 s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
                 s.setInt(2, accountId); // In SQL sentence, OR S.accountId = ?
                 ResultSet r = s.executeQuery();
-                while(r.next()) {
+                while (r.next()) {
                     ObjectNode objectNodeRow = objectMapper.createObjectNode();
                     // r.getXXX(table's name)
                     objectNodeRow.put("id", r.getInt("id"));
@@ -141,6 +140,33 @@ public class GetOperations {
                     objectNodeRow.put("type", r.getInt("type"));
                     objectNodeRow.put("ruleNotes", r.getString("ruleNotes"));
                     objectNodeRow.put("accountLevel", r.getInt("level"));
+                    arrayNode.add(objectNodeRow);
+                }
+                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            }
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+
+    public static ResponseEntity<ObjectNode> getLeaves(int accountId) {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            String SQL = "SELECT id, annualLeave, studyLeave FROM accounts " +
+                    "WHERE ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR id = ?) ; ";
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                ObjectNode objectNode = objectMapper.createObjectNode();
+                ArrayNode arrayNode = objectNode.putArray("leaves");
+                s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
+                s.setInt(2, accountId); // In SQL sentence, OR id = ?
+                ResultSet r = s.executeQuery();
+                while(r.next()) {
+                    ObjectNode objectNodeRow = objectMapper.createObjectNode();
+                    objectNodeRow.put("id", r.getInt("id"));
+                    objectNodeRow.put("studyLeave", r.getInt("studyLeave"));
+                    objectNodeRow.put("annualLeave", r.getInt("annualLeave"));
                     arrayNode.add(objectNodeRow);
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);

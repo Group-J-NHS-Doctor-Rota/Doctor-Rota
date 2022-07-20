@@ -167,6 +167,13 @@ public class IndexController {
         return ResponseEntity.status(HttpStatus.OK).body(objectNode);
     }
 
+    @PutMapping(value = "/account", produces = "application/json")
+    public ResponseEntity<String> putAccount(@RequestParam String username) {
+        //todo check token is valid
+        //todo input full logic
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
     @PatchMapping(value = "/password", produces = "application/json")
     public ResponseEntity<String> patchPassword(@RequestHeader String oldPassword, @RequestHeader String newPassword,
                                                 @RequestParam String accountId) {

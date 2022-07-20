@@ -72,24 +72,28 @@ public class PatchOperations {
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, notificationId);
                 ResultSet r = s.executeQuery();
-                int type = r.getInt("type");
-                int detailId = r.getInt("detailId");
-                String tableName;
-                switch (type) {
-                    case 0 -> tableName = "leaveRequests"; //todo not hard code
-                    case 1 -> tableName = ""; // '1' refers to other requests currently
-                    default -> tableName = "";
+                while(r.next()){
+                    int type = r.getInt("type");
+                    int detailId = r.getInt("detailId");
+                    String tableName;
+                    switch (type) {
+                        case 0 -> tableName = "leaveRequests"; //todo not hard code
+                        case 1 -> tableName = ""; // '1' refers to other requests currently
+                        default -> tableName = "";
+                    }
+                    if (tableName.isEmpty()) {
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong type value: " + type);
+                    }
+                    if (!ConnectionTools.idExistInTable(accountId, "accountId", tableName, c) ||
+                            !ConnectionTools.idExistInTable(detailId, "id", tableName, c)) {
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Cannot find an id in table " + tableName);
+                    }
+                    // Update status in target table
+                    updateVariable(status, "int", "status", tableName, detailId, c);
                 }
-                if (tableName.isEmpty()) {
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong type value: " + type);
-                }
-                if (ConnectionTools.idExistInTable(accountId, "accountId", tableName, c) ||
-                ConnectionTools.idExistInTable(detailId, "id", tableName, c)) {
-                    throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                            "Cannot find an id in table " + tableName);
-                }
-                // Update status in target table
-                updateVariable(status, "int", "status", tableName, detailId, c);
+
+
             }
             return ResponseEntity.status(HttpStatus.OK).body("");
             // Have to catch SQLException exception here

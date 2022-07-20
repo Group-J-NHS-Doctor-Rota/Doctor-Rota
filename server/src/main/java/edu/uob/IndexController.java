@@ -186,7 +186,7 @@ public class IndexController {
     }
 
     @PatchMapping(value = "/logout", produces = "application/json")
-    public ResponseEntity<String> patchlogout() {
+    public ResponseEntity<String> patchLogout() {
         //todo check token is valid
         //todo input full logic
         return ResponseEntity.status(HttpStatus.OK).body("");

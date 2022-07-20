@@ -51,8 +51,11 @@ public class GetOperations {
 
     public static ResponseEntity<ObjectNode> getAccount(int accountId) {
         String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString);) {
-            // Get single account and store as key value
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            if(!ConnectionTools.accountIdExists(accountId, c)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
+            }
+            // Only if account id exists, then get single account and store as key value
             String SQL = "SELECT * FROM accounts WHERE id = ?;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, accountId);

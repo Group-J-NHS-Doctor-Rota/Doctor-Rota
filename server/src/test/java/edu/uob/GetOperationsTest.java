@@ -169,4 +169,70 @@ public class GetOperationsTest {
         }
     }
 
+    @Test
+    void testGetShifts() {
+        int id1 = 999999001;
+        int id2 = 999999077;
+        int year = 1922;
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Create new accounts with ids 999999001 and 999999077 (definitely unused)
+            assertFalse(ConnectionTools.accountIdExists(id1, c));
+            assertFalse(ConnectionTools.accountIdExists(id2, c));
+            assertFalse(ConnectionTools.accountIdExists(999999333, c));
+            String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
+                    "VALUES (999999001, 'testuser1', 'pwd999999001', '4567', 'user1@test.com', 15, 15, 48, 0), " +
+                    "(999999077, 'testuser2', 'pwd999999077', '4568', 'user2@test.com', 15, 15, 48, 1);";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.executeUpdate();
+            }
+            // Check account creation
+            assertTrue(ConnectionTools.accountIdExists(id1, c));
+            assertTrue(ConnectionTools.accountIdExists(id2, c));
+            // Add test data in table 'shifts'
+            SQL = "INSERT INTO shifts (id, accountId, rotaGroupId, rotaTypeId, date, type, ruleNotes) " +
+                    "VALUES (999999901, 999999001, 1, 4, '1922-09-01'::date, 0, 'rule'), " +
+                    "(999999977, 999999077, 1, 4, '1922-09-07'::date, 1, 'note'); ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.executeUpdate();
+            }
+            // Check response:
+            // level 1 account 999999077 will get all the shift data from table 'shift'
+            ResponseEntity<ObjectNode> response = GetOperations.getShifts(year, id2);
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
+            assertTrue(rootNode.get("shifts").size() >= 2);// Might be greater than 2 as data may already be in table
+            assertTrue(response.getBody().toString().contains(
+                    "{\"id\":999999901,\"accountId\":999999001,\"username\":\"testuser1\",\"rotaType\":4,\"date\":\"1922-09-01\",\"type\":0,\"ruleNotes\":\"rule\",\"accountLevel\":0}"
+            ));
+            assertTrue(response.getBody().toString().contains(
+                    "{\"id\":999999977,\"accountId\":999999077,\"username\":\"testuser2\",\"rotaType\":4,\"date\":\"1922-09-07\",\"type\":1,\"ruleNotes\":\"note\",\"accountLevel\":1}"
+            ));
+            // Check response expecting one shift (level 0 account)
+            response = GetOperations.getShifts(year, id1);
+            rootNode = mapper.readTree(String.valueOf(response.getBody()));
+            assertEquals(1, rootNode.get("shifts").size());
+            assertTrue(response.getBody().toString().contains(
+                    "{\"id\":999999901,\"accountId\":999999001,\"username\":\"testuser1\",\"rotaType\":4,\"date\":\"1922-09-01\",\"type\":0,\"ruleNotes\":\"rule\",\"accountLevel\":0}"
+            ));
+            // Check response expecting no shifts (no account)
+            response = GetOperations.getShifts(year, 999999333);
+            rootNode = mapper.readTree(String.valueOf(response.getBody()));
+            assertEquals(0, rootNode.get("shifts").size());
+            assertTrue(response.getBody().toString().contains("{\"shifts\":[]}"));
+            // Delete all test data
+            SQL = "DELETE FROM shifts WHERE accountId IN (999999001,999999077); " +
+                    "DELETE FROM accounts WHERE id IN (999999001,999999077);" +
+                    "DELETE FROM rotaTypes WHERE id IN(901, 977); " +
+                    "DELETE FROM rotaGroups WHERE id IN(901, 977);";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.executeUpdate();
+            }
+            // Check delete
+            assertFalse(ConnectionTools.accountIdExists(id1, c));
+            assertFalse(ConnectionTools.accountIdExists(id2, c));
+        } catch (Exception e) {
+            fail("Database connection and SQL queries should have worked\n" + e);
+        }
+    }
 }

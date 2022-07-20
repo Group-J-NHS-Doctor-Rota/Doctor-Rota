@@ -139,4 +139,9 @@ public class IndexController {
         return PutOperations.putFixedShift(accountId, date, shiftType);
     }
 
+    @GetMapping(value = "/shift/{year}", produces = "application/json")
+    public ResponseEntity<ObjectNode> getShifts(@PathVariable int year, @RequestParam int accountId) {
+        return GetOperations.getShifts(year, accountId);
+    }
+
 }

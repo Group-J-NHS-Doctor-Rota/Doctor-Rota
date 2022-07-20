@@ -118,6 +118,7 @@ public class IndexController {
                                                     @RequestParam(required = false) int accountId,
                                                     @RequestParam(required = false) String status) {
         return PatchOperations.patchNotification(notificationId, accountId, status);
+    }
 
     @PostMapping(value = "/request/leave", produces = "application/json")
     public ResponseEntity<String> postRequestLeave(@RequestParam int accountId, @RequestParam String date, @RequestParam int type,

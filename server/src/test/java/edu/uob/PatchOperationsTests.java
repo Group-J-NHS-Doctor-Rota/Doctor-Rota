@@ -110,4 +110,61 @@ public class PatchOperationsTests {
             fail("Database connection and SQL queries should have worked\n" + e);
         }
     }
+
+    @Test
+    void testPatchNotification() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            int id = 999999073;
+            // check the test data
+            assertFalse(ConnectionTools.accountIdExists(id, c));
+            assertFalse(ConnectionTools.idExistInTable(
+                    999999730, "id", "leaveRequests", c));
+            assertFalse(ConnectionTools.idExistInTable(
+                    999999703, "id", "notifications", c));
+            // Create new account with id 999999073 (definitely unused)
+            String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
+                    "VALUES (999999073, 'test073User', 'pwd999999073', '9073', 't_user073@test.com', 15, 15, 48, 0);";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.executeUpdate();
+            }
+            // Add test data for leave requests and notifications
+            SQL = "INSERT INTO leaveRequests (id, accountId, date, type, note, status) " +
+                    "VALUES (999999730, 999999073, '1922-07-19', 0, 'note', 0); " +
+                    "INSERT INTO notifications (id, type, detailId) " +
+                    "VALUES (999999703, 0, 999999730); ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.executeUpdate();
+            }
+            // Update notification details
+            PatchOperations.patchNotification(999999703, id, "1");
+            // Check details
+            SQL = "SELECT N.id, N.type, N.detailId, L.id AS leaveRequestId, L.accountId, L.status " +
+                    "FROM notifications N " +
+                    "LEFT JOIN leaveRequests L on N.detailId = L.id " +
+                    "WHERE L.accountId = ?";
+//        "SELECT id, accountId, detailId FROM notifications WHERE id = 999999073;"; //todo delete
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, id);
+                ResultSet r = s.executeQuery();
+                r.next();
+                assertEquals(999999703, r.getInt("id"));
+                assertEquals(0, r.getInt("type"));
+                assertEquals(999999730, r.getInt("detailId"));
+                assertEquals(999999730, r.getInt("leaveRequestId"));
+                assertEquals(999999073, r.getInt("accountId"));
+                assertEquals(1, r.getInt("status"));
+            }
+            //Update non-existent account
+            assertFalse(ConnectionTools.accountIdExists(1000001001, c));
+            assertThrows(ResponseStatusException.class,
+                    ()-> PatchOperations.patchNotification(
+                            999999703, 1000001001, "2"));
+            //Delete account
+            DeleteOperations.deleteAccount(id);
+            assertFalse(ConnectionTools.accountIdExists(id, c));
+        } catch (SQLException e) {
+            fail("Database connection and SQL queries should have worked\n" + e);
+        }
+    }
 }

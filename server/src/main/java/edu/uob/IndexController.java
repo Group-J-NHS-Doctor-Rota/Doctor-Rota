@@ -179,4 +179,10 @@ public class IndexController {
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
+    @PatchMapping(value = "/passwordReset", produces = "application/json")
+    public ResponseEntity<String> patchPasswordReset(@RequestParam String username, @RequestParam String email) {
+        //todo input full logic
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
 }

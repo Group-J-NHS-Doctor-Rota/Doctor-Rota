@@ -185,4 +185,11 @@ public class IndexController {
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
+    @PatchMapping(value = "/logout", produces = "application/json")
+    public ResponseEntity<String> patchlogout() {
+        //todo check token is valid
+        //todo input full logic
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
 }

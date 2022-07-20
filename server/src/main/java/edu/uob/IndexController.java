@@ -156,4 +156,15 @@ public class IndexController {
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
+    @GetMapping(value = "/login", produces = "application/json")
+    public ResponseEntity<ObjectNode> getLogin(@RequestHeader String password, @RequestParam String username) {
+        //todo input full logic
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("token", "123someDudToken456");
+        objectNode.put("accountId", 1);
+        objectNode.put("level", 1);
+        return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+    }
+
 }

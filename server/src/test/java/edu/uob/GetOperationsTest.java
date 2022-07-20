@@ -103,18 +103,15 @@ public class GetOperationsTest {
             assertTrue(ConnectionTools.accountIdExists(id2, c));
 
             // Check response:
-            // level 1 account 999999076 will get all the data of leaves from table 'account'
+            // Check response expecting one leave (level 1 account 999999076)
             ResponseEntity<ObjectNode> response = GetOperations.getLeaves(id2);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
-            assertTrue(rootNode.get("leaves").size() >= 2);// Might be greater than 2 as data may already be in table
-            assertTrue(response.getBody().toString().contains(
-                    "{\"id\":999999075,\"studyLeave\":705,\"annualLeave\":75}"
-            ));
+            assertEquals(1, rootNode.get("leaves").size());
             assertTrue(response.getBody().toString().contains(
                     "{\"id\":999999076,\"studyLeave\":706,\"annualLeave\":76}"
             ));
-            // Check response expecting one leave (level 0 account)
+            // Check response expecting one leave (level 0 account 999999075)
             response = GetOperations.getLeaves(id1);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertEquals(1, rootNode.get("leaves").size());
@@ -129,10 +126,8 @@ public class GetOperationsTest {
             assertTrue(response.getBody().toString().contains("{\"leaves\":[]"));
 
             // Delete all test data
-            SQL = "DELETE FROM accounts WHERE id IN (999999075,999999076);";
-            try (PreparedStatement s = c.prepareStatement(SQL)) {
-                s.executeUpdate();
-            }
+            DeleteOperations.deleteAccount(id1);
+            DeleteOperations.deleteAccount(id2);
             // Check delete
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             assertFalse(ConnectionTools.accountIdExists(id2, c));

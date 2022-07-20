@@ -9,7 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.Date;
 
 @RestController
 public class IndexController {
@@ -126,6 +126,17 @@ public class IndexController {
         //todo check token is valid
         return PostOperations.postRequestLeave(accountId, date, type, length, note);
 
+    }
+
+    @PutMapping("/account/{accountId}/fixedshift")
+    public ResponseEntity<String> putFixedShift(@PathVariable int accountId,
+                                                @RequestParam Date date,
+                                                @RequestParam int shiftType) {
+        if (shiftType > 2 || shiftType < 0) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("The value of shiftType should from 0 to 2");
+        }
+        return PutOperations.putFixedShift(accountId, date, shiftType);
     }
 
 }

@@ -149,4 +149,11 @@ public class IndexController {
         return GetOperations.getShifts(year, accountId);
     }
 
+    @PutMapping(value = "/rotabuild", produces = "application/json")
+    public ResponseEntity<String> getRotaBuild() {
+        //todo check token is valid
+        //todo input full logic
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
 }

@@ -150,7 +150,7 @@ public class IndexController {
     }
 
     @PutMapping(value = "/rotabuild", produces = "application/json")
-    public ResponseEntity<String> getRotaBuild() {
+    public ResponseEntity<String> putRotaBuild() {
         //todo check token is valid
         //todo input full logic
         return ResponseEntity.status(HttpStatus.OK).body("");

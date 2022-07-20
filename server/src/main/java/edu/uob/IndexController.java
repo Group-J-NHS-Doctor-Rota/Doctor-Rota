@@ -115,8 +115,8 @@ public class IndexController {
     // Optional request parameters can't be primitives and no null value
     // Better to have them as String and convert later
     public ResponseEntity<String> patchNotification(@PathVariable int notificationId,
-                                                    @RequestParam(required = false) int accountId,
-                                                    @RequestParam(required = false) String status) {
+                                                    @RequestParam int accountId,
+                                                    @RequestParam String status) {
         return PatchOperations.patchNotification(notificationId, accountId, status);
     }
 

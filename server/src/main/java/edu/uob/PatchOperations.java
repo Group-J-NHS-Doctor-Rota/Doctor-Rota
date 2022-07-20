@@ -67,8 +67,7 @@ public class PatchOperations {
             if(!ConnectionTools.accountIdExists(accountId, c)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
             }
-            String SQL = "SELECT type, detailId FROM notifications " +
-                    "WHERE id = ? "; //todo in one sentence
+            String SQL = "SELECT type, detailId FROM notifications WHERE id = ? ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, notificationId);
                 ResultSet r = s.executeQuery();

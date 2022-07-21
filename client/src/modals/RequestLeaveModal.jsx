@@ -171,7 +171,6 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                     setErrorMsg({... errorMsg, ["single_day_invalid"]: true})
                     setLeave(true)
                 }
-                
             }
         }else if(values.type_day == "multiple"){
             if(values.multiple_start_day == ""){
@@ -437,7 +436,7 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                 Cancel
                             </CloseButton>
 
-                            <ConfirmButton className="m-2" type="button">
+                            <ConfirmButton className="m-2" type="button" onClick={handleSubmit}>
                                 Submit
                             </ConfirmButton>    
                         </div>

@@ -14,7 +14,7 @@ public class GetOperations {
     public static ResponseEntity<ObjectNode> getNotifications(int accountId) {
 
         String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString);) {
+        try(Connection c = DriverManager.getConnection(connectionString)) {
             String SQL = "SELECT N.id, L.id AS leaveRequestId, L.accountId, L.date, L.type, L.note, L.status " +
                     "FROM notifications N " +
                     "LEFT JOIN leaveRequests L on N.detailId = L.id " +
@@ -23,15 +23,14 @@ public class GetOperations {
                     "AND ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR L.accountid = ? ) " +
                     "ORDER BY N.id;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                ObjectNode objectNode = objectMapper.createObjectNode();
+                ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("leaveRequests");
                 s.setInt(1, accountId);
                 s.setInt(2, accountId);
                 ResultSet r = s.executeQuery();
                 // Store each notification information in a list
                 while(r.next()) {
-                    ObjectNode objectNodeRow = objectMapper.createObjectNode();
+                    ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
                     objectNodeRow.put("id", r.getInt("id"));
                     objectNodeRow.put("leaveRequestId", r.getInt("leaveRequestId"));
                     objectNodeRow.put("accountId", r.getInt("accountId"));
@@ -59,8 +58,7 @@ public class GetOperations {
             String SQL = "SELECT * FROM accounts WHERE id = ?;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, accountId);
-                ObjectMapper objectMapper = new ObjectMapper();
-                ObjectNode objectNode = objectMapper.createObjectNode();
+                ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ResultSet r = s.executeQuery();
                 if(r.next()) {
                     addAccountDetailsToObjectNode(r, objectNode);
@@ -75,16 +73,15 @@ public class GetOperations {
 
     public static ResponseEntity<ObjectNode> getAllAccounts() {
         String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString);) {
+        try(Connection c = DriverManager.getConnection(connectionString)) {
             // Get al accounts and store in list
             String SQL = "SELECT * FROM accounts ORDER BY id;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                ObjectNode objectNode = objectMapper.createObjectNode();
+                ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("accounts");
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
-                    ObjectNode objectNodeRow = objectMapper.createObjectNode();
+                    ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
                     addAccountDetailsToObjectNode(r, objectNodeRow);
                     arrayNode.add(objectNodeRow);
                 }
@@ -125,14 +122,13 @@ public class GetOperations {
                     // If account is admin, get all shifts, else get other their shifts
                     "AND ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR S.accountId = ? );";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                ObjectNode objectNode = objectMapper.createObjectNode();
+                ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("shifts");
                 s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
                 s.setInt(2, accountId); // In SQL sentence, OR S.accountId = ?
                 ResultSet r = s.executeQuery();
                 while (r.next()) {
-                    ObjectNode objectNodeRow = objectMapper.createObjectNode();
+                    ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
                     // r.getXXX(table's name)
                     objectNodeRow.put("id", r.getInt("id"));
                     objectNodeRow.put("accountId", r.getInt("accountId"));
@@ -159,14 +155,13 @@ public class GetOperations {
             String SQL = "SELECT id, annualLeave, studyLeave FROM accounts " +
                     "WHERE ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR id = ?) ; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                ObjectNode objectNode = objectMapper.createObjectNode();
+                ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("leaves");
                 s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
                 s.setInt(2, accountId); // In SQL sentence, OR id = ?
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
-                    ObjectNode objectNodeRow = objectMapper.createObjectNode();
+                    ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
                     objectNodeRow.put("id", r.getInt("id"));
                     objectNodeRow.put("studyLeave", r.getInt("studyLeave"));
                     objectNodeRow.put("annualLeave", r.getInt("annualLeave"));

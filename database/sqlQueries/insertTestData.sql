@@ -11,12 +11,41 @@ VALUES
     ('John Smith', 'sdafgndfjgn', '123', 'test@test.com', '07777 777 777', '9876', 15, 15, 48, 0, 0, 1, 1, 1, false);
 INSERT INTO accounts (username, password, salt, email, annualLeave, studyLeave, workingHours, level)
 VALUES
-    ('Jane Smith', 'qwererydf', '456', 'test2@test.com', 15, 15, 48, 0);
+    ('Jane Smith', 'qwererydf', '456', 'test2@test.com', 15, 15, 48, 0),
+    ('User One', 'gsgfsdgfdsg', '111', 'user1@test.com', 11, 1, 48, 1),
+    ('User Two', 'dfhdfghfg', '222', 'user2@test.com', 12, 15, 48, 0),
+    ('User Three', '45y6ertyeh', '333', 'user3@test.com', 13, 15, 48, 0),
+    ('User Four', '5e6u5hg', '444', 'user4@test.com', 14, 15, 48, 0),
+    ('User Five', '6e5hr', '555', 'user5@test.com', 15, 15, 47, 0),
+    ('User Six', 'dhfgh654hth545', '666', 'user6@test.com', 16, 15, 48, 0),
+    ('User Seven', 'fdghd54yh5', '777', 'user7@test.com', 17, 15, 48, 0),
+    ('User Eight', 'dhw54htdfh', '888', 'user8@test.com', 18, 10, 48, 0),
+    ('User Nine', 'fghkfgk7k', '99999', 'user9@test.com', 19, 15, 48, 0),
+    ('User Ten', 'l78iiyitui', '09876', 'user10@test.com', 20, 15, 48, 0);
 
 /*shifts data*/
 INSERT INTO shifts (accountId, rotaGroupId, rotaTypeId, date, type, ruleNotes)
 VALUES
-    (1, 1, 1, '2021-09-01', 0, '');
+    (1, 1, 1, '2021-09-01', 0, ''),
+    (1, 1, 2, '2022-08-01', 1, ''),
+    (2, 1, 3, '2022-08-01', 2, ''),
+    (3, 1, 4, '2022-08-01', 3, ''),
+    (4, 1, 1, '2022-08-01', 0, ''),
+    (5, 1, 2, '2022-08-01', 1, ''),
+    (6, 1, 1, '2022-08-01', 2, ''),
+    (6, 1, 1, '2022-08-02', 3, ''),
+    (6, 1, 1, '2022-08-03', 0, ''),
+    (6, 1, 1, '2022-08-04', 1, ''),
+    (6, 1, 1, '2022-08-05', 2, ''),
+    (6, 1, 2, '2022-08-06', 3, ''),
+    (6, 1, 2, '2022-08-07', 0, ''),
+    (6, 1, 2, '2022-08-08', 1, ''),
+    (6, 1, 2, '2022-08-09', 2, ''),
+    (7, 1, 4, '2022-08-01', 0, ''),
+    (7, 1, 4, '2022-08-02', 0, ''),
+    (7, 1, 4, '2022-08-03', 2, ''),
+    (7, 1, 4, '2022-08-04', 0, ''),
+    (7, 1, 4, '2022-08-05', 1, '');
 
 /*leaveRequests data*/
 INSERT INTO leaveRequests (accountId, date, type, length, note, status)

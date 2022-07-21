@@ -67,13 +67,8 @@ public class GetOperationsTest {
             assertTrue(response.getBody().toString().contains("{\"leaveRequests\":[]"));
 
             // Delete all test data
-            SQL = "DELETE FROM notifications WHERE detailId IN (SELECT detailId FROM notifications n " +
-                    "LEFT JOIN leaveRequests l ON n.detailId = l.id WHERE accountId IN (999999199,999999299)) AND type = 0; " +
-                    "DELETE FROM leaveRequests WHERE accountId IN (999999199,999999299); " +
-                    "DELETE FROM accounts WHERE id IN (999999199,999999299);";
-            try (PreparedStatement s = c.prepareStatement(SQL)) {
-                s.executeUpdate();
-            }
+            DeleteOperations.deleteAccount(999999199);
+            DeleteOperations.deleteAccount(999999299);
             // Check delete
             assertFalse(ConnectionTools.accountIdExists(999999199, c));
             assertFalse(ConnectionTools.accountIdExists(999999299, c));
@@ -277,13 +272,8 @@ public class GetOperationsTest {
             assertEquals(0, rootNode.get("shifts").size());
             assertTrue(response.getBody().toString().contains("{\"shifts\":[]}"));
             // Delete all test data
-            SQL = "DELETE FROM shifts WHERE accountId IN (999999001,999999077); " +
-                    "DELETE FROM accounts WHERE id IN (999999001,999999077);" +
-                    "DELETE FROM rotaTypes WHERE id IN(901, 977); " +
-                    "DELETE FROM rotaGroups WHERE id IN(901, 977);";
-            try (PreparedStatement s = c.prepareStatement(SQL)) {
-                s.executeUpdate();
-            }
+            DeleteOperations.deleteAccount(id1);
+            DeleteOperations.deleteAccount(id2);
             // Check delete
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             assertFalse(ConnectionTools.accountIdExists(id2, c));

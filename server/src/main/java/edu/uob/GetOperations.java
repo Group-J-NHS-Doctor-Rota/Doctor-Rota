@@ -152,20 +152,15 @@ public class GetOperations {
     public static ResponseEntity<ObjectNode> getLeaves(int accountId) {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            String SQL = "SELECT id, annualLeave, studyLeave FROM accounts " +
-                    "WHERE ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR id = ?) ; ";
+            String SQL = "SELECT id, annualLeave, studyLeave FROM accounts WHERE id = ?; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
-                ArrayNode arrayNode = objectNode.putArray("leaves");
                 s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
-                s.setInt(2, accountId); // In SQL sentence, OR id = ?
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
-                    ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
-                    objectNodeRow.put("id", r.getInt("id"));
-                    objectNodeRow.put("studyLeave", r.getInt("studyLeave"));
-                    objectNodeRow.put("annualLeave", r.getInt("annualLeave"));
-                    arrayNode.add(objectNodeRow);
+                    objectNode.put("id", r.getInt("id"));
+                    objectNode.put("studyLeave", r.getInt("studyLeave"));
+                    objectNode.put("annualLeave", r.getInt("annualLeave"));
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             }

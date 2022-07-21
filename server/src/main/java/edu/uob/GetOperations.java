@@ -157,15 +157,12 @@ public class GetOperations {
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 ObjectNode objectNode = objectMapper.createObjectNode();
-                ArrayNode arrayNode = objectNode.putArray("leaves");
                 s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
-                    ObjectNode objectNodeRow = objectMapper.createObjectNode();
-                    objectNodeRow.put("id", r.getInt("id"));
-                    objectNodeRow.put("studyLeave", r.getInt("studyLeave"));
-                    objectNodeRow.put("annualLeave", r.getInt("annualLeave"));
-                    arrayNode.add(objectNodeRow);
+                    objectNode.put("id", r.getInt("id"));
+                    objectNode.put("studyLeave", r.getInt("studyLeave"));
+                    objectNode.put("annualLeave", r.getInt("annualLeave"));
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             }

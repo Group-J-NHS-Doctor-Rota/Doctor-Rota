@@ -91,7 +91,7 @@ public class GetOperationsTest {
             // Create new accounts with ids 999999075 and 999999076 (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             assertFalse(ConnectionTools.accountIdExists(id2, c));
-            assertFalse(ConnectionTools.accountIdExists(999999333, c));
+            assertFalse(ConnectionTools.accountIdExists(1000000000, c));
             String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
                     "VALUES (999999075, 'testuser3', 'pwd999999075', '9075', 'user3@test.com', 75, 705, 48, 0), " +
                     "(999999076, 'testuser4', 'pwd999999076', '9076', 'user4@test.com', 76, 706, 48, 1);";
@@ -103,27 +103,31 @@ public class GetOperationsTest {
             assertTrue(ConnectionTools.accountIdExists(id2, c));
 
             // Check response:
-            // Check response expecting one leave (level 1 account 999999076)
+            // Check response for one leaves (level 1 account 999999076)
             ResponseEntity<ObjectNode> response = GetOperations.getLeaves(id2);
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
-            assertEquals(1, rootNode.get("leaves").size());
-            assertTrue(response.getBody().toString().contains(
+            JsonNode rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
+            assertTrue(rootNode.has("id"));
+            assertTrue(rootNode.has("studyLeave"));
+            assertTrue(rootNode.has("annualLeave"));
+            assertTrue(response.getBody().toString().equals(
                     "{\"id\":999999076,\"studyLeave\":706,\"annualLeave\":76}"
             ));
-            // Check response expecting one leave (level 0 account 999999075)
+            // Check response for one leaves (level 0 account 999999075)
             response = GetOperations.getLeaves(id1);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
-            assertEquals(1, rootNode.get("leaves").size());
-            assertTrue(response.getBody().toString().contains(
+            assertTrue(rootNode.has("id"));
+            assertTrue(rootNode.has("studyLeave"));
+            assertTrue(rootNode.has("annualLeave"));
+            assertTrue(response.getBody().toString().equals(
                     "{\"id\":999999075,\"studyLeave\":705,\"annualLeave\":75}"
             ));
 
-            // Check response expecting no shifts (no account)
-            response = GetOperations.getLeaves(999999333);
+            // Check response expecting no leaves (no account)
+            response = GetOperations.getLeaves(1000000000);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
-            assertEquals(0, rootNode.get("leaves").size());
-            assertTrue(response.getBody().toString().contains("{\"leaves\":[]"));
+            assertTrue(rootNode.isEmpty());
+            assertTrue(response.getBody().toString().equals("{}"));
 
             // Delete all test data
             DeleteOperations.deleteAccount(id1);

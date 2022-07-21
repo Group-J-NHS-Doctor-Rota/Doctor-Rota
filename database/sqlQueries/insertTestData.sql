@@ -84,3 +84,19 @@ VALUES
     (0, 3),
     (0, 4),
     (0, 5);
+
+/*tokens data*/
+INSERT INTO tokens (accountid, token)
+VALUES
+    (1, 'asdfqwer10hjklyuio20'),
+    (2, 'bsdfqwer10hjklyuio20'),
+    (3, 'csdfqwer10hjklyuio20'),
+    (4, 'dsdfqwer10hjklyuio20'),
+    (5, 'esdfqwer10hjklyuio20'),
+    (6, 'fsdfqwer10hjklyuio20'),
+    (7, 'gsdfqwer10hjklyuio20'),
+    (8, 'hsdfqwer10hjklyuio20'),
+    (9, 'isdfqwer10hjklyuio20'),
+    (10, 'jsdfqwer10hjklyuio20'),
+    (11, 'ksdfqwer10hjklyuio20'),
+    (12, 'lsdfqwer10hjklyuio20');

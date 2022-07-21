@@ -198,3 +198,12 @@ CREATE TABLE notifications (
     UNIQUE(type, detailId),
     FOREIGN KEY (type) REFERENCES notificationTypes(id)
 );
+
+/*Location of authentication tokens for each account*/
+CREATE TABLE tokens (
+    accountId int NOT NULL,
+    token varchar NOT NULL,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (accountId),
+    FOREIGN KEY (accountId) REFERENCES accounts(id)
+);

@@ -18,7 +18,7 @@ export default function NavBar() {
     const listRef = useRef()
 
     useEffect(() => {
-        console.log(listRef.current)
+        console.log(listRef)
         // const closeList = e => {
         //     if(e.path[0] != listRef.current){
         //         setOpen(!open)

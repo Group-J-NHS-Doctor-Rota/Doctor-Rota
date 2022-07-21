@@ -37,21 +37,30 @@ export default function FilterCard({ setOpen }){
     ]
 
     const typesShift = [
-        {
-            id: 'day',
-            name: 'shifts_type',
-            value: 'day',
-            label: 'Day shifts'
+        {   id: "normal",
+            name: "shifts_type",
+            value: "normal",
+            label: "Normal day"
         },{
             id: 'night',
             name: 'shifts_type',
             value: 'night',
             label: 'Night shifts'
         },{
-            id: 'call',
-            name: 'shifts_type',
-            value: 'call',
-            label: 'On Call'
+            id: "long",
+            name: "shifts_type",
+            value: "long",
+            label: "Long day"
+        },{
+            id: "off day",
+            name: "shifts_type",
+            value: "off day",
+            label: "Trainee off day"
+        },{
+            id: "leave",
+            name: "shifts_type",
+            value: "leave",
+            label: "On leave"
         }
     ]
 
@@ -89,31 +98,6 @@ export default function FilterCard({ setOpen }){
                 <form action="#">
                     <FilterTitle className="my-1">Rota type</FilterTitle>
                     <div className="d-block">
-                        {/* <div className="d-flex align-items-center my-1">
-                            {
-                                values.rota_type === 'first_on' &&
-                                <input type="radio" id="first_on" name="rota_type" value="first_on" onClick={(e) => handleClick(e)} defaultChecked/>
-                                ||
-                                <input type="radio" id="first_on" name="rota_type" value="first_on" onClick={(e) => handleClick(e)}/>
-                            }
-                            <label htmlFor="first_on" className="ms-2">First on</label>
-                        </div>
-
-                        <div className="d-flex align-items-center my-1">
-                            <input type="radio" id="obstetric" name="rota_type" value="obstetric" onClick={(e) => handleClick(e)}/>
-                            <label htmlFor="obstetric" className="ms-2">Obstetric</label>
-                        </div>
-
-                        <div className="d-flex align-items-center my-1">
-                            <input type="radio" id="second_on" name="rota_type" value="second_on" onClick={(e) => handleClick(e)}/>
-                            <label htmlFor="second_on" className="ms-2">Second on</label>
-                        </div>
-                                    
-                        <div className="d-flex align-items-center my-1">
-                            <input type="radio" id="third_on" name="rota_type" value="third_on" onClick={(e) => handleClick(e)}/>
-                            <label htmlFor="third_on" className="ms-2">Third on</label>
-                        </div> */}
-
                         {
                             rotaTypes.map((rotaType)=>(
                                 <FormRadio 
@@ -128,21 +112,6 @@ export default function FilterCard({ setOpen }){
 
                     <FilterTitle className="my-1">Types of shift</FilterTitle>
                     <div className="d-block">
-                        {/* <div className="d-flex align-items-center my-1">
-                            <input type="radio" id="day" name="shifts_type" value="day" onClick={(e) => handleClick(e)}/>
-                            <label htmlFor="day" className="ms-2">Day shifts</label>
-                        </div>
-
-                        <div className="d-flex align-items-center my-1">
-                            <input type="radio" id="night" name="shifts_type" value="night" onClick={(e) => handleClick(e)}/>
-                            <label htmlFor="night" className="ms-2">Night shifts</label>
-                        </div>
-
-                        <div className="d-flex align-items-center my-1">
-                            <input type="radio" id="call" name="shifts_type" value="call" onClick={(e) => handleClick(e)}/>
-                            <label htmlFor="call" className="ms-2">On Call</label>
-                        </div> */}
-
                         {
                             typesShift.map((typeShift)=>(
                                 <FormRadio 
@@ -157,26 +126,6 @@ export default function FilterCard({ setOpen }){
 
                     <FilterTitle className="my-1">Members</FilterTitle>
                     <div className="d-block">
-                        {/* <div className="d-flex align-items-center my-1">
-                            <input type="radio" id="individual" name="member" value="individual" onClick={(e) => handleClick(e)}/>
-                            <label htmlFor="individual" className="ms-2">Individual</label>
-                        </div>
-
-                        <div className="d-flex align-items-center my-1">
-                            <input type="radio" id="trainees" name="member" value="trainees" onClick={(e) => handleClick(e)}/>
-                            <label htmlFor="trainees" className="ms-2">Trainees</label>
-                        </div>
-
-                        <div className="d-flex align-items-center my-1">
-                            <input type="radio" id="admin" name="member" value="admin" onClick={(e) => handleClick(e)}/>
-                            <label htmlFor="admin" className="ms-2">Admin view</label>
-                        </div>
-
-                        <div className="d-flex align-items-center my-1">
-                            <input type="radio" id="all" name="member" value="all" onClick={(e) => handleClick(e)}/>
-                            <label htmlFor="all" className="ms-2">All</label>
-                        </div> */}
-
                         {
                             members.map((member)=>(
                                 <FormRadio 

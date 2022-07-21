@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 import { Outlet, useNavigate } from 'react-router-dom';
 
@@ -13,6 +13,23 @@ export default function NavBar() {
     const [profile, setProfile] = useState(false)
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
+
+    
+    const listRef = useRef()
+
+    useEffect(() => {
+        console.log(listRef.current)
+        // const closeList = e => {
+        //     if(e.path[0] != listRef.current){
+        //         setOpen(!open)
+        //         console.log(e)
+        //     }
+        // }
+
+        // document.addEventListener('click', closeList)
+
+        // return () => document.removeEventListener('click', closeList)
+    }, [])
 
     function toggleList(type) {
         setOpen(!open)
@@ -41,6 +58,7 @@ export default function NavBar() {
         }
     }
 
+
     const navigate = useNavigate();
 
     return (
@@ -61,7 +79,7 @@ export default function NavBar() {
                 {
                     open &&
                     (<div className="d-flex justify-content-end">
-                        <NavBarList className="me-2 mt-2 p-3">
+                        <NavBarList ref={listRef} className="me-2 mt-2 p-3">
                             <NavBarItem className="d-flex my-2" onClick={() => toggleList("profile")}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-person-fill" style={{ fontSize: '30px' }}></i>

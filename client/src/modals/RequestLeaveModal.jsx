@@ -10,6 +10,12 @@ export default function RequestLeaveModal({ leave, setLeave }) {
         type_leave_required: false,
         single_day_required: false,
         single_day_invalid: false,
+        multiple_start_day_required: false,
+        multiple_end_day_required: false,
+        multiple_start_day_invalid: false,
+        multiple_end_day_invalid: false,
+        multiple_start_end_invalid: false,
+        comments_required: false
     })
 
     const [values, setValues] = useState({
@@ -20,12 +26,81 @@ export default function RequestLeaveModal({ leave, setLeave }) {
         multiple_start_half_full: "full",
         multiple_end_half_full: "full",
         multiple_start_day: "",
-        multiple_end_day: ""
+        multiple_end_day: "",
+        comments: ""
     })
 
     function setValue(e) {
         setValues({ ...values, [e.target.name]: e.target.value })
+
+        if(e.target.name == "type_leave"){
+            if(e.target.value != ""){
+                setErrorMsg({... errorMsg, ["type_leave_required"]: false})
+            }
+        }
+
+        if(e.target.name == "single_day"){
+            if(e.target.value != ""){
+                setErrorMsg({... errorMsg, ["single_day_required"]: false})
+            }else{
+                setErrorMsg({... errorMsg, ["single_day_required"]: true})
+            }
+
+            const today = getTodayDate()
+
+            if(!isValidDate(today, e.target.value)){
+                setErrorMsg({... errorMsg, ["single_day_invalid"]: true})
+            }else{
+                setErrorMsg({... errorMsg, ["single_day_invalid"]: false})
+            }
+        }
+
+        if(e.target.name == "multiple_start_day"){
+            if(e.target.value != ""){
+                setErrorMsg({... errorMsg, ["multiple_start_day_required"]: false})
+            }else{
+                setErrorMsg({... errorMsg, ["multiple_start_day_required"]: true})
+            }
+
+            const today = getTodayDate()
+            
+            if(!isValidDate(today, e.target.value)){
+                setErrorMsg({... errorMsg, ["multiple_start_day_invalid"]: true})
+            }else{
+                setErrorMsg({... errorMsg, ["multiple_start_day_invalid"]: false})
+            }
+        }
+        
+        if(e.target.name == "multiple_end_day"){
+            if(e.target.value != ""){
+                setErrorMsg({... errorMsg, ["multiple_end_day_required"]: false})
+            }
+            
+            const today = getTodayDate()
+            
+            if(!isValidDate(today, e.target.value)){            
+                setErrorMsg({... errorMsg, ["multiple_end_day_invalid"]: true})
+            }else{
+                setErrorMsg({... errorMsg, ["multiple_end_day_invalid"]: false})
+
+                if(values.multiple_start_day != "" && e.target.value != ""){
+
+                    if(!isValidDate(values.multiple_start_day, values.multiple_end_day)){
+                        setErrorMsg({... errorMsg, ["multiple_start_end_invalid"]: true})
+                    }else{
+                        setErrorMsg({... errorMsg, ["multiple_start_end_invalid"]: false})
+                    }
+                }
+            }
+        } 
+        
+        if(e.target.name == "comments"){
+            if(e.target.value != ""){
+                setErrorMsg({... errorMsg, ["comments_required"]: false})
+            }
+        }
     }
+
 
     function isValidDate(date1, date2){
         const num1 = parseInt(date1.replaceAll("-", ""))
@@ -58,6 +133,84 @@ export default function RequestLeaveModal({ leave, setLeave }) {
 
         return `${year}-${stringMonth}-${stringDate}`
     }
+
+    function handleCancel(){
+        setErrorMsg({
+            type_leave_required: false,
+            single_day_required: false,
+            single_day_invalid: false,
+            multiple_start_day_required: false,
+            multiple_end_day_required: false,
+            multiple_start_day_invalid: false,
+            multiple_end_day_invalid: false,
+            multiple_start_end_invalid: false
+        })
+        setValues({
+            type_leave: "",
+            type_day: "single",
+            single_half_full: "full",
+            single_day: "",
+            multiple_start_half_full: "full",
+            multiple_end_half_full: "full",
+            multiple_start_day: "",
+            multiple_end_day: ""
+        })
+        setLeave(false)
+    }
+
+    function checkDateValidation(){
+        if(values.type_day == "single"){
+            if(values.single_day == ""){
+                setErrorMsg({... errorMsg, ["single_day_required"]: true})
+                setLeave(true)
+            }else{
+                setErrorMsg({... errorMsg, ["single_day_required"]: false})
+
+                const today = getTodayDate()
+                if(!isValidDate(today, values.single_day)){
+                    setErrorMsg({... errorMsg, ["single_day_invalid"]: true})
+                    setLeave(true)
+                }
+                
+            }
+        }else if(values.type_day == "multiple"){
+            if(values.multiple_start_day == ""){
+                setErrorMsg({... errorMsg, ["multiple_start_day_required"]: true})
+                setLeave(true)
+            }else{
+                setErrorMsg({... errorMsg, ["multiple_start_day_required"]: false})
+
+                if(values.multiple_end_day == ""){
+                    setErrorMsg({... errorMsg, ["multiple_end_day_required"]: true})
+                    setLeave(true)
+                }else{
+                    setErrorMsg({... errorMsg, ["multiple_end_day_required"]: false})
+
+                    const today = getTodayDate()
+                    if(!isValidDate(today, values.multiple_start_day)){
+                        setErrorMsg({... errorMsg, ["multiple_start_day_invalid"]: true})
+                        setLeave(true)
+                    }else{
+                        setErrorMsg({... errorMsg, ["multiple_start_day_invalid"]: false})
+
+                        if(!isValidDate(today, values.multiple_end_day)){
+                            setErrorMsg({... errorMsg, ["multiple_end_day_invalid"]: true})
+                            setLeave(true)
+                        }else{
+                            setErrorMsg({... errorMsg, ["multiple_end_day_invalid"]: false})
+
+                            if(!isValidDate(values.multiple_start_day, values.multiple_end_day)){
+                                setErrorMsg({... errorMsg, ["multiple_start_end_invalid"]: true})
+                                setLeave(true)
+                            }else{
+                                setErrorMsg({... errorMsg, ["multiple_start_end_invalid"]: false})
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -69,22 +222,18 @@ export default function RequestLeaveModal({ leave, setLeave }) {
             }else{
                 setErrorMsg({... errorMsg, ["type_leave_required"]: false})
 
-                if(values.single_day == ""){
-                    setErrorMsg({... errorMsg, ["single_day_required"]: true})
-                    setLeave(true)
-                }else{
-                    setErrorMsg({... errorMsg, ["single_day_required"]: false})
-
-                    const today = getTodayDate()
-                    if(!isValidDate(today, values.single_day)){
-                        setErrorMsg({... errorMsg, ["single_day_invalid"]: true})
+                if(values.comments == ""){
+                    setErrorMsg({... errorMsg, ["comments_required"]: true})
+                    if(values.type_leave == "Study Leave"){
                         setLeave(true)
+                    }else{
+                        checkDateValidation()
                     }
-                    
+                }else{
+                    setErrorMsg({... errorMsg, ["comments_required"]: false})
+                    checkDateValidation()
                 }
             }
-
-            
         }catch(error){
             console.log(error)
         }
@@ -96,7 +245,7 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                 <Container>
                     <Title className="my-5">Request Leave</Title>
 
-                    <Form action="#" onSubmit={handleSubmit}>
+                    <Form onSubmit={handleSubmit}>
                         <div className="d-block align-items-center my-3">
                             <ColumnName className="mb-2">Type of Leave</ColumnName>
                             <Form.Select name="type_leave" aria-label="Default select example" className='drop-down' onChange={(e) => setValue(e)}>
@@ -138,23 +287,23 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                         {
                                             values.single_half_full == "am" && 
                                             <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="single_half_full" id="single_half_full" onChange={(e) => setValue(e)}>
+                                                    <option value="full">Full</option>  
                                                     <option value="am" selected>a.m.</option>
                                                     <option value="pm">p.m.</option>
-                                                    <option value="full">Full</option>  
                                             </Form.Select>
                                             ||
                                             values.single_half_full == "pm" && 
                                             <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="single_half_full" id="single_half_full" onChange={(e) => setValue(e)}>
+                                                    <option value="full">Full</option>  
                                                     <option value="am">a.m.</option>
                                                     <option value="pm" selected>p.m.</option>
-                                                    <option value="full">Full</option>  
                                             </Form.Select>
                                             ||
                                             values.single_half_full == "full" && 
                                             <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="single_half_full" id="single_half_full" onChange={(e) => setValue(e)}>
+                                                    <option value="full" selected>Full</option>  
                                                     <option value="am">a.m.</option>
                                                     <option value="pm">p.m.</option>
-                                                    <option value="full" selected>Full</option>  
                                             </Form.Select>
                                         }
                                         
@@ -184,23 +333,23 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                         {
                                             values.multiple_start_half_full == "am" &&
                                             <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_start_half_full" id="multiple_start_half_full" onChange={(e) => setValue(e)}>
+                                                <option value="full">Full</option>
                                                 <option value="am" selected>a.m.</option>
                                                 <option value="pm">p.m.</option>
-                                                <option value="full">Full</option>
                                             </Form.Select>
                                             ||
                                             values.multiple_start_half_full == "pm" &&
                                             <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_start_half_full" id="multiple_start_half_full" onChange={(e) => setValue(e)}>
+                                                <option value="full" >Full</option>
                                                 <option value="am">a.m.</option>
                                                 <option value="pm" selected>p.m.</option>
-                                                <option value="full" >Full</option>
                                             </Form.Select>
                                             ||
                                             values.multiple_start_half_full == "full" &&
                                             <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_start_half_full" id="multiple_start_half_full" onChange={(e) => setValue(e)}>
+                                                <option value="full" selected>Full</option>
                                                 <option value="am">a.m.</option>
                                                 <option value="pm">p.m.</option>
-                                                <option value="full" selected>Full</option>
                                             </Form.Select>
                                         }
 
@@ -212,6 +361,15 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                         }
                                     </div>
 
+                                        {
+                                            errorMsg.multiple_start_day_required &&
+                                            <ErrorMessage className="mb-0">You haven't select one of date</ErrorMessage>
+                                        }
+                                        {
+                                            errorMsg.multiple_start_day_invalid &&
+                                            <ErrorMessage className="mb-0">Wrong date</ErrorMessage>
+                                        }
+
                                     <ColumnName className="my-2">End Date</ColumnName>
 
                                     <div className="d-flex">
@@ -219,23 +377,23 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                         {
                                             values.multiple_end_half_full == "am" &&
                                             <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_end_half_full" id="multiple_end_half_full" onChange={(e) => setValue(e)}>
+                                                <option value="full">Full</option>
                                                 <option value="am" selected>a.m.</option>
                                                 <option value="pm">p.m.</option>
-                                                <option value="full">Full</option>
                                             </Form.Select>
                                             ||
                                             values.multiple_end_half_full == "pm" &&
                                             <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_end_half_full" id="multiple_end_half_full" onChange={(e) => setValue(e)}>
+                                                <option value="full">Full</option>
                                                 <option value="am">a.m.</option>
                                                 <option value="pm" selected>p.m.</option>
-                                                <option value="full">Full</option>
                                             </Form.Select>
                                             ||
                                             values.multiple_end_half_full == "full" &&
                                             <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_end_half_full" id="multiple_end_half_full" onChange={(e) => setValue(e)}>
+                                                <option value="full" selected>Full</option>
                                                 <option value="am">a.m.</option>
                                                 <option value="pm">p.m.</option>
-                                                <option value="full" selected>Full</option>
                                             </Form.Select>
                                         }
                                         
@@ -245,23 +403,41 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                             ||
                                             <Form.Control type='date' name="multiple_end_day" value="0" className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
                                         }
+
                                     </div>
+                                    {
+                                        errorMsg.multiple_end_day_required &&
+                                        <ErrorMessage className="mb-0">You haven't select one of date</ErrorMessage>
+                                    }
+                                    {
+                                        errorMsg.multiple_end_day_invalid &&
+                                        <ErrorMessage className="mb-0">Wrong date</ErrorMessage>
+                                    }
+                                    {
+                                        errorMsg.multiple_start_end_invalid &&
+                                        <ErrorMessage className="mb-0">Wrong date</ErrorMessage>
+                                    }
                                 </div>))
                         }
 
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <ColumnName className="my-3">Comments</ColumnName>
-                            <Form.Control as="textarea" rows={5} maxlength="10"
+                            <Form.Control name="comments" as="textarea" rows={5}
                                 placeholder='Please leave your reason here, no more than 2000 characters'
+                                onChange={(e) => setValue(e)}
                             />
+                            {
+                                errorMsg.comments_required && values.type_leave == "Study Leave" && 
+                                <ErrorMessage className="mb-0">if select the study leave, this field must be required</ErrorMessage>
+                            }
                         </Form.Group>
 
                         <div className="d-flex justify-content-center my-3">
-                            <CloseButton className="m-2" onClick={() => setLeave(false)}>
+                            <CloseButton className="m-2" type="button" onClick={handleCancel}>
                                 Cancel
                             </CloseButton>
 
-                            <ConfirmButton className="m-2" onClick={() => setLeave(false)}>
+                            <ConfirmButton className="m-2" type="button">
                                 Submit
                             </ConfirmButton>    
                         </div>

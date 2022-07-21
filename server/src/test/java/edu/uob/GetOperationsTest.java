@@ -181,15 +181,14 @@ public class GetOperationsTest {
 
     @Test
     void testGetMissingAccount() {
-        // Currently, a missing account will return an empty OK response
+        // A missing account will return an error response
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             assertFalse(ConnectionTools.accountIdExists(919919919, c));
         } catch (SQLException e) {
                 fail(e);
         }
-        ResponseEntity<ObjectNode> response = GetOperations.getAccount(919919919);
-        assertTrue(response.toString().contains("<200 OK OK,{},[]>"));
+        assertThrows(ResponseStatusException.class, ()-> GetOperations.getAccount(919919919));
     }
 
     @Test

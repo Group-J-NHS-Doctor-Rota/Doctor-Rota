@@ -33,7 +33,7 @@ public class ConnectionTools {
             r.next();
             return r.getBoolean(1);
         } catch (SQLException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
 

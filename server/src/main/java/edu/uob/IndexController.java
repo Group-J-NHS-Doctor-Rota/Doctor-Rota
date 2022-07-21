@@ -149,4 +149,54 @@ public class IndexController {
         return GetOperations.getShifts(year, accountId);
     }
 
+    @PutMapping(value = "/rotabuild", produces = "application/json")
+    public ResponseEntity<String> putRotaBuild() {
+        //todo check token is valid
+        //todo input full logic
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    @GetMapping(value = "/login", produces = "application/json")
+    public ResponseEntity<ObjectNode> getLogin(@RequestHeader String password, @RequestParam String username) {
+        //todo input full logic
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode.put("token", "123someDudToken456");
+        objectNode.put("accountId", 1);
+        objectNode.put("level", 1);
+        return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+    }
+
+    @PutMapping(value = "/account", produces = "application/json")
+    public ResponseEntity<String> putAccount(@RequestParam String username) {
+        //todo check token is valid
+        //todo input full logic
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    @PatchMapping(value = "/password", produces = "application/json")
+    public ResponseEntity<String> patchPassword(@RequestHeader String oldPassword, @RequestHeader String newPassword,
+                                                @RequestParam String accountId) {
+        //todo check token is valid
+        //todo input full logic
+        if(oldPassword.equals(newPassword)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "New password cannot be the same as the old password!\n");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    @PatchMapping(value = "/passwordReset", produces = "application/json")
+    public ResponseEntity<String> patchPasswordReset(@RequestParam String username, @RequestParam String email) {
+        //todo input full logic
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
+    @PatchMapping(value = "/logout", produces = "application/json")
+    public ResponseEntity<String> patchLogout() {
+        //todo check token is valid
+        //todo input full logic
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+
 }

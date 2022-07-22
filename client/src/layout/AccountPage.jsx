@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import Pagination from '../components/Pagination'
 import ManageModal from '../modals/ManageModal'
@@ -10,48 +10,74 @@ import styled from 'styled-components'
 export default function AccountPage() {
     const [currentPage, setCurrentPage] = useState(1)
     const [manage, setManage] = useState(false)
+    const [accounts, setAccounts] = useState()
+    const [totalPage, setTotalPage] = useState(0) 
 
     const { width } = useWindowDimensions();
 
-    const getTableContent = number => {
+    const getTableContent = () => {
         let content = [];
-        for (let i = 0; i < number; i++) {
-            content.push(
-                <AccountCard key={i} onClick={() => setManage(true)}>
-                    <TableTd>Steven</TableTd>
-                    <TableTd>steven@gmail.com</TableTd>
-                    <TableTd>1.0</TableTd>
-                    <TableTd>employed</TableTd>
-                </AccountCard>
-            )
-        }
+                
+        accounts.filter(account => (currentPage) * 6 >= account.id && account.id > (currentPage-1) * 6)
+                .map((account) => (
+                    content.push(
+                        <AccountCard key={account.id} onClick={() => setManage(true)}>
+                            <TableTd>{account.username}</TableTd>
+                            <TableTd>{account.email}</TableTd>
+                            <TableTd>1.0</TableTd>
+                            <TableTd>employed</TableTd>
+                        </AccountCard>
+                    )
+                ))
+        
         return content;
     }
 
+    useEffect(() => {
+        fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
+            mode: 'cors',
+            method: "GET",
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const totalNumber = data.accounts.length
+            setTotalPage(totalNumber/6)
+            setAccounts(data.accounts)
+            
+        })
+    }, [])
+
     const getCardContent = number => {
         let content = [];
-        for (let i = 0; i < number; i++) {
-            content.push(
-                <AccountCardV2 key={i} className="d-block m-1 p-3" onClick={() => setManage(true)}>
-                    <div className="d-flex justify-content-between">
-                        <div>Name</div>
-                        <div>Steven</div>
-                    </div>
-                    <div className="d-flex justify-content-between">
-                        <div>Email</div>
-                        <div>steven@gmail.com</div>
-                    </div>
-                    <div className="d-flex justify-content-between">
-                        <div>WTE</div>
-                        <div>1.0</div>
-                    </div>
-                    <div className="d-flex justify-content-between">
-                        <div>Status</div>
-                        <div>employed</div>
-                    </div>
-                </AccountCardV2>
-            )
-        }
+        
+        accounts.filter(account => (currentPage) * 6 > account.id && account.id > (currentPage-1) * 6)
+                .map((account) => (
+                    content.push(
+                        <AccountCardV2 key={account.id} className="d-block m-1 p-3" onClick={() => setManage(true)}>
+                            <div className="d-flex justify-content-between">
+                                <div>Name</div>
+                                <div>{account.username}</div>
+                            </div>
+                            <div className="d-flex justify-content-between">
+                                <div>Email</div>
+                                <div>{account.email}</div>
+                            </div>
+                            <div className="d-flex justify-content-between">
+                                <div>WTE</div>
+                                <div>1.0</div>
+                            </div>
+                            <div className="d-flex justify-content-between">
+                                <div>Status</div>
+                                <div>employed</div>
+                            </div>
+                        </AccountCardV2>
+                    )
+                ))
         return content;
     }
 
@@ -80,12 +106,18 @@ export default function AccountPage() {
                                 <TableTh>Status</TableTh>
                             </AccountCard>
 
-                            {getTableContent(6)}
+                            {
+                                accounts != undefined &&
+                                getTableContent(6)
+                            }
                         </tbody>
                     </table>
                     ||
                     <AccountGrid>
-                        {getCardContent(6)}
+                        {
+                            accounts != undefined &&
+                            getCardContent(6)
+                        }
                     </AccountGrid>
                 }
 
@@ -93,7 +125,7 @@ export default function AccountPage() {
 
             <ManageModal manage={manage} setManage={setManage} />
 
-            <Pagination currentPage={currentPage} totalPage={10} setCurrentPage={setCurrentPage} />
+            <Pagination currentPage={currentPage} totalPage={totalPage} setCurrentPage={setCurrentPage} />
         </div>
     )
 }

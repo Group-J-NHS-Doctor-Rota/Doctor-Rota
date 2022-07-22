@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import NavBar from '../components/NavBar'
 import DataBar from '../components/DataBar'
 import CalendarTable from '../components/CalendarTable'
 import FilterCard from '../components/FilterCard'

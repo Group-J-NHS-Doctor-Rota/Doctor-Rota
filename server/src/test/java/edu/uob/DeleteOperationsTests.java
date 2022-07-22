@@ -5,11 +5,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 public class DeleteOperationsTests {
 
@@ -26,11 +22,12 @@ public class DeleteOperationsTests {
             }
             // Add data to various tables
             PutOperations.putWorkingDays(991999999, true, true, true, true, false, false, false);
+            PutOperations.putFixedShift(991999999, Date.valueOf("2022-07-13"), 1);
+            PostOperations.postRequestLeave(991999999, "2022-07-12", 0, 0, "");
             SQL = "INSERT INTO shifts (accountId, rotaGroupId, rotaTypeId, date, type, ruleNotes) VALUES (991999999, 1, 1, '2022-07-11', 0, ''); " +
-                    "INSERT INTO leaveRequests (accountId, date, type, note, status) VALUES (991999999, '2022-07-12', 0, '', 0); " +
                     "INSERT INTO accountLeaveRequestRelationships (accountId, leaveRequestId, status) VALUES (991999999, 1, 1); " +
                     "INSERT INTO accountRotaTypes (accountId, rotaTypeId, rotaGroupId, startDate, endDate) VALUES (991999999, 2, 1, '2022-07-01', '2022-08-01'); " +
-                    "INSERT INTO fixedRotaShifts (accountId, date, shiftType) VALUES (991999999, '2022-07-13', 1);";
+                    "INSERT INTO tokens (accountId, token) VALUES (991999999, 'sdgdsfgtu348090j9jgkdslfg');";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.executeUpdate();
             }
@@ -41,6 +38,7 @@ public class DeleteOperationsTests {
             assertTrue(ConnectionTools.idExistInTable(991999999, "accountId", "accountLeaveRequestRelationships", c));
             assertTrue(ConnectionTools.idExistInTable(991999999, "accountId", "leaveRequests", c));
             assertTrue(ConnectionTools.idExistInTable(991999999, "accountId", "shifts", c));
+            assertTrue(ConnectionTools.idExistInTable(991999999, "accountId", "tokens", c));
             assertTrue(ConnectionTools.idExistInTable(991999999, "id", "accounts", c));
             // Delete account
             DeleteOperations.deleteAccount(991999999);
@@ -53,6 +51,7 @@ public class DeleteOperationsTests {
             assertFalse(ConnectionTools.idExistInTable(991999999, "accountId", "accountLeaveRequestRelationships", c));
             assertFalse(ConnectionTools.idExistInTable(991999999, "accountId", "leaveRequests", c));
             assertFalse(ConnectionTools.idExistInTable(991999999, "accountId", "shifts", c));
+            assertFalse(ConnectionTools.idExistInTable(991999999, "accountId", "tokens", c));
             assertFalse(ConnectionTools.idExistInTable(991999999, "id", "accounts", c));
         } catch (SQLException e) {
             fail("Database connection and SQL queries should have worked\n" + e);

@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+@CrossOrigin
 @RestController
 public class IndexController {
 

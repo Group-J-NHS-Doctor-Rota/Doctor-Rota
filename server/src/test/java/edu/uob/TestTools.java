@@ -1,9 +1,5 @@
 package edu.uob;
 
-import org.springframework.boot.SpringApplication;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TestTools {

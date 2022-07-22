@@ -20,6 +20,7 @@ public class DeleteOperations {
             // Only if account id exists, then try to delete data
             String SQL = "DELETE FROM notifications WHERE detailId IN (SELECT detailId FROM notifications n " +
                         "LEFT JOIN leaveRequests l ON n.detailId = l.id WHERE accountId = ?) AND type = 0; " +
+                    "DELETE FROM tokens WHERE accountId = ?; " +
                     "DELETE FROM partTimeDetails WHERE accountId = ?; " +
                     "DELETE FROM fixedRotaShifts WHERE accountId = ?; " +
                     "DELETE FROM accountRotaTypes WHERE accountId = ?; " +
@@ -36,6 +37,7 @@ public class DeleteOperations {
                 s.setInt(6, accountId);
                 s.setInt(7, accountId);
                 s.setInt(8, accountId);
+                s.setInt(9, accountId);
                 s.executeUpdate();
                 return ResponseEntity.status(HttpStatus.OK).body("");
             }

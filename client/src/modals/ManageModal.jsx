@@ -1,12 +1,33 @@
 import styled from "styled-components"
 import { Modal, Row, Col } from "react-bootstrap"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
-const ManageModal = ({ manage, setManage }) => {
+const ManageModal = ({ accountId, manage, setManage }) => {
     const [disable, setDisable] = useState(true)
+    const [accountDetail, setAccountDetail] = useState()
 
     const toggleDisable = () => setDisable(!disable)
     const handleSubmit = e => e.preventDefault()
+
+    useEffect(() => {
+        if(accountId != undefined){
+            fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+                mode: 'cors',
+                method: "GET",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                setAccountDetail(data)
+            })
+        }        
+    }, [accountId])
+
+    console.log(accountDetail)
 
     return (
         <>
@@ -14,7 +35,12 @@ const ManageModal = ({ manage, setManage }) => {
                 <ModalContainer>
 
                     <div className="d-flex justify-content-between align-items-center">
-                        <ModalTitle className="my-5">Dennis  Liú</ModalTitle>
+                        <ModalTitle className="my-5">
+                            {   
+                                accountDetail != undefined && accountDetail.username != undefined &&
+                                accountDetail.username
+                            }
+                        </ModalTitle>
                         <EditIcon onClick={toggleDisable}
                         ><i className="bi bi-pencil-square" /></EditIcon>
                     </div>
@@ -26,31 +52,43 @@ const ManageModal = ({ manage, setManage }) => {
                                     <Label htmlFor="field-1" className="mt-0">Annual Leave Entitled</Label>
                                 </Col>
                                 {/* right */}
-                                <Col xs={12} md={6}>
-                                    <input type="text" placeholder="32 days/annum"
-                                        className="mt-0" id="field-1" disabled={disable}
-                                        autoFocus />
-                                </Col>
+
+                                {
+                                    accountDetail != undefined && accountDetail.annualLeave != undefined &&
+                                    <Col xs={12} md={6}>
+                                        <input type="text" placeholder={accountDetail.annualLeave}
+                                            className="mt-0" id="field-1" disabled={disable}
+                                            autoFocus />
+                                    </Col>
+                                }
                             </Row>
 
                             <Row>
                                 <Col xs={12} md={6}>
                                     <Label htmlFor="field-2">Study Leave Entitled</Label>
                                 </Col>
-                                <Col xs={12} md={6}>
-                                    <input type="text" placeholder="30 days/annum"
-                                        className="mt-2" id="field-2" disabled={disable} />
-                                </Col>
+                                
+                                {
+                                    accountDetail != undefined && accountDetail.studyLeave != undefined &&
+                                    <Col xs={12} md={6}>
+                                        <input type="text" placeholder={accountDetail.studyLeave}
+                                            className="mt-2" id="field-2" disabled={disable} />
+                                    </Col>
+                                }
                             </Row>
 
                             <Row>
                                 <Col xs={12} md={6}>
                                     <Label htmlFor="field-3">Hours Required</Label>
                                 </Col>
-                                <Col xs={12} md={6}>
-                                    <input type="text" placeholder="48 hours/week"
-                                        className="mt-2" id="field-3" disabled={disable} />
-                                </Col>
+                
+                                {
+                                    accountDetail != undefined && accountDetail.workingHours != undefined &&
+                                    <Col xs={12} md={6}>
+                                        <input type="text" placeholder={accountDetail.workingHours}
+                                            className="mt-2" id="field-3" disabled={disable} />
+                                    </Col>
+                                }
                             </Row>
 
                             <Row>
@@ -68,11 +106,19 @@ const ManageModal = ({ manage, setManage }) => {
                                     <Label htmlFor="field-4">Account Type</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <Select className="mt-2" id="field-4" disabled={disable}>
-                                        <option value="default_level" defaultValue>-Please select-</option>
-                                        <option value="junior">Standard</option>
-                                        <option value="admin">Admin</option>
-                                    </Select>
+                                    {
+                                        accountDetail != undefined && accountDetail.level == 1 && 
+                                        <Select className="mt-2" id="field-4" disabled={disable}>
+                                            <option value="junior">Standard</option>
+                                            <option value="admin" selected>Admin</option>
+                                        </Select>
+                                        ||
+                                        accountDetail != undefined && accountDetail.level == 0 && 
+                                        <Select className="mt-2" id="field-4" disabled={disable}>
+                                            <option value="junior" selected>Standard</option>
+                                            <option value="admin">Admin</option>
+                                        </Select>
+                                    }
                                 </Col>
                             </Row>
 

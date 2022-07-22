@@ -11,27 +11,10 @@ export default function AccountPage() {
     const [currentPage, setCurrentPage] = useState(1)
     const [manage, setManage] = useState(false)
     const [accounts, setAccounts] = useState()
-    const [totalPage, setTotalPage] = useState(0) 
+    const [totalPage, setTotalPage] = useState(0)
+    const [accountId, setAccountId] = useState()
 
     const { width } = useWindowDimensions();
-
-    const getTableContent = () => {
-        let content = [];
-                
-        accounts.filter(account => (currentPage) * 6 >= account.id && account.id > (currentPage-1) * 6)
-                .map((account) => (
-                    content.push(
-                        <AccountCard key={account.id} onClick={() => setManage(true)}>
-                            <TableTd>{account.username}</TableTd>
-                            <TableTd>{account.email}</TableTd>
-                            <TableTd>1.0</TableTd>
-                            <TableTd>employed</TableTd>
-                        </AccountCard>
-                    )
-                ))
-        
-        return content;
-    }
 
     useEffect(() => {
         fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
@@ -47,18 +30,39 @@ export default function AccountPage() {
         .then(data => {
             const totalNumber = data.accounts.length
             setTotalPage(totalNumber/6)
-            setAccounts(data.accounts)
-            
+            setAccounts(data.accounts) 
         })
     }, [])
 
-    const getCardContent = number => {
+    function handleClick(id){
+        setAccountId(id)
+        setManage(true)
+    }
+
+    const getTableContent = () => {
+        let content = [];
+                
+        accounts.filter(account => (currentPage) * 6 >= account.id && account.id > (currentPage-1) * 6)
+                .map((account) => (
+                    content.push(
+                        <AccountCard key={account.id} onClick={() => handleClick(account.id)}>
+                            <TableTd>{account.username}</TableTd>
+                            <TableTd>{account.email}</TableTd>
+                            <TableTd>1.0</TableTd>
+                            <TableTd>employed</TableTd>
+                        </AccountCard>
+                    )
+                ))
+        return content;
+    }
+
+    const getCardContent = () => {
         let content = [];
         
         accounts.filter(account => (currentPage) * 6 > account.id && account.id > (currentPage-1) * 6)
                 .map((account) => (
                     content.push(
-                        <AccountCardV2 key={account.id} className="d-block m-1 p-3" onClick={() => setManage(true)}>
+                        <AccountCardV2 key={account.id} className="d-block m-1 p-3" onClick={() => handleClick(account.id)}>
                             <div className="d-flex justify-content-between">
                                 <div>Name</div>
                                 <div>{account.username}</div>
@@ -123,7 +127,7 @@ export default function AccountPage() {
 
             </PageContainer>
 
-            <ManageModal manage={manage} setManage={setManage} />
+            <ManageModal accountId={accountId} manage={manage} setManage={setManage} />
 
             <Pagination currentPage={currentPage} totalPage={totalPage} setCurrentPage={setCurrentPage} />
         </div>

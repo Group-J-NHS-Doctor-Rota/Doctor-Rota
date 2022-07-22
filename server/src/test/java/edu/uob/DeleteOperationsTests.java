@@ -40,6 +40,17 @@ public class DeleteOperationsTests {
             assertTrue(ConnectionTools.idExistInTable(991999999, "accountId", "shifts", c));
             assertTrue(ConnectionTools.idExistInTable(991999999, "accountId", "tokens", c));
             assertTrue(ConnectionTools.idExistInTable(991999999, "id", "accounts", c));
+            // Check notification id
+            SQL = "SELECT EXISTS (SELECT n.* FROM notifications n " +
+                    "LEFT JOIN leaverequests l on n.detailid = l.id WHERE n.type = 0 " +
+                    "AND l.accountId = ? AND l.date = cast(? AS date));";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, 991999999);
+                s.setString(2, "2022-07-12");
+                ResultSet r = s.executeQuery();
+                r.next();
+                assertTrue(r.getBoolean(1));
+            }
             // Delete account
             DeleteOperations.deleteAccount(991999999);
             // Try to delete account again
@@ -53,6 +64,17 @@ public class DeleteOperationsTests {
             assertFalse(ConnectionTools.idExistInTable(991999999, "accountId", "shifts", c));
             assertFalse(ConnectionTools.idExistInTable(991999999, "accountId", "tokens", c));
             assertFalse(ConnectionTools.idExistInTable(991999999, "id", "accounts", c));
+            // Check notification id
+            SQL = "SELECT EXISTS (SELECT n.* FROM notifications n " +
+                    "LEFT JOIN leaverequests l on n.detailid = l.id WHERE n.type = 0 " +
+                    "AND l.accountId = ? AND l.date = cast(? AS date));";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, 991999999);
+                s.setString(2, "2022-07-12");
+                ResultSet r = s.executeQuery();
+                r.next();
+                assertFalse(r.getBoolean(1));
+            }
         } catch (SQLException e) {
             fail("Database connection and SQL queries should have worked\n" + e);
         }

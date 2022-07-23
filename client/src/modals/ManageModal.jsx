@@ -27,8 +27,6 @@ const ManageModal = ({ accountId, manage, setManage }) => {
         }        
     }, [accountId])
 
-    console.log(accountDetail)
-
     return (
         <>
             <Modal show={manage}>

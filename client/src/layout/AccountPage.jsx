@@ -144,7 +144,7 @@ const SearchRegion = styled.div`
     width: 100%;
     border-radius: 5px;
     background-color: white;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 0px 8px 0px rgba(0, 0, 0, 0.1), 0 6px 2px 0 rgba(0, 0, 0, 0.08);
 `
 
 const Input = styled.input`
@@ -163,6 +163,7 @@ const Button = styled.button`
     background-color: #168082;
     border: none;
     border-radius: 5px;
+    box-shadow: 0 0px 8px 0px rgba(0, 0, 0, 0.1), 0 6px 2px 0 rgba(0, 0, 0, 0.08);
 `
 
 const AccountCard = styled.tr`

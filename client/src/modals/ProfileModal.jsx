@@ -1,10 +1,26 @@
+import React, { useState, useEffect } from 'react'
+
 import { Modal } from 'react-bootstrap'
-// import FormInput from '../components/FormInput'
 
 import styled from 'styled-components'
 
 export default function ProfileModal({ profile, setProfile }) {
     const handleSubmit = e => e.preventDefault()
+    const [infomation, setInformation] = useState()
+
+    useEffect(() => {
+        fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
+            mode: 'cors',
+            method: "GET",
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => setInformation(data.accounts.filter((account) => account.id == 1)[0]))
+    }, [])
 
     return (
         <>
@@ -18,14 +34,24 @@ export default function ProfileModal({ profile, setProfile }) {
                                 <Label className="d-flex me-3">
                                     <i className="bi bi-person-fill" style={{ fontSize: '30px' }} />
                                 </Label>
-                                <RowInfo className="d-flex mb-0">Dennis Liú</RowInfo>
+                                <RowInfo className="d-flex mb-0">
+                                    {   
+                                        infomation != undefined &&
+                                        infomation.username
+                                    }
+                                </RowInfo>
                             </div>
 
                             <div className="d-flex align-items-center my-3">
                                 <Label className="d-flex me-3">
                                     <i className="bi bi-person-badge-fill" style={{ fontSize: '30px' }} />
                                 </Label>
-                                <RowInfo className="d-flex mb-0">GB12138</RowInfo>
+                                <RowInfo className="d-flex mb-0">
+                                    {
+                                        infomation != undefined &&
+                                        infomation.doctorId
+                                    }
+                                </RowInfo>
                             </div>
 
                             <div className='d-block'>
@@ -33,7 +59,10 @@ export default function ProfileModal({ profile, setProfile }) {
                                     <Label className="d-flex me-3">
                                         <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
                                     </Label>
-                                    <Input type="email" placeholder="name@gmail.com" />
+                                    {
+                                        infomation != undefined &&
+                                        <Input type="email" value={infomation.email} />
+                                    }
                                     <LockIcon className="bi bi-unlock-fill ms-2" />
                                 </div>
 
@@ -41,7 +70,10 @@ export default function ProfileModal({ profile, setProfile }) {
                                     <Label className="d-flex me-3">
                                         <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
                                     </Label>
-                                    <Input type="tel" placeholder="+44 XXXXXXXXXX" />
+                                    {
+                                        infomation != undefined &&
+                                        <Input type="tel" value={infomation.phone} />
+                                    }
                                     <LockIcon className="bi bi-lock-fill ms-2" />
                                 </div>
                             </div>

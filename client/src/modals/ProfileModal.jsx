@@ -78,7 +78,7 @@ const ModalTitle = styled.h1`
 
 const CloseButton = styled.button`
     min-width: 100px;
-    font-size: 16px;
+    font-size: 20px;
     background-color: white;
     border-radius: 5px;
     border: none;
@@ -109,13 +109,12 @@ const ConfirmButton = styled.button`
 `
 
 const Label = styled.label`
-    font-size: 25px;
     color: #035eb8;
     font-weight: bold;
 `
 
 const RowInfo = styled.p`
-    font-size: 18px;
+    font-size: 16px;
     color: #035eb8;
     margin-bottom: 0px;
 `

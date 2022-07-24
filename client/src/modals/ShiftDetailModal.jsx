@@ -15,7 +15,7 @@ export default function ShiftModal({ shift, setShift }) {
                     <div className="d-block">
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
-                                <i className="bi bi-person-fill" style={{ fontSize: '30px' }}></i>
+                                <Icon className="bi bi-person-fill"></Icon>
                             </div>
 
                             <div className="d-flex">
@@ -25,7 +25,7 @@ export default function ShiftModal({ shift, setShift }) {
 
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
-                                <i className="bi bi-calendar3" style={{ fontSize: '30px' }}></i>
+                                <Icon className="bi bi-calendar3"></Icon>
                             </div>
 
                             <div className="d-flex">
@@ -35,7 +35,7 @@ export default function ShiftModal({ shift, setShift }) {
 
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
-                                <i className="bi bi-clipboard2-check-fill" style={{ fontSize: '30px' }}></i>
+                                <Icon className="bi bi-clipboard2-check-fill"></Icon>
                             </div>
 
                             <div className="d-flex">
@@ -45,7 +45,7 @@ export default function ShiftModal({ shift, setShift }) {
 
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
-                                <i className="bi bi-clock-history" style={{ fontSize: '30px' }}></i>
+                                <Icon className="bi bi-clock-history"></Icon>
                             </div>
 
                             <div className="d-flex">
@@ -77,7 +77,7 @@ const ModalContainer = styled.div`
 const ModalTitle = styled.h1`
     font-size: 32px;
     font-weight: bold;
-    color: #168082;
+    color: #035eb8;
 
     @media (max-width: 575px){
         font-size: 24px;
@@ -90,7 +90,7 @@ const CloseButton = styled.button`
     background-color: white;
     border-radius: 5px;
     border: none;
-    color: #168082;
+    color: #035eb8;
     font-weight: bold;
     padding: 5px 10px;
 
@@ -103,7 +103,7 @@ const CloseButton = styled.button`
 const ConfirmButton = styled.button`
     min-width: 100px;
     font-size: 20px;
-    background-color: #168082;
+    background-color: #035eb8;
     border-radius: 5px;
     border: none;
     color: white;
@@ -118,6 +118,11 @@ const ConfirmButton = styled.button`
 
 const RowInfo = styled.p`
     font-size: 18px;
-    color: #168082;
+    color: #035eb8;
     margin-bottom: 0px;
+`
+
+const Icon = styled.i`
+    color: #035eb8;
+    font-size: 30px;
 `

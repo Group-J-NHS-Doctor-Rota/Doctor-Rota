@@ -33,7 +33,7 @@ export default function ProfileModal({ profile, setProfile }) {
                                     <Label className="d-flex me-3">
                                         <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
                                     </Label>
-                                    <Input type="email" placeholder="name@gmail.com (public)" />
+                                    <Input type="email" placeholder="name@gmail.com" />
                                     <LockIcon className="bi bi-unlock-fill ms-2" />
                                 </div>
 
@@ -41,7 +41,7 @@ export default function ProfileModal({ profile, setProfile }) {
                                     <Label className="d-flex me-3">
                                         <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
                                     </Label>
-                                    <Input type="tel" placeholder="&nbsp;&nbsp;+44 XXXXXXXXXX (only me and admin)" />
+                                    <Input type="tel" placeholder="+44 XXXXXXXXXX" />
                                     <LockIcon className="bi bi-lock-fill ms-2" />
                                 </div>
                             </div>
@@ -78,7 +78,7 @@ const ModalTitle = styled.h1`
 
 const CloseButton = styled.button`
     min-width: 100px;
-    font-size: 20px;
+    font-size: 16px;
     background-color: white;
     border-radius: 5px;
     border: none;

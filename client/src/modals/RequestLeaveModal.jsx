@@ -455,7 +455,7 @@ const Container = styled.div`
 const Title = styled.h1`
     font-size: 32px;
     font-weight: bold;
-    color: #168082;
+    color: #035eb8;
 
     @media (max-width: 575px){
         font-size: 24px;
@@ -468,7 +468,7 @@ const CloseButton = styled.button`
     background-color: white;
     border-radius: 5px;
     border: none;
-    color: #168082;
+    color: #035eb8;
     font-weight: bold;
     padding: 5px 10px;
 
@@ -481,7 +481,7 @@ const CloseButton = styled.button`
 const ConfirmButton = styled.button`
     min-width: 100px;
     font-size: 20px;
-    background-color: #168082;
+    background-color: #035eb8;
     border-radius: 5px;
     border: none;
     color: white;
@@ -497,7 +497,7 @@ const ConfirmButton = styled.button`
 const ColumnName = styled.h3`
     font-size: 16px;
     font-weight: bold;
-    color: #168082;
+    color: #035eb8;
     margin-bottom: 0px;
 `
 

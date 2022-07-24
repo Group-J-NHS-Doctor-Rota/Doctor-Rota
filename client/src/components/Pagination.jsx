@@ -13,7 +13,7 @@ export default function Pagination({currentPage, totalPage, setCurrentPage}){
         let total = number + 1
         for (let i = 1; i < total; i++) {
             if(i == currentPage){
-                content.push(<Wrapper key={i} className="d-flex justify-content-center align-items-center me-1" style={{backgroundColor: '#168082'}}><div className="mb-0" style={{color: 'white'}}>{i}</div></Wrapper>)
+                content.push(<Wrapper key={i} className="d-flex justify-content-center align-items-center me-1" style={{backgroundColor: '#035eb8'}}><div className="mb-0" style={{color: 'white'}}>{i}</div></Wrapper>)
             }else{
                 content.push(<Wrapper key={i} className="d-flex justify-content-center align-items-center me-1" onClick={() => goToPage(i)}><div className="mb-0">{i}</div></Wrapper>)
             }

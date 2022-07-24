@@ -41,12 +41,12 @@ const Card = styled.div`
     min-height: 100px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 5px;
-    border-top: 4px solid #168082;
+    border-top: 4px solid #035eb8;
 `
 
 const Text = styled.div`
     p{
         font-size: 32px;
-        color: #168082;
+        color: #035eb8;
     }
 `

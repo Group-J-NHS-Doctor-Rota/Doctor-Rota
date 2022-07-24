@@ -71,7 +71,7 @@ export default function NavBar() {
                         </div>
                         <div className="d-flex justify-content-end me-2">
                             <RefreshButton className="my-2 me-3">Refresh Rota</RefreshButton>
-                            <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: '#168082' }} onClick={() => toggleList()}></i>
+                            <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: 'white' }} onClick={() => toggleList()}></i>
                         </div>
                     </div>
                 </Navbar>
@@ -150,7 +150,7 @@ const Navbar = styled.div`
     position: relative;
     width: 100%;
     height: 60px;
-    background-color: #4CA6A7;
+    background-color: #035eb8;
 `
 
 const NavBarList = styled.div`
@@ -168,19 +168,20 @@ const NavBarItem = styled.div`
     cursor: pointer;
 
     &:hover{
-        background-color: #EDFCF9;
+        background-color: #f5f9fe;
     }
 `
 
 const RefreshButton = styled.button`
     min-width: 100px;
     font-size: 20px;
-    background-color: #168082;
-    border-radius: 5px;
+    background-color: transparent;
     border: none;
     color: white;
     font-weight: bold;
-    padding: 5px 10px;
+    &:hover {
+        border-bottom: 1.5px solid white
+    }
 
     @media (max-width: 575px){
         font-size: 16px;

@@ -38,7 +38,7 @@ export default function LogoutModal({ logout, setLogout }) {
 const LogoutWarning = styled.h1`
     font-size: 32px;
     font-weight: bold;
-    color: #168082;
+    color: #035eb8;
     padding: 10px;
 
     @media (max-width: 575px){
@@ -52,7 +52,7 @@ const CloseButton = styled.button`
     background-color: white;
     border-radius: 5px;
     border: none;
-    color: #168082;
+    color: #035eb8;
     font-weight: bold;
     padding: 5px 10px;
 
@@ -65,7 +65,7 @@ const CloseButton = styled.button`
 const ConfirmButton = styled.button`
     min-width: 100px;
     font-size: 20px;
-    background-color: #168082;
+    background-color: #035eb8;
     border-radius: 5px;
     border: none;
     color: white;

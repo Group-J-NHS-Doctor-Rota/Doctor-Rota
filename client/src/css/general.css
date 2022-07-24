@@ -1,7 +1,6 @@
 .modal-content {
-    background-color: #EDFCF9 !important;
+    background-color: #f5f9fe !important;
     border-radius: 5px;
-
 }
 
 .modal-dialog {
@@ -40,7 +39,7 @@ input[type="tel"] {
     width: 100%;
     border: none;
     border-radius: 5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 0px 8px 0px rgba(0, 0, 0, 0.1), 0 6px 2px 0 rgba(0, 0, 0, 0.08);
 }
 
 label {

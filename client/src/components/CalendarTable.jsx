@@ -135,7 +135,7 @@ const GridItems = styled.div`
     cursor: pointer;
 
     &:hover {
-        background-color: #EDFCF9;
+        background-color: #f5f9fe;
     }
 
     h3 {

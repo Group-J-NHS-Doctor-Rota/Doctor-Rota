@@ -160,7 +160,7 @@ const Button = styled.button`
     color: white;
     font-size: 20px;
     font-weight: bold;
-    background-color: #168082;
+    background-color: #035eb8;
     border: none;
     border-radius: 5px;
     box-shadow: 0 0px 8px 0px rgba(0, 0, 0, 0.1), 0 6px 2px 0 rgba(0, 0, 0, 0.08);
@@ -174,7 +174,7 @@ const AccountCard = styled.tr`
     cursor: pointer;
     
     &:nth-child(even) {
-        background-color: #EDFCF9;
+        background-color: #f5f9fe;
     }
 `
 

@@ -31,7 +31,7 @@ const FormInput = (props) => {
 export default FormInput;
 
 const Label = styled.label`
-    font-size: 18px;
-    color: #168082;
+    font-size: 20px;
+    color: #035eb8;
     font-weight: bold;
 `

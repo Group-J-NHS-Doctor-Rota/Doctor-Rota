@@ -41,17 +41,17 @@ export default function Homgepage() {
                 <div className="d-flex justify-content-between align-items-center mt-3" style={{ position: 'relative' }}>
                     <div className="d-flex align-items-center">
                         <div className="m-1">
-                            <Icon className="bi bi-caret-left-fill" style={{ cursor: 'pointer' }} onClick={() => handlePreviousMonth()}></Icon>
+                            <Icon className="bi bi-caret-left-fill" style={{ fontSize: '20px', cursor: 'pointer' }} onClick={() => handlePreviousMonth()}></Icon>
                         </div>
                         <div className="m-1">
-                            <p className="mb-0">{year}/{month}</p>
+                            <p className="mb-0" style={{fontSize: '20px'}}>{year}/{month}</p>
                         </div>
                         <div className="m-1">
-                            <Icon className="bi bi-caret-right-fill" style={{ cursor: 'pointer' }} onClick={() => handleNextMonth()}></Icon>
+                            <Icon className="bi bi-caret-right-fill" style={{ fontSize: '20px', cursor: 'pointer' }} onClick={() => handleNextMonth()}></Icon>
                         </div>
                     </div>
 
-                    <div style={{ fontSize: '30px' }}>
+                    <div style={{ fontSize: '40px' }}>
                         <Icon className="bi bi-filter" style={{ cursor: 'pointer' }} onClick={() => setOpen(!open)}></Icon>
                     </div>
                 </div>
@@ -83,7 +83,7 @@ const Container = styled.div`
 
 const Icon = styled.i`
     &:hover{
-        color: #168082;
+        color: #035eb8;
     }
 `
 

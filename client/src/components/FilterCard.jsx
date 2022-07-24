@@ -153,14 +153,14 @@ const FilterRegion = styled.div`
     padding: 20px 30px;
     min-width: 260px;
     min-height: 250px;
-    background-color: #EDFCF9;
+    background-color: #f5f9fe;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 5px;
 `
 
 const FilterTitle = styled.p`
     font-size: 20px;
-    color: #168082;
+    color: #035eb8;
     font-weight: bold;
 `
 
@@ -169,7 +169,7 @@ const Button = styled.button`
     color: white;
     font-size: 20px;
     font-weight: bold;
-    background-color: #168082;
+    background-color: #035eb8;
     border: none;
     border-radius: 5px;
 `

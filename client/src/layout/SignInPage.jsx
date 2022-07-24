@@ -99,7 +99,7 @@ const LoginCard = styled.div`
     padding: 0 0 25px 0;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 5px;
-    background-color: #EDFCF9;
+    background-color: #f5f9fe;
 `
 
 const Container = styled.div`
@@ -111,7 +111,7 @@ const Container = styled.div`
 const Title = styled.h1`
     font-size: 32px;
     font-weight: bold;
-    color: #168082;
+    color: #035eb8;
 
     @media (max-width: 575px){
         font-size: 24px;
@@ -123,13 +123,13 @@ const LoginBtn = styled.button`
     color: white;
     font-size: 20px;
     font-weight: bold;
-    background-color: #168082;
+    background-color: #035eb8;
     border: none;
     border-radius: 5px;
 `
 
 const Link = styled.a`
     text-decoration: none;
-    color: #168082;
+    color: #035eb8;
 `
 

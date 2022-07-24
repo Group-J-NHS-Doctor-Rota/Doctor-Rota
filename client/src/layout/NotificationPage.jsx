@@ -134,7 +134,7 @@ const AlertMessage = styled.div`
 const SenderTag = styled.div`
     font-size: 16px;
     color: #FFFFFF;
-    background-color: #168082;
+    background-color: #035eb8;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     text-align: center;
@@ -149,7 +149,7 @@ const SenderTag = styled.div`
 
 const MessageInfo = styled.div`
     font-size: 16px;
-    border-top: 4px solid #168082;
+    border-top: 4px solid #035eb8;
     width: 100%;
     min-height: 60px;
     cursor: pointer;

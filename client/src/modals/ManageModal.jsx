@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Modal, Row, Col } from "react-bootstrap"
+import { Modal, Row, Col, Form } from "react-bootstrap"
 import { useState, useEffect } from "react"
 
 const ManageModal = ({ accountId, manage, setManage }) => {
@@ -42,7 +42,7 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                         <EditIcon onClick={toggleDisable}
                         ><i className="bi bi-pencil-square" /></EditIcon>
                     </div>
-                    <form action="#">
+                    <Form action="#">
                         <div className="show-grid align-items-center">
                             <Row>
                                 {/* left */}
@@ -106,16 +106,16 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                 <Col xs={12} md={6}>
                                     {
                                         accountDetail != undefined && accountDetail.level == 1 && 
-                                        <Select className="mt-2" id="field-4" disabled={disable}>
+                                        <Form.Select className="mt-2" id="field-4" disabled={disable}>
                                             <option value="junior">Standard</option>
                                             <option value="admin" selected>Admin</option>
-                                        </Select>
+                                        </Form.Select>
                                         ||
                                         accountDetail != undefined && accountDetail.level == 0 && 
-                                        <Select className="mt-2" id="field-4" disabled={disable}>
+                                        <Form.Select className="p-2 mt-2" id="field-4" disabled={disable}>
                                             <option value="junior" selected>Standard</option>
                                             <option value="admin">Admin</option>
-                                        </Select>
+                                        </Form.Select>
                                     }
                                 </Col>
                             </Row>
@@ -125,17 +125,17 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                     <Label htmlFor="field-6">Rota Type</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <Select className="mt-2" id="field-6" disabled={disable}>
+                                    <Form.Select className="p-2 mt-2" id="field-6" disabled={disable}>
                                         <option value="default_rota" defaultValue>-Please select-</option>
                                         <option value="first_on">First On</option>
                                         <option value="obstetric">Obstetric</option>
                                         <option value="third_on">Third On</option>
                                         <option value="fourth_on">Fourth On</option>
-                                    </Select>
+                                    </Form.Select>
                                 </Col>
                             </Row>
                         </div>
-                    </form>
+                    </Form>
 
                     <div className="d-flex justify-content-center my-3">
                         <CloseButton className="m-2" onClick={() => {
@@ -168,7 +168,7 @@ const ModalContainer = styled.div`
 const ModalTitle = styled.h1`
     font-size: 32px;
     font-weight: bold;
-    color: #168082;
+    color: #035eb8;
 
     @media (max-width: 575px){
         font-size: 24px;
@@ -181,7 +181,7 @@ const CloseButton = styled.button`
     background-color: white;
     border-radius: 5px;
     border: none;
-    color: #168082;
+    color: #035eb8;
     font-weight: bold;
     padding: 5px 10px;
 
@@ -194,7 +194,7 @@ const CloseButton = styled.button`
 const ConfirmButton = styled.button`
     min-width: 100px;
     font-size: 20px;
-    background-color: #168082;
+    background-color: #035eb8;
     border-radius: 5px;
     border: none;
     color: white;
@@ -209,25 +209,25 @@ const ConfirmButton = styled.button`
 
 const Label = styled.label`
     display: block;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: bold;
-    color: #168082;
+    color: #035eb8;
     margin: 13px 0;
 `
 
 const EditIcon = styled.div`
     font-size: 30px;
-    color: #168082;
+    color: #035eb8;
     font-weight: bold;
     cursor: pointer;
 `
 
-const Select = styled.select`
-    font-size: 16px;
-    height: 36px;
-    width: 100%;
-    margin-bottom: 6px;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-`
+// const Select = styled.select`
+//     font-size: 16px;
+//     height: 36px;
+//     width: 100%;
+//     margin-bottom: 6px;
+//     border: none;
+//     border-radius: 5px;
+//     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+// `

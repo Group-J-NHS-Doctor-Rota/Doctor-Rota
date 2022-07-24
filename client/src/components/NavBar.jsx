@@ -169,7 +169,16 @@ const NavBarItem = styled.div`
 
     &:hover{
         background-color: #f5f9fe;
+
+        p {
+            color: #035eb8;
+        }
+
+        i {
+            color: #035eb8;
+        }
     }
+
 `
 
 const RefreshButton = styled.button`

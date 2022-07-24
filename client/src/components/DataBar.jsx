@@ -1,15 +1,39 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 import styled from 'styled-components'
 
 export default function DataBar() {
+    const [values, setValues] = useState({
+        annualLeave: 0,
+        studyLeave: 0
+    })
+
+    useEffect(() => {
+        const url = `https://doctor-rota-spring-develop.herokuapp.com/leaves` + '?accountId=1'
+        
+        fetch(url, {
+            mode: 'cors',
+            method: 'GET',
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => setValues({
+            annualLeave: data.annualLeave,
+            studyLeave: data.studyLeave
+        }))
+    }, [])
+
     return (
         <div className="row">
             <div className="col-12 col-md-4">
                 <Card className="mt-3 p-3 d-flex justify-content-center align-items-center">
                     <p style={{ position: 'absolute', bottom: '50%', left: '5%' }}>Annual Leave Remaining</p>
                     <Text>
-                        <p className="mb-0">11.5 days</p>
+                        <p className="mb-0">{values.annualLeave} days</p>
                     </Text>
                 </Card>
             </div>
@@ -18,7 +42,7 @@ export default function DataBar() {
                     <p style={{ position: 'absolute', bottom: '50%', left: '5%' }}>Study Leave Remaining</p>
 
                     <Text>
-                        <p className="mb-0">7 days</p>
+                        <p className="mb-0">{values.studyLeave} days</p>
                     </Text>
                 </Card>
             </div>

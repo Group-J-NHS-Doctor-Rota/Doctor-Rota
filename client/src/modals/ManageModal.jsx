@@ -7,7 +7,6 @@ const ManageModal = ({ accountId, manage, setManage }) => {
     const [accountDetail, setAccountDetail] = useState()
 
     const toggleDisable = () => setDisable(!disable)
-    const handleSubmit = e => e.preventDefault()
 
     useEffect(() => {
         if(accountId != undefined){
@@ -27,6 +26,39 @@ const ManageModal = ({ accountId, manage, setManage }) => {
         }        
     }, [accountId])
 
+    const onChange = (e) => {
+        setAccountDetail({ ...accountDetail, [e.target.name]: e.target.value });
+        
+    };
+
+    function handleSubmit(e){
+        e.preventDefault()
+
+        console.log(accountDetail)
+
+        try{
+            fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+                mode: 'cors',
+                method: 'PATCH',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    "Access-Control-Allow-Credentials" : true
+                },
+                body: JSON.stringify({
+                    annualLeave: 16
+                }),
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+        }catch(error){
+            console.log(error)
+        }
+
+        setManage(false)
+    }
+
     return (
         <>
             <Modal show={manage}>
@@ -42,7 +74,7 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                         <EditIcon onClick={toggleDisable}
                         ><i className="bi bi-pencil-square" /></EditIcon>
                     </div>
-                    <Form action="#">
+                    <Form action="#" onSubmit={handleSubmit}>
                         <div className="show-grid align-items-center">
                             <Row>
                                 {/* left */}
@@ -54,9 +86,16 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                 {
                                     accountDetail != undefined && accountDetail.annualLeave != undefined &&
                                     <Col xs={12} md={6}>
-                                        <input type="text" placeholder={accountDetail.annualLeave}
-                                            className="mt-0" id="field-1" disabled={disable}
-                                            autoFocus />
+                                        <input 
+                                            id="field-1"
+                                            type="text"
+                                            name="annualLeave"
+                                            className="mt-0" 
+                                            value={accountDetail.annualLeave}
+                                            disabled={disable}
+                                            autoFocus  
+                                            onChange={onChange}
+                                        />
                                     </Col>
                                 }
                             </Row>
@@ -69,8 +108,15 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                 {
                                     accountDetail != undefined && accountDetail.studyLeave != undefined &&
                                     <Col xs={12} md={6}>
-                                        <input type="text" placeholder={accountDetail.studyLeave}
-                                            className="mt-2" id="field-2" disabled={disable} />
+                                        <input 
+                                            id="field-2" 
+                                            type="text"
+                                            name="studyLeave"
+                                            className="mt-2"
+                                            value={accountDetail.studyLeave}
+                                            disabled={disable} 
+                                            onChange={onChange}
+                                        />
                                     </Col>
                                 }
                             </Row>
@@ -83,8 +129,15 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                 {
                                     accountDetail != undefined && accountDetail.workingHours != undefined &&
                                     <Col xs={12} md={6}>
-                                        <input type="text" placeholder={accountDetail.workingHours}
-                                            className="mt-2" id="field-3" disabled={disable} />
+                                        <input 
+                                            id="field-3" 
+                                            type="text"
+                                            name="workingHours"
+                                            className="mt-2" 
+                                            value={accountDetail.workingHours}
+                                            disabled={disable}
+                                            onChange={onChange}
+                                        />
                                     </Col>
                                 }
                             </Row>
@@ -94,8 +147,13 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                     <Label htmlFor="field-3">WTE/FTE</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <input type="text" placeholder="0.6 LTFT"
-                                        className="mt-2" id="field-3" disabled={disable} />
+                                    <input 
+                                        id="field-3" 
+                                        type="text"
+                                        placeholder="0.6 LTFT"
+                                        className="mt-2" 
+                                        disabled={disable} 
+                                    />
                                 </Col>
                             </Row>
 
@@ -106,15 +164,27 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                 <Col xs={12} md={6}>
                                     {
                                         accountDetail != undefined && accountDetail.level == 1 && 
-                                        <Form.Select className="mt-2" id="field-4" disabled={disable}>
-                                            <option value="junior">Standard</option>
-                                            <option value="admin" selected>Admin</option>
+                                        <Form.Select 
+                                            id="field-4"
+                                            name="level"
+                                            className="mt-2" 
+                                            disabled={disable} 
+                                            onChange={onChange}
+                                        >
+                                            <option value="0">Standard</option>
+                                            <option value="1" selected>Admin</option>
                                         </Form.Select>
                                         ||
                                         accountDetail != undefined && accountDetail.level == 0 && 
-                                        <Form.Select className="p-2 mt-2" id="field-4" disabled={disable}>
-                                            <option value="junior" selected>Standard</option>
-                                            <option value="admin">Admin</option>
+                                        <Form.Select 
+                                            id="field-4"
+                                            name="level"
+                                            className="p-2 mt-2" 
+                                            disabled={disable} 
+                                            onChange={onChange}
+                                        >
+                                            <option value="0" selected>Standard</option>
+                                            <option value="1">Admin</option>
                                         </Form.Select>
                                     }
                                 </Col>
@@ -138,17 +208,14 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                     </Form>
 
                     <div className="d-flex justify-content-center my-3">
-                        <CloseButton className="m-2" onClick={() => {
+                        <CloseButton className="m-2" type="button" onClick={() => {
                             setManage(false)
                             setDisable(true)
                         }}>
                             Close
                         </CloseButton>
 
-                        <ConfirmButton className="m-2" onClick={() => {
-                            setManage(false)
-                            handleSubmit()
-                        }}>
+                        <ConfirmButton className="m-2" type="submit" onClick={handleSubmit}>
                             Update
                         </ConfirmButton>
                     </div>

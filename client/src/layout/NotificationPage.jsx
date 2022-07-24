@@ -1,117 +1,106 @@
 import styled from "styled-components"
 import Pagination from "../components/Pagination"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import LeaveDetailModal from "../modals/LeaveDetailModal"
 
 const NotificationPage = () => {
-    // only admin make decisions
-    const isAdmin = true
-    // const isAdmin = false
-
-    // decision updated from database by admin
-    const [decision, setDecision] = useState("Rejected")
-    // const [decision, setDecision] = useState("Approved")
-    // const [decision, setDecision] = useState("Pending")
-
-    // for normal user view
-    const DecisionButton = styled.button`
-        background-color: ${() =>
-            decision === "Pending" ? "#E7E7E7"
-                : (decision === "Approved" ? "#EDFCF9" : (decision === "Rejected" ? "#FFE2E2" : "purple"))
-        };
-        color: ${() =>
-            decision === "Pending" ? '#000000'
-                : (decision === "Approved" ? '#168082' : (decision === "Rejected" ? '#B01C2E' : '#ffffff'))
-        };
-        border: none;
-        border-radius: 4px;
-        `
-
+    const [totalPage, setTotalPage] = useState(0)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [notifications, setNotifications] = useState()
     const [leaveDetail, setLeaveDetail] = useState(false);
+
+    useEffect(() => {
+        const url = "https://doctor-rota-spring-develop.herokuapp.com/notification?accountId=1"
+
+        fetch(url, {
+            mode: 'cors',
+            method: "GET",
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const totalNumber = data.leaveRequests.length
+            setTotalPage(totalNumber/6)
+            setNotifications(data.leaveRequests)
+        })
+    }, [])
+
 
     function handleClick(){
         console.log(12)
         // setLeaveDetail(true)
     }
 
-    const getContent = number => {
+    const getContent = () => {
         let content = [];
-        for (let i = 1; i <= number; i++) {
+
+        notifications.map((notification) => {
             content.push(
-                <AlertMessage key={i} className="mt-3">
+                <AlertMessage key={notification.id} className="mt-3">
                     <div className="d-flex">
                         <SenderTag className="px-4">
-                            {
-                                ((i % 2 === 0) && <p className="mb-0">Dennis</p>) 
-                                || <p className="mb-0">Admin</p>
-                            }
+                            {/* still need to confirm */}
+                            <p className="mb-0">Admin</p>
                         </SenderTag>
                     </div>
                     <MessageInfo className="d-flex px-4 col-12 justify-content-between" onClick={() => handleClick()}>
-                        <div className="py-3 col-sm-3">
-                            {
-                                (((i % 3) === 0) && <p className="mb-0">2022/07/28 - 2022/08/01</p>)
-                                || ((i % 3 === 1) && <p className="mb-0">2022/07/21 - 2022/07/21</p>)
-                                || ((i % 3 === 2) && <p className="mb-0">2022/07/15 - 2022/07/19</p>)
-                            }
+                        <div className="py-3">     
+                            <p className="mb-0">{notification.date}</p>    
                         </div>
-                        <div className="py-3 col-sm-2">
-                            {
-                                (((i % 3) === 0) && <p className="mb-0">Study Leave</p>)
-                                || ((i % 3 === 1) && <p className="mb-0">NOC Request</p>)
-                                || ((i % 3 === 2) && <p className="mb-0">Annual Leave</p>)
-                            }
-                        </div>
-                        {/* <i className="bi bi-search" /> */}
-                        {
-                            (isAdmin &&
-                                (
-                                    <>
-                                        <div className="d-flex my-3 fw-bold">
-                                            <DenialButton
-                                                className="me-1 px-2"
-                                                onClick={() => setDecision("Rejected")}>
-                                                Reject
-                                            </DenialButton>
-                                            <ApprovalButton
-                                                className="ms-1 px-2"
-                                                onClick={() => setDecision("Approved")}>
-                                                Approve
-                                            </ApprovalButton>
 
-                                            {/* <ViewButton
-                                                onClick={() => setLeaveDetail(true)}>
-                                                View
-                                            </ViewButton> */}
-                                        </div>
-                                    </>
-                                ))
-                            || (
-                                <>
-                                    <div className="col-sm-2 fw-bold" />
-                                    <div className="col-sm-2 fw-bold">
-                                        <DecisionButton className="my-3 mx-2 p-2">
-                                            {decision}
-                                        </DecisionButton></div>
-                                </>
-                            )
-                        }
+                        <div className="py-3">
+                            {
+                                notification.type == 0 &&
+                                <p className="mb-0">Annual Leave</p>
+                                || notification.type == 1 &&
+                                <p className="mb-0">Study Leave</p>
+                                || notification.type == 2 &&
+                                <p className="mb-0">NOC Request</p>
+                                || notification.type == 9 &&
+                                <p className="mb-0">Other</p>
+                            }
+                        </div>
+
+                        <div className="py-3">
+                            {
+                                notification.accountId == 1 && notification.status == 1 &&
+                                <ApprovalButton disabled>Approved</ApprovalButton>
+                                || notification.accountId == 1 && notification.status == 2 &&
+                                <DenialButton disabled>Rejected</DenialButton>
+                                || notification.accountId == 1 && notification.status == 0 &&
+                                <PendingButton disabled>Pending</PendingButton>
+                                || notification.accountId != 1 && notification.status == 0 &&
+                                <div className="d-flex">
+                                    <DenialButton className="me-1 px-2">
+                                        Reject
+                                    </DenialButton>
+                                    <ApprovalButton className="ms-1 px-2">
+                                        Approve
+                                    </ApprovalButton>
+                                </div>
+                            }
+                        </div>
                     </MessageInfo >
                 </AlertMessage >
             )
-        }
+        })
         return content;
     }
 
-
-    const [currentPage, setCurrentPage] = useState(1)
     return (
         <div>
             <PageContainer>
-                {getContent(6)}
+                {
+                    notifications != undefined &&
+                    getContent()
+                }
                 <LeaveDetailModal leaveDetail={leaveDetail} setLeaveDetail={setLeaveDetail} />
             </PageContainer>
-            <Pagination currentPage={currentPage} totalPage={10} setCurrentPage={setCurrentPage} />
+            <Pagination currentPage={currentPage} totalPage={totalPage} setCurrentPage={setCurrentPage} />
         </div>
     )
 }
@@ -163,7 +152,6 @@ const MessageInfo = styled.div`
     }
 `
 
-// for admin view
 const DenialButton = styled.button`
     background-color: #FFE2E2;
     min-width: 85px;
@@ -189,6 +177,33 @@ const ApprovalButton = styled.button`
         font-size: 13px
     }
 `
+
+const PendingButton = styled.button`
+    background-color: #E7E7E7;
+    min-width: 85px;
+    color: black;
+    border: none;
+    border-radius: 4px;
+
+    @media (max-width: 575px){
+        min-width: 70px;
+        font-size: 13px
+    }
+`
+
+    // for normal user view
+    // const DecisionButton = styled.button`
+    //     background-color: ${() =>
+    //         decision === "Pending" ? "#E7E7E7"
+    //             : (decision === "Approved" ? "#EDFCF9" : (decision === "Rejected" ? "#FFE2E2" : "purple"))
+    //     };
+    //     color: ${() =>
+    //         decision === "Pending" ? '#000000'
+    //             : (decision === "Approved" ? '#168082' : (decision === "Rejected" ? '#B01C2E' : '#ffffff'))
+    //     };
+    //     border: none;
+    //     border-radius: 4px;
+    //     `
 
 // const ViewButton = styled.button`
 //     background-color: lightyellow;

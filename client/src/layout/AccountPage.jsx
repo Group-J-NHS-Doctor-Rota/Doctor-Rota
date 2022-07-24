@@ -112,7 +112,7 @@ export default function AccountPage() {
 
                             {
                                 accounts != undefined &&
-                                getTableContent(6)
+                                getTableContent()
                             }
                         </tbody>
                     </table>
@@ -120,7 +120,7 @@ export default function AccountPage() {
                     <AccountGrid>
                         {
                             accounts != undefined &&
-                            getCardContent(6)
+                            getCardContent()
                         }
                     </AccountGrid>
                 }

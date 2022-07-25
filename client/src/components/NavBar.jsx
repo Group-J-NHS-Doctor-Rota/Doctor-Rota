@@ -7,15 +7,13 @@ import ProfileModal from '../modals/ProfileModal';
 import RequestLeaveModal from '../modals/RequestLeaveModal';
 
 import styled from 'styled-components'
-import { data } from 'autoprefixer';
 
 export default function NavBar() {
     const [open, setOpen] = useState(false)
     const [profile, setProfile] = useState(false)
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
-    const [accountDetail, setAccountDetail] = useState()
-    const accountId = 3 // temporary
+
 
     const listRef = useRef()
 
@@ -32,6 +30,9 @@ export default function NavBar() {
 
         // return () => document.removeEventListener('click', closeList)
     }, [])
+
+    const [accountDetail, setAccountDetail] = useState()
+    const accountId = 3
 
     useEffect(() => {
         if (accountId != undefined) {
@@ -50,6 +51,7 @@ export default function NavBar() {
                 })
         }
     }, [accountId])
+
 
 
     function toggleList(type) {
@@ -90,14 +92,16 @@ export default function NavBar() {
                         <div onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
                             <Logo src='https://www.england.nhs.uk/nhsidentity/wp-content/themes/nhsengland-identity/templates/assets/img/global/nhs-logo.svg' />
                         </div>
-
                         <div className="d-flex justify-content-end me-2">
-                            {accountDetail.level === 1 &&
+
+                            {
+                                // check if the user is admin: level = 1 -> admin
+                                // accountDetail.level === 1 &&
                                 (<RefreshButton className="my-2 me-3">Refresh Rota</RefreshButton>)
                             }
+
                             <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: 'white' }} onClick={() => toggleList()}></i>
                         </div>
-
                     </div>
                 </Navbar>
 
@@ -115,7 +119,8 @@ export default function NavBar() {
                                         {
                                             accountDetail !== undefined &&
                                             accountDetail.username
-                                        }</p>
+                                        }
+                                    </p>
                                 </div>
                             </NavBarItem>
 

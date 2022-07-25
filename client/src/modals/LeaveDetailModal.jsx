@@ -2,30 +2,12 @@ import styled from "styled-components";
 import { Modal } from "react-bootstrap"
 import { useState, useEffect } from "react";
 
-const LeaveDetailModal = ({ leaveDetail, setLeaveDetail }) => {
-    const [requestInfo, setRequstInfo] = useState()
+const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
     const [accountInfo, setAccountInfo] = useState()
-    const accountId = 1 // temporary
-    const leaveId = 0 // temporary
 
     useEffect(() => {
-        accountId !== undefined &&
-            fetch(`https://doctor-rota-spring-develop.herokuapp.com/notification/?accountId=${accountId}`, {
-                mode: 'cors',
-                method: "GET",
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(data => setRequstInfo(data.leaveRequests))
-    }, [accountId])
-
-    useEffect(() => {
-        // accountId !== undefined &&
-        fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+        notification !== undefined &&
+        fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${notification.accountId}`, {
             mode: 'cors',
             method: "GET",
             headers: {
@@ -36,7 +18,7 @@ const LeaveDetailModal = ({ leaveDetail, setLeaveDetail }) => {
         })
             .then(response => response.json())
             .then(data => setAccountInfo(data))
-    }, [accountId])
+    }, [notification])
 
     return (
         <>
@@ -67,8 +49,8 @@ const LeaveDetailModal = ({ leaveDetail, setLeaveDetail }) => {
                             <div className="d-flex">
                                 <RowInfo className="mb-0">
                                     {
-                                        requestInfo !== undefined &&
-                                        requestInfo[0].date
+                                        notification !== undefined &&
+                                        notification.date
                                     }
                                 </RowInfo>
                             </div>
@@ -80,21 +62,21 @@ const LeaveDetailModal = ({ leaveDetail, setLeaveDetail }) => {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">
+                                <div className="mb-0">
                                     {
-                                        requestInfo !== undefined &&
+                                        notification !== undefined &&
                                         (
-                                            requestInfo[leaveId].type === 0 &&
-                                            <p className="mb-0">Annual Leave</p>
-                                            || requestInfo[leaveId].type === 0 &&
-                                            <p className="mb-0">Study Leave</p>
-                                            || requestInfo[leaveId].type === 0 &&
-                                            <p className="mb-0">NOC Request</p>
-                                            || requestInfo[leaveId].type === 0 &&
-                                            <p className="mb-0">Others</p>
+                                            notification.type === 0 &&
+                                            <RowInfo className="mb-0">Annual Leave</RowInfo>
+                                            || notification.type === 1 &&
+                                            <RowInfo className="mb-0">Study Leave</RowInfo>
+                                            || notification.type ===2 &&
+                                            <RowInfo className="mb-0">NOC Request</RowInfo>
+                                            || notification.type === 9 &&
+                                            <RowInfo className="mb-0">Others</RowInfo>
                                         )
                                     }
-                                </RowInfo>
+                                </div>
                             </div>
                         </div>
 
@@ -104,7 +86,12 @@ const LeaveDetailModal = ({ leaveDetail, setLeaveDetail }) => {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">(200 OK)</RowInfo>
+                                <RowInfo className="mb-0">
+                                    {
+                                        notification !== undefined &&
+                                        notification.note
+                                    }
+                                </RowInfo>
                             </div>
                         </div>
                     </div>

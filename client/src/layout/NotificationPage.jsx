@@ -7,6 +7,7 @@ const NotificationPage = () => {
     const [totalPage, setTotalPage] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [notifications, setNotifications] = useState()
+    const [selected, setSelected] = useState()
     const [leaveDetail, setLeaveDetail] = useState(false);
     const accountId = 1
 
@@ -31,8 +32,8 @@ const NotificationPage = () => {
             })
     }, [])
 
-    function handleClick() {
-        console.log(12)
+    function handleClick(notification) {
+        setSelected(notification)
         setLeaveDetail(true)
     }
 
@@ -47,7 +48,7 @@ const NotificationPage = () => {
                             <p className="mb-0">Admin</p>
                         </SenderTag>
                     </div>
-                    <MessageInfo className="d-flex px-4 col-12 justify-content-between" onClick={() => handleClick()}>
+                    <MessageInfo className="d-flex px-4 col-12 justify-content-between" onClick={() => handleClick(notification)}>
                         <div className="py-3">
                             <p className="mb-0">{notification.date}</p>
                         </div>
@@ -98,7 +99,7 @@ const NotificationPage = () => {
                     notifications != undefined &&
                     getContent()
                 }
-                <LeaveDetailModal leaveDetail={leaveDetail} setLeaveDetail={setLeaveDetail} />
+                <LeaveDetailModal notification={selected} leaveDetail={leaveDetail} setLeaveDetail={setLeaveDetail} />
             </PageContainer>
             <Pagination currentPage={currentPage} totalPage={totalPage} setCurrentPage={setCurrentPage} />
         </div>

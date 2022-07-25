@@ -1,6 +1,6 @@
 import { Modal, Form } from "react-bootstrap"
 import styled from "styled-components"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 const CreateUsersModal = ({ create, setCreate }) => {
     const [userList, setUserList] = useState([
@@ -23,7 +23,6 @@ const CreateUsersModal = ({ create, setCreate }) => {
         setUserList(list)
     }
 
-
     return (
         <>
             <Modal show={create}>
@@ -32,10 +31,13 @@ const CreateUsersModal = ({ create, setCreate }) => {
                         <ModalTitle className="my-5">Create Users</ModalTitle>
                     </div>
 
+                    <CreateRegion className="p-4">
+
+                    
                     {userList.map((user, index) => {
                         return (
                             index + 1 <= 10 &&
-                            (<>
+                            (
                                 <div key={index} className="d-block mb-3">
                                     <div className="d-flex justify-content-between align-items-center">
                                         <ColumnName>New User&nbsp;{index + 1}</ColumnName>
@@ -60,6 +62,7 @@ const CreateUsersModal = ({ create, setCreate }) => {
                                             }
                                         </div>
                                     </div>
+                                    
                                     <Input
                                         className="my-1"
                                         type="text"
@@ -77,13 +80,14 @@ const CreateUsersModal = ({ create, setCreate }) => {
                                         autoComplete="off"
                                         onChange={e => onChange(e, index)} />
                                 </div>
-                            </>
+                            
                             )
                             || <p style={{ color: 'red' }}>The maximum is 10 users in one go!</p>
                         )
                     })}
+                    </CreateRegion>
 
-                    <div className="d-flex justify-content-center my-5">
+                    <div className="d-flex justify-content-center my-4">
                         <CloseButton className="m-2" onClick={() => setCreate(false)}>
                             Close
                         </CloseButton>
@@ -112,6 +116,14 @@ const ModalTitle = styled.h1`
     @media (max-width: 575px){
         font-size: 24px;
     }
+`
+
+const CreateRegion = styled.div`
+    overflow: scroll;
+    height: 400px;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `
 
 const CloseButton = styled.button`

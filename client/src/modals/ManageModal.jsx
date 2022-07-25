@@ -30,11 +30,11 @@ const ManageModal = ({ accountId, manage, setManage }) => {
         setAccountDetail({ ...accountDetail, [e.target.name]: e.target.value });
         
     };
+    console.log(accountDetail)
 
     function handleSubmit(e){
         e.preventDefault()
 
-        console.log(accountDetail)
 
         try{
             fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
@@ -170,9 +170,10 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                             className="mt-2" 
                                             disabled={disable} 
                                             onChange={onChange}
+                                            defaultValue="1"
                                         >
                                             <option value="0">Standard</option>
-                                            <option value="1" selected>Admin</option>
+                                            <option value="1">Admin</option>
                                         </Form.Select>
                                         ||
                                         accountDetail != undefined && accountDetail.level == 0 && 
@@ -182,8 +183,9 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                             className="p-2 mt-2" 
                                             disabled={disable} 
                                             onChange={onChange}
+                                            defaultValue="0"
                                         >
-                                            <option value="0" selected>Standard</option>
+                                            <option value="0">Standard</option>
                                             <option value="1">Admin</option>
                                         </Form.Select>
                                     }

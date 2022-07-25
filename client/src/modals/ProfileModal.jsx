@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 export default function ProfileModal({ profile, setProfile }) {
     const handleSubmit = e => e.preventDefault()
-    const [infomation, setInformation] = useState()
+    const [information, setInformation] = useState()
 
     useEffect(() => {
         fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
@@ -22,6 +22,10 @@ export default function ProfileModal({ profile, setProfile }) {
         .then(data => setInformation(data.accounts.filter((account) => account.id == 1)[0]))
     }, [])
 
+    const onChange = (e) => {
+        setInformation({ ...information, [e.target.name]: e.target.value });
+    };
+
     return (
         <>
             <Modal show={profile}>
@@ -36,8 +40,8 @@ export default function ProfileModal({ profile, setProfile }) {
                                 </Label>
                                 <RowInfo className="d-flex mb-0">
                                     {   
-                                        infomation != undefined &&
-                                        infomation.username
+                                        information != undefined &&
+                                        information.username
                                     }
                                 </RowInfo>
                             </div>
@@ -48,8 +52,8 @@ export default function ProfileModal({ profile, setProfile }) {
                                 </Label>
                                 <RowInfo className="d-flex mb-0">
                                     {
-                                        infomation != undefined &&
-                                        infomation.doctorId
+                                        information != undefined &&
+                                        information.doctorId
                                     }
                                 </RowInfo>
                             </div>
@@ -60,8 +64,8 @@ export default function ProfileModal({ profile, setProfile }) {
                                         <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
                                     </Label>
                                     {
-                                        infomation != undefined &&
-                                        <Input type="email" value={infomation.email} />
+                                        information != undefined &&
+                                        <Input name="email" type="email" value={information.email} onChange={onChange}/>
                                     }
                                     <LockIcon className="bi bi-unlock-fill ms-2" />
                                 </div>
@@ -71,8 +75,8 @@ export default function ProfileModal({ profile, setProfile }) {
                                         <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
                                     </Label>
                                     {
-                                        infomation != undefined &&
-                                        <Input type="tel" value={infomation.phone} />
+                                        information != undefined &&
+                                        <Input name="phone" type="tel" value={information.phone} onChange={onChange}/>
                                     }
                                     <LockIcon className="bi bi-lock-fill ms-2" />
                                 </div>

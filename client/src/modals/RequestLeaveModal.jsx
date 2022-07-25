@@ -285,24 +285,45 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                     <div className="d-flex">
                                         {
                                             values.single_half_full == "am" && 
-                                            <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="single_half_full" id="single_half_full" onChange={(e) => setValue(e)}>
-                                                    <option value="full">Full</option>  
-                                                    <option value="am" selected>a.m.</option>
-                                                    <option value="pm">p.m.</option>
+                                            <Form.Select 
+                                                id="single_half_full" 
+                                                name="single_half_full" 
+                                                className="p-2 me-1" 
+                                                style={{ width: '30%' }} 
+                                                onChange={(e) => setValue(e)}
+                                                defaultValue="am"
+                                            >
+                                                <option value="full">Full</option>  
+                                                <option value="am">a.m.</option>
+                                                <option value="pm">p.m.</option>
                                             </Form.Select>
                                             ||
                                             values.single_half_full == "pm" && 
-                                            <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="single_half_full" id="single_half_full" onChange={(e) => setValue(e)}>
-                                                    <option value="full">Full</option>  
-                                                    <option value="am">a.m.</option>
-                                                    <option value="pm" selected>p.m.</option>
+                                            <Form.Select 
+                                                id="single_half_full" 
+                                                name="single_half_full" 
+                                                className="p-2 me-1" 
+                                                style={{ width: '30%' }} 
+                                                onChange={(e) => setValue(e)}
+                                                defaultValue="pm"
+                                            >
+                                                <option value="full">Full</option>  
+                                                <option value="am">a.m.</option>
+                                                <option value="pm">p.m.</option>
                                             </Form.Select>
                                             ||
                                             values.single_half_full == "full" && 
-                                            <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="single_half_full" id="single_half_full" onChange={(e) => setValue(e)}>
-                                                    <option value="full" selected>Full</option>  
-                                                    <option value="am">a.m.</option>
-                                                    <option value="pm">p.m.</option>
+                                            <Form.Select 
+                                                id="single_half_full" 
+                                                name="single_half_full" 
+                                                className="p-2 me-1" 
+                                                style={{ width: '30%' }} 
+                                                onChange={(e) => setValue(e)}
+                                                defaultValue="full"
+                                            >
+                                                <option value="full">Full</option>  
+                                                <option value="am">a.m.</option>
+                                                <option value="pm">p.m.</option>
                                             </Form.Select>
                                         }
                                         
@@ -331,22 +352,43 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                     <div className="d-flex">
                                         {
                                             values.multiple_start_half_full == "am" &&
-                                            <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_start_half_full" id="multiple_start_half_full" onChange={(e) => setValue(e)}>
+                                            <Form.Select 
+                                                id="multiple_start_half_full" 
+                                                name="multiple_start_half_full" 
+                                                className="p-2 me-1" 
+                                                style={{ width: '30%' }} 
+                                                onChange={(e) => setValue(e)}
+                                                defaultValue="am"
+                                            >
                                                 <option value="full">Full</option>
-                                                <option value="am" selected>a.m.</option>
+                                                <option value="am">a.m.</option>
                                                 <option value="pm">p.m.</option>
                                             </Form.Select>
                                             ||
                                             values.multiple_start_half_full == "pm" &&
-                                            <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_start_half_full" id="multiple_start_half_full" onChange={(e) => setValue(e)}>
+                                            <Form.Select 
+                                                id="multiple_start_half_full" 
+                                                name="multiple_start_half_full" 
+                                                className="p-2 me-1" 
+                                                style={{ width: '30%' }} 
+                                                onChange={(e) => setValue(e)}
+                                                defaultValue="pm"
+                                            >
                                                 <option value="full" >Full</option>
                                                 <option value="am">a.m.</option>
-                                                <option value="pm" selected>p.m.</option>
+                                                <option value="pm">p.m.</option>
                                             </Form.Select>
                                             ||
                                             values.multiple_start_half_full == "full" &&
-                                            <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_start_half_full" id="multiple_start_half_full" onChange={(e) => setValue(e)}>
-                                                <option value="full" selected>Full</option>
+                                            <Form.Select 
+                                                id="multiple_start_half_full" 
+                                                name="multiple_start_half_full" 
+                                                className="p-2 me-1" 
+                                                style={{ width: '30%' }} 
+                                                onChange={(e) => setValue(e)}
+                                                defaultValue="full"
+                                            >
+                                                <option value="full">Full</option>
                                                 <option value="am">a.m.</option>
                                                 <option value="pm">p.m.</option>
                                             </Form.Select>
@@ -375,22 +417,43 @@ export default function RequestLeaveModal({ leave, setLeave }) {
 
                                         {
                                             values.multiple_end_half_full == "am" &&
-                                            <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_end_half_full" id="multiple_end_half_full" onChange={(e) => setValue(e)}>
+                                            <Form.Select 
+                                                id="multiple_end_half_full" 
+                                                name="multiple_end_half_full" 
+                                                className="p-2 me-1" 
+                                                style={{ width: '30%' }} 
+                                                onChange={(e) => setValue(e)}
+                                                defaultValue="am"
+                                            >
                                                 <option value="full">Full</option>
-                                                <option value="am" selected>a.m.</option>
+                                                <option value="am">a.m.</option>
                                                 <option value="pm">p.m.</option>
                                             </Form.Select>
                                             ||
                                             values.multiple_end_half_full == "pm" &&
-                                            <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_end_half_full" id="multiple_end_half_full" onChange={(e) => setValue(e)}>
+                                            <Form.Select 
+                                                id="multiple_end_half_full" 
+                                                name="multiple_end_half_full" 
+                                                className="p-2 me-1" 
+                                                style={{ width: '30%' }} 
+                                                onChange={(e) => setValue(e)}
+                                                defaultValue="pm"
+                                            >
                                                 <option value="full">Full</option>
                                                 <option value="am">a.m.</option>
-                                                <option value="pm" selected>p.m.</option>
+                                                <option value="pm">p.m.</option>
                                             </Form.Select>
                                             ||
                                             values.multiple_end_half_full == "full" &&
-                                            <Form.Select className="p-2 me-1" style={{ width: '30%' }} name="multiple_end_half_full" id="multiple_end_half_full" onChange={(e) => setValue(e)}>
-                                                <option value="full" selected>Full</option>
+                                            <Form.Select 
+                                                id="multiple_end_half_full" 
+                                                name="multiple_end_half_full" 
+                                                className="p-2 me-1" 
+                                                style={{ width: '30%' }} 
+                                                onChange={(e) => setValue(e)}
+                                                defaultValue="full"
+                                            >
+                                                <option value="full">Full</option>
                                                 <option value="am">a.m.</option>
                                                 <option value="pm">p.m.</option>
                                             </Form.Select>

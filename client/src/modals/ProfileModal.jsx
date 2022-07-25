@@ -9,6 +9,7 @@ export default function ProfileModal({ profile, setProfile }) {
     const [information, setInformation] = useState()
     const accountId = 3 // temporary
 
+
     useEffect(() => {
         fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
             mode: 'cors',
@@ -25,7 +26,6 @@ export default function ProfileModal({ profile, setProfile }) {
 
     const onChange = (e) => {
         setInformation({ ...information, [e.target.name]: e.target.value });
-
     };
 
     function handleSubmit(e) {
@@ -60,6 +60,7 @@ export default function ProfileModal({ profile, setProfile }) {
 
     }
 
+
     return (
         <>
             <Modal show={profile}>
@@ -74,6 +75,7 @@ export default function ProfileModal({ profile, setProfile }) {
                                 </Label>
                                 <RowInfo className="d-flex mb-0">
                                     {
+
                                         information != undefined &&
                                         information.username
                                     }
@@ -104,6 +106,7 @@ export default function ProfileModal({ profile, setProfile }) {
                                             value={information.email}
                                             autoComplete='off'
                                             onChange={onChange} />
+
                                     }
                                     <LockIcon className="bi bi-unlock-fill ms-2" />
                                 </div>
@@ -119,6 +122,7 @@ export default function ProfileModal({ profile, setProfile }) {
                                             value={information.phone}
                                             autoComplete='off'
                                             onChange={onChange} />
+
                                     }
                                     <LockIcon className="bi bi-lock-fill ms-2" />
                                 </div>

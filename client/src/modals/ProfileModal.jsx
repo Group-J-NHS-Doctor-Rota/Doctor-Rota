@@ -7,7 +7,7 @@ import styled from 'styled-components'
 export default function ProfileModal({ profile, setProfile }) {
     // const handleSubmit = e => e.preventDefault()
     const [information, setInformation] = useState()
-    const accountId = 3
+    const accountId = 3 // temporary
 
     useEffect(() => {
         fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {

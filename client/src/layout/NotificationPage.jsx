@@ -8,9 +8,11 @@ const NotificationPage = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [notifications, setNotifications] = useState()
     const [leaveDetail, setLeaveDetail] = useState(false);
+    const accountId = 1
+
 
     useEffect(() => {
-        const url = "https://doctor-rota-spring-develop.herokuapp.com/notification?accountId=1"
+        const url = `https://doctor-rota-spring-develop.herokuapp.com/notification?accountId=${accountId}`
 
         fetch(url, {
             mode: 'cors',
@@ -29,7 +31,6 @@ const NotificationPage = () => {
             })
     }, [])
 
-
     function handleClick() {
         console.log(12)
         setLeaveDetail(true)
@@ -43,7 +44,6 @@ const NotificationPage = () => {
                 <AlertMessage key={notification.id} className="mt-3">
                     <div className="d-flex">
                         <SenderTag className="px-4">
-                            {/* still need to confirm */}
                             <p className="mb-0">Admin</p>
                         </SenderTag>
                     </div>

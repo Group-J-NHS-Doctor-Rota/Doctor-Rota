@@ -163,7 +163,7 @@ const Input = styled.input`
 `
 
 const Icon = styled.i`
-    font-size: 26px;
+    font-size: 23px;
     margin-left: 12px;
     cursor: pointer;
 `

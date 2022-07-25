@@ -6,6 +6,8 @@ import '../css/general.css'
 import styled from 'styled-components'
 
 export default function RequestLeaveModal({ leave, setLeave }) {
+    const toDay = new Date().toISOString().substring(0, 10);
+
     const [errorMsg, setErrorMsg] = useState({
         type_leave_required: false,
         single_day_required: false,
@@ -100,7 +102,6 @@ export default function RequestLeaveModal({ leave, setLeave }) {
             }
         }
     }
-
 
     function isValidDate(date1, date2){
         const num1 = parseInt(date1.replaceAll("-", ""))
@@ -331,7 +332,7 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                             values.single_day != "" &&
                                             <Form.Control type='date' name="single_day" value={values.single_day} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)} />
                                             ||
-                                            <Form.Control type='date' name="single_day" value="0" className="w-100 p-2 ms-1" onChange={(e) => setValue(e)} />
+                                            <Form.Control type='date' name="single_day" value={toDay} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)} />
                                         }
 
                                     </div>
@@ -398,7 +399,7 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                             values.multiple_start_day != "" &&
                                             <Form.Control type='date' name="multiple_start_day" value={values.multiple_start_day} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
                                             ||
-                                            <Form.Control type='date' name="multiple_start_day" value="0" className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
+                                            <Form.Control type='date' name="multiple_start_day" value={toDay} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
                                         }
                                     </div>
 
@@ -463,7 +464,7 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                             values.multiple_end_day != "" &&
                                             <Form.Control type='date' name="multiple_end_day" value={values.multiple_end_day} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
                                             ||
-                                            <Form.Control type='date' name="multiple_end_day" value="0" className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
+                                            <Form.Control type='date' name="multiple_end_day" value={toDay} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
                                         }
 
                                     </div>

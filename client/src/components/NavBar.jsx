@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Outlet, useNavigate } from 'react-router-dom';
 
@@ -14,22 +14,16 @@ export default function NavBar() {
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
 
-    
-    const listRef = useRef()
+    useEffect(() => {        
+        const closeList = e => {
+            if(e.target.id != "icon_list"){
+                setOpen(false)
+            }
+        }
 
-    useEffect(() => {
-        // console.log(listRef.current)
-        // const closeList = e => {
-        //     if(e.path[0] != listRef.current){
-        //         setOpen(!open)
-        //         console.log(e)
-        //     }
-        // }
-
-        // document.addEventListener('click', closeList)
-
-        // return () => document.removeEventListener('click', closeList)
-    }, [])
+        document.addEventListener('click', closeList)
+        return () => document.removeEventListener('click', closeList)
+    }, [open])
 
     function toggleList(type) {
         setOpen(!open)
@@ -58,7 +52,6 @@ export default function NavBar() {
         }
     }
 
-
     const navigate = useNavigate();
 
     return (
@@ -79,7 +72,7 @@ export default function NavBar() {
                 {
                     open &&
                     (<div className="d-flex justify-content-end">
-                        <NavBarList ref={listRef} className="me-2 mt-2 p-3">
+                        <NavBarList className="me-2 mt-2 p-3">
                             <NavBarItem className="d-flex my-2" onClick={() => toggleList("profile")}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-person-fill" style={{ fontSize: '30px' }}></i>

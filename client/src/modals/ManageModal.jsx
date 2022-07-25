@@ -30,11 +30,9 @@ const ManageModal = ({ accountId, manage, setManage }) => {
         setAccountDetail({ ...accountDetail, [e.target.name]: e.target.value });
         
     };
-    console.log(accountDetail)
 
     function handleSubmit(e){
         e.preventDefault()
-
 
         try{
             fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {

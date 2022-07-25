@@ -27,7 +27,7 @@ const NotificationPage = () => {
             .then(response => response.json())
             .then(data => {
                 const totalNumber = data.leaveRequests.length
-                setTotalPage(totalNumber / 6)
+                setTotalPage(Math.ceil(totalNumber / 6))
                 setNotifications(data.leaveRequests)
             })
     }, [])

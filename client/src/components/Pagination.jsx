@@ -3,7 +3,6 @@ import React from 'react'
 import styled from 'styled-components'
 
 export default function Pagination({currentPage, totalPage, setCurrentPage}){
-
     function goToPage(page){
         setCurrentPage(page)
     }
@@ -11,11 +10,23 @@ export default function Pagination({currentPage, totalPage, setCurrentPage}){
     const getContent = number => {
         let content = [];
         let total = number + 1
-        for (let i = 1; i < total; i++) {
-            if(i == currentPage){
-                content.push(<Wrapper key={i} className="d-flex justify-content-center align-items-center me-1" style={{backgroundColor: '#035eb8'}}><div className="mb-0" style={{color: 'white'}}>{i}</div></Wrapper>)
-            }else{
-                content.push(<Wrapper key={i} className="d-flex justify-content-center align-items-center me-1" onClick={() => goToPage(i)}><div className="mb-0">{i}</div></Wrapper>)
+        if(number <= 5){
+            for (let i = 1; i < total; i++) {
+                if(i == currentPage){
+                    content.push(<Wrapper key={i} className="d-flex justify-content-center align-items-center me-1" style={{backgroundColor: '#035eb8'}}><div className="mb-0" style={{color: 'white'}}>{i}</div></Wrapper>)
+                }else{
+                    content.push(<Wrapper key={i} className="d-flex justify-content-center align-items-center me-1" onClick={() => goToPage(i)}><div className="mb-0">{i}</div></Wrapper>)
+                }
+            }
+        }else{
+            for (let i = 1; i < total; i++) {
+                if(i == currentPage){
+                    content.push(<Wrapper key={i} className="d-flex justify-content-center align-items-center me-1" style={{backgroundColor: '#035eb8'}}><div className="mb-0" style={{color: 'white'}}>{i}</div></Wrapper>)
+                }else{
+                    if(i == currentPage - 2 || i == currentPage - 1 || i == currentPage + 1 || i == currentPage + 2){
+                        content.push(<Wrapper key={i} className="d-flex justify-content-center align-items-center me-1" onClick={() => goToPage(i)}><div className="mb-0">{i}</div></Wrapper>)
+                    }
+                }
             }
         }
         return content;
@@ -24,7 +35,7 @@ export default function Pagination({currentPage, totalPage, setCurrentPage}){
     return (
         <div className="d-flex justify-content-center my-3">
             {
-                currentPage !== 1 &&
+                currentPage !== 1 && totalPage >= 1 &&
                 <Wrapper className="d-flex justify-content-center align-items-center me-1" onClick={() => goToPage(currentPage-1)}>
                     <i className="bi bi-arrow-left-short" style={{fontSize: '24px'}}></i>
                 </Wrapper>
@@ -35,7 +46,7 @@ export default function Pagination({currentPage, totalPage, setCurrentPage}){
             }
 
             {
-                currentPage !== totalPage &&
+                currentPage !== totalPage && totalPage >= 1 &&
                 <Wrapper className="d-flex justify-content-center align-items-center me-1" onClick={() => goToPage(currentPage+1)}>
                     <i className="bi bi-arrow-right-short" style={{fontSize: '24px'}}></i>
                 </Wrapper>

@@ -31,7 +31,7 @@ export default function AccountPage() {
             .then(response => response.json())
             .then(data => {
                 const totalNumber = data.accounts.length
-                setTotalPage(totalNumber / 6)
+                setTotalPage(Math.ceil(totalNumber/6))
                 setAccounts(data.accounts)
             })
     }, [])

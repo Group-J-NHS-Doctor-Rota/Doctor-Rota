@@ -4,30 +4,31 @@ import ShiftDetailModal from '../modals/ShiftDetailModal'
 
 import styled from 'styled-components'
 
-export default function Shift({ type }){
+export default function Shift({ type }) {
     const [shift, setShift] = useState(false)
+    const [accountId, setAccountId] = useState(3)
 
     return (
         <>
             <List className="d-flex mb-1 p-2" onClick={() => setShift(true)}>
                 {
-                    type == "night" && 
-                    <div className="d-flex justify-content-center align-items-center px-1 py-2 rounded" style={{backgroundColor: '#eaf0fa'}}>
-                        <i className="bi bi-moon-fill" style={{color: '#084298'}}></i>
+                    type == "night" &&
+                    <div className="d-flex justify-content-center align-items-center px-1 py-2 rounded" style={{ backgroundColor: '#eaf0fa' }}>
+                        <i className="bi bi-moon-fill" style={{ color: '#084298' }}></i>
                     </div>
                     || type == "morning" &&
-                    <div className="d-flex justify-content-center align-items-center px-1 py-2 rounded" style={{backgroundColor: '#fff0c2'}}>
-                        <i className="bi bi-brightness-high-fill" style={{color: '#ffc107'}}></i>
+                    <div className="d-flex justify-content-center align-items-center px-1 py-2 rounded" style={{ backgroundColor: '#fff0c2' }}>
+                        <i className="bi bi-brightness-high-fill" style={{ color: '#ffc107' }}></i>
                     </div>
                 }
 
                 <div className="d-flex align-items-center ms-2">
-                    <p className="mb-0" style={{fontSize: '13px'}}>10:00-12:00 Steven</p>
+                    <p className="mb-0" style={{ fontSize: '13px' }}>10:00-12:00 Steven</p>
                 </div>
 
             </List>
 
-            <ShiftDetailModal shift={shift} setShift={setShift}/>
+            <ShiftDetailModal shift={shift} setShift={setShift} accountId={accountId} />
         </>
 
     )

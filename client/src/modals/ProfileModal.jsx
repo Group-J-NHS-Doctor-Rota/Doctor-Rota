@@ -5,8 +5,9 @@ import { Modal } from 'react-bootstrap'
 import styled from 'styled-components'
 
 export default function ProfileModal({ profile, setProfile }) {
-    const handleSubmit = e => e.preventDefault()
-    const [infomation, setInformation] = useState()
+    // const handleSubmit = e => e.preventDefault()
+    const [information, setInformation] = useState()
+    const accountId = 3
 
     useEffect(() => {
         fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
@@ -18,9 +19,46 @@ export default function ProfileModal({ profile, setProfile }) {
                 'Accept': 'application/json'
             }
         })
-        .then(response => response.json())
-        .then(data => setInformation(data.accounts.filter((account) => account.id == 1)[0]))
+            .then(response => response.json())
+            .then(data => setInformation(data.accounts.filter((account) => account.id == 1)[0]))
     }, [])
+
+    const onChange = (e) => {
+        setInformation({ ...information, [e.target.name]: e.target.value });
+
+    };
+
+    function handleSubmit(e) {
+        e.preventDefault()
+
+        console.log(information)
+
+        try {
+            fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+                mode: 'cors',
+                method: 'PATCH',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    "Access-Control-Allow-Credentials": true
+                },
+                body: JSON.stringify({
+
+                }),
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+        } catch (error) {
+            console.log(error)
+        }
+
+        setProfile(false)
+    }
+
+    const handleIcon = () => {
+
+    }
 
     return (
         <>
@@ -35,9 +73,9 @@ export default function ProfileModal({ profile, setProfile }) {
                                     <i className="bi bi-person-fill" style={{ fontSize: '30px' }} />
                                 </Label>
                                 <RowInfo className="d-flex mb-0">
-                                    {   
-                                        infomation != undefined &&
-                                        infomation.username
+                                    {
+                                        information != undefined &&
+                                        information.username
                                     }
                                 </RowInfo>
                             </div>
@@ -48,8 +86,8 @@ export default function ProfileModal({ profile, setProfile }) {
                                 </Label>
                                 <RowInfo className="d-flex mb-0">
                                     {
-                                        infomation != undefined &&
-                                        infomation.doctorId
+                                        information != undefined &&
+                                        information.doctorId
                                     }
                                 </RowInfo>
                             </div>
@@ -60,8 +98,12 @@ export default function ProfileModal({ profile, setProfile }) {
                                         <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
                                     </Label>
                                     {
-                                        infomation != undefined &&
-                                        <Input type="email" value={infomation.email} />
+                                        information != undefined &&
+                                        <Input type="email"
+                                            name='email'
+                                            value={information.email}
+                                            autoComplete='off'
+                                            onChange={onChange} />
                                     }
                                     <LockIcon className="bi bi-unlock-fill ms-2" />
                                 </div>
@@ -71,8 +113,12 @@ export default function ProfileModal({ profile, setProfile }) {
                                         <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
                                     </Label>
                                     {
-                                        infomation != undefined &&
-                                        <Input type="tel" value={infomation.phone} />
+                                        information != undefined &&
+                                        <Input type="tel"
+                                            name='phone'
+                                            value={information.phone}
+                                            autoComplete='off'
+                                            onChange={onChange} />
                                     }
                                     <LockIcon className="bi bi-lock-fill ms-2" />
                                 </div>

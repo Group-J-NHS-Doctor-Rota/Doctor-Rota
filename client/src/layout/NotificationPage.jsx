@@ -21,18 +21,18 @@ const NotificationPage = () => {
                 'Accept': 'application/json',
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            const totalNumber = data.leaveRequests.length
-            setTotalPage(totalNumber/6)
-            setNotifications(data.leaveRequests)
-        })
+            .then(response => response.json())
+            .then(data => {
+                const totalNumber = data.leaveRequests.length
+                setTotalPage(totalNumber / 6)
+                setNotifications(data.leaveRequests)
+            })
     }, [])
 
 
-    function handleClick(){
+    function handleClick() {
         console.log(12)
-        // setLeaveDetail(true)
+        setLeaveDetail(true)
     }
 
     const getContent = () => {
@@ -48,8 +48,8 @@ const NotificationPage = () => {
                         </SenderTag>
                     </div>
                     <MessageInfo className="d-flex px-4 col-12 justify-content-between" onClick={() => handleClick()}>
-                        <div className="py-3">     
-                            <p className="mb-0">{notification.date}</p>    
+                        <div className="py-3">
+                            <p className="mb-0">{notification.date}</p>
                         </div>
 
                         <div className="py-3">

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 
 import Pagination from '../components/Pagination'
 import ManageModal from '../modals/ManageModal'
+import CreateUsersModal from '../modals/CreateUsersModal'
 
 import useWindowDimensions from '../hook/useWindowDimensions'
 
@@ -13,6 +14,7 @@ export default function AccountPage() {
     const [accounts, setAccounts] = useState()
     const [totalPage, setTotalPage] = useState(0)
     const [accountId, setAccountId] = useState()
+    const [create, setCreate] = useState(false)
 
     const { width } = useWindowDimensions();
 
@@ -26,79 +28,83 @@ export default function AccountPage() {
                 'Accept': 'application/json'
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            const totalNumber = data.accounts.length
-            setTotalPage(totalNumber/6)
-            setAccounts(data.accounts) 
-        })
+            .then(response => response.json())
+            .then(data => {
+                const totalNumber = data.accounts.length
+                setTotalPage(totalNumber / 6)
+                setAccounts(data.accounts)
+            })
     }, [])
 
-    function handleClick(id){
+    function handleClick(id) {
         setAccountId(id)
         setManage(true)
     }
 
     const getTableContent = () => {
         let content = [];
-                
-        accounts.filter(account => (currentPage) * 6 >= account.id && account.id > (currentPage-1) * 6)
-                .map((account) => (
-                    content.push(
-                        <AccountCard key={account.id} onClick={() => handleClick(account.id)}>
-                            <TableTd>{account.username}</TableTd>
-                            <TableTd>{account.email}</TableTd>
-                            <TableTd>1.0</TableTd>
-                            <TableTd>employed</TableTd>
-                        </AccountCard>
-                    )
-                ))
+
+        accounts.filter(account => (currentPage) * 6 >= account.id && account.id > (currentPage - 1) * 6)
+            .map((account) => (
+                content.push(
+                    <AccountCard key={account.id} onClick={() => handleClick(account.id)}>
+                        <TableTd>{account.username}</TableTd>
+                        <TableTd>{account.email}</TableTd>
+                        <TableTd>1.0</TableTd>
+                        <TableTd>employed</TableTd>
+                    </AccountCard>
+                )
+            ))
         return content;
     }
 
     const getCardContent = () => {
         let content = [];
-        
-        accounts.filter(account => (currentPage) * 6 > account.id && account.id > (currentPage-1) * 6)
-                .map((account) => (
-                    content.push(
-                        <AccountCardV2 key={account.id} className="d-block m-1 p-3" onClick={() => handleClick(account.id)}>
-                            <div className="d-flex justify-content-between">
-                                <div>Name</div>
-                                <div>{account.username}</div>
-                            </div>
-                            <div className="d-flex justify-content-between">
-                                <div>Email</div>
-                                <div>{account.email}</div>
-                            </div>
-                            <div className="d-flex justify-content-between">
-                                <div>WTE</div>
-                                <div>1.0</div>
-                            </div>
-                            <div className="d-flex justify-content-between">
-                                <div>Status</div>
-                                <div>employed</div>
-                            </div>
-                        </AccountCardV2>
-                    )
-                ))
+
+        accounts.filter(account => (currentPage) * 6 > account.id && account.id > (currentPage - 1) * 6)
+            .map((account) => (
+                content.push(
+                    <AccountCardV2 key={account.id} className="d-block m-1 p-3" onClick={() => handleClick(account.id)}>
+                        <div className="d-flex justify-content-between">
+                            <div>Name</div>
+                            <div>{account.username}</div>
+                        </div>
+                        <div className="d-flex justify-content-between">
+                            <div>Email</div>
+                            <div>{account.email}</div>
+                        </div>
+                        <div className="d-flex justify-content-between">
+                            <div>WTE</div>
+                            <div>1.0</div>
+                        </div>
+                        <div className="d-flex justify-content-between">
+                            <div>Status</div>
+                            <div>employed</div>
+                        </div>
+                    </AccountCardV2>
+                )
+            ))
         return content;
     }
 
     return (
         <div>
             <PageContainer className="mt-3">
-                <form id="search_account_form" className="d-flex mb-3" action="#" method="POST">
-                    <SearchRegion className="me-3">
-                        <div className="d-flex">
-                            <i className="bi bi-search me-3" style={{ fontSize: '20px' }}></i>
+                <div className='d-flex justify-content-between'>
+                    <div>
+                        <form id="search_account_form" className="d-flex mb-3" action="#" method="POST">
+                            <SearchRegion className="me-3">
+                                <div className="d-flex">
+                                    <i className="bi bi-search me-3" style={{ fontSize: '20px' }}></i>
 
-                            <Input />
-                        </div>
-                    </SearchRegion>
-                    <Button type="submit">Search</Button>
-                </form>
-
+                                    <Input />
+                                </div>
+                            </SearchRegion>
+                            <Button type="submit">Search</Button>
+                        </form>
+                    </div>
+                    <Button className='mb-3' onClick={() => { setCreate(true) }}><i className="bi bi-person-plus-fill me-2" />Create Users</Button>
+                </div>
                 {
                     width > 765 &&
                     <table style={{ width: '100%' }}>
@@ -125,12 +131,12 @@ export default function AccountPage() {
                     </AccountGrid>
                 }
 
-            </PageContainer>
+            </PageContainer >
 
             <ManageModal accountId={accountId} manage={manage} setManage={setManage} />
-
+            <CreateUsersModal create={create} setCreate={setCreate} />
             <Pagination currentPage={currentPage} totalPage={totalPage} setCurrentPage={setCurrentPage} />
-        </div>
+        </div >
     )
 }
 
@@ -164,6 +170,10 @@ const Button = styled.button`
     border: none;
     border-radius: 5px;
     box-shadow: 0 0px 8px 0px rgba(0, 0, 0, 0.1), 0 6px 2px 0 rgba(0, 0, 0, 0.08);
+
+    @media{
+        display: block !important;
+    }
 `
 
 const AccountCard = styled.tr`
@@ -202,4 +212,36 @@ const AccountCardV2 = styled.div`
     border-radius: 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     cursor: pointer;
+`
+
+const CloseButton = styled.button`
+    min-width: 100px;
+    font-size: 20px;
+    background-color: white;
+    border-radius: 5px;
+    border: none;
+    color: #035eb8;
+    font-weight: bold;
+    padding: 5px 10px;
+
+    @media (max-width: 575px){
+        font-size: 16px;
+        min-width: 80px;
+    }
+`
+
+const ConfirmButton = styled.button`
+    min-width: 100px;
+    font-size: 20px;
+    background-color: #035eb8;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+
+    @media (max-width: 575px){
+        font-size: 16px;
+        min-width: 80px;
+    }
 `

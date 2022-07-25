@@ -87,10 +87,16 @@ public class GetOperationsTest {
         int id2 = 999999076;
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
+//            // Delete all test data todo
+//            DeleteOperations.deleteAccount(id1);
+//            DeleteOperations.deleteAccount(id2);
+
             // Create new accounts with ids 999999075 and 999999076 (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             assertFalse(ConnectionTools.accountIdExists(id2, c));
             assertFalse(ConnectionTools.accountIdExists(999999333, c));
+            assertFalse(ConnectionTools.idExistInTable(id1, "accountId", "leaveRequests", c));
+            assertFalse(ConnectionTools.idExistInTable(id2, "accountId", "leaveRequests", c));
             String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
                     "VALUES (999999075, 'testuser3', 'pwd999999075', '9075', 'user3@test.com', 75, 705, 48, 0), " +
                     "(999999076, 'testuser4', 'pwd999999076', '9076', 'user4@test.com', 76, 706, 48, 1);";
@@ -101,25 +107,36 @@ public class GetOperationsTest {
             assertTrue(ConnectionTools.accountIdExists(id1, c));
             assertTrue(ConnectionTools.accountIdExists(id2, c));
 
+            // Create several leave requests
+            SQL = "INSERT INTO leaveRequests (accountId, date, type, length, note, status) " +
+                    "VALUES (999999075, '2022-01-01', 0, 0, 'annual leave full day', 1), " +
+                    "(999999075, '2022-01-02', 0, 1, 'annual leave am', 1), " +
+                    "(999999075, '2022-01-03', 0, 2, 'annual leave pm rejected', 2), " +
+                    "(999999076, '2022-02-03', 1, 2, 'study leave pm', 1), " +
+                    "(999999076, '2022-02-27', 0, 0, 'annual leave full day pending', 0); ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.executeUpdate();
+            }
+
             // Check response:
-            // Check response expecting one leave (level 1 account 999999076)
+            // Check response (level 1 account 999999076)
             ResponseEntity<ObjectNode> response = GetOperations.getLeaves(id2);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertEquals(1, rootNode.get("leaves").size());
             assertTrue(response.getBody().toString().contains(
-                    "{\"id\":999999076,\"studyLeave\":706,\"annualLeave\":76}"
+                    "{\"studyLeave\":705.5,\"annualLeave\":76.0}"
             ));
-            // Check response expecting one leave (level 0 account 999999075)
+            // Check response (level 0 account 999999075)
             response = GetOperations.getLeaves(id1);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertEquals(1, rootNode.get("leaves").size());
             assertTrue(response.getBody().toString().contains(
-                    "{\"id\":999999075,\"studyLeave\":705,\"annualLeave\":75}"
+                    "{\"studyLeave\":705.0,\"annualLeave\":73.5}"
             ));
 
             // Check response expecting no shifts (no account)
-            response = GetOperations.getLeaves(999999333);
+            response = GetOperations.getLeaves(1000000330);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertEquals(0, rootNode.get("leaves").size());
             assertTrue(response.getBody().toString().contains("{\"leaves\":[]"));

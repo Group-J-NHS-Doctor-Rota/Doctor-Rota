@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.*;
+import java.util.Calendar;
 
 public class GetOperations {
 
@@ -51,24 +52,64 @@ public class GetOperations {
     public static ResponseEntity<ObjectNode> getLeaves(int accountId) {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            String SQL = "SELECT id, annualLeave, studyLeave FROM accounts WHERE id = ?; ";
+            // Query data of current year
+            //todo use join instead of executed 2 queries
+            String SQL = "SELECT type, length, status FROM leaveRequests " +
+                    "WHERE accountId = ? AND status = 1 AND (date::text LIKE '" +
+                    Calendar.getInstance().get(Calendar.YEAR) + "%'); ";
+            // status = 1 means 'approved'
+            double usedAnnualLeaves = 0.0;
+            double usedStudyLeaves = 0.0;
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, accountId); // In SQL sentence, WHERE accountId = ?
+                ResultSet r = s.executeQuery();
+                while(r.next()) {
+                    int leaveType = r.getInt("type");
+                    int length = r.getInt("length");
+                    if (leaveType == 0) {
+                        usedAnnualLeaves += usedDaysCalculator(length);
+                    } else if (leaveType == 1) {
+                        usedStudyLeaves += usedDaysCalculator(length);
+                    } else {
+                        // Maybe we will have more leaveRequest types
+                        throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
+                    }
+                }
+            }
+            SQL = "SELECT annualLeave, studyLeave FROM accounts WHERE id = ?; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 ObjectNode objectNode = objectMapper.createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("leaves");
                 s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
                 ResultSet r = s.executeQuery();
-                while(r.next()) {
+                while (r.next()) {
+                    double studyLeaves = r.getInt("studyLeave") - usedStudyLeaves;
+                    double annualLeaves = r.getInt("annualLeave") - usedAnnualLeaves;
                     ObjectNode objectNodeRow = objectMapper.createObjectNode();
-                    objectNodeRow.put("id", r.getInt("id"));
-                    objectNodeRow.put("studyLeave", r.getInt("studyLeave"));
-                    objectNodeRow.put("annualLeave", r.getInt("annualLeave"));
+                    objectNodeRow.put("studyLeave", studyLeaves);
+                    objectNodeRow.put("annualLeave", annualLeaves);
                     arrayNode.add(objectNodeRow);
+
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             }
         } catch (SQLException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+
+    }
+
+    private static double usedDaysCalculator(int length) {
+        switch (length) {
+            case 0 -> {
+                return 1.0;
+            }
+            case 1, 2 -> {
+                return 0.5;
+            }
+            // Maybe we will have more length types
+            default -> throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
     }
 }

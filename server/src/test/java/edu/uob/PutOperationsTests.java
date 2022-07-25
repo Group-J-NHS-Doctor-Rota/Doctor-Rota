@@ -2,11 +2,13 @@ package edu.uob;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.support.DelegatePerTargetObjectIntroductionInterceptor;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.*;
+import java.util.concurrent.Delayed;
 
 public class PutOperationsTests {
 
@@ -80,7 +82,7 @@ public class PutOperationsTests {
         try(Connection c = DriverManager.getConnection(connectionString)) {
             int id = 999999070;
             Date date1 = Date.valueOf("1922-07-18");
-
+            
             // Create new account with id 999999070 (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id, c));
             String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
@@ -96,11 +98,16 @@ public class PutOperationsTests {
             assertThrows(ResponseStatusException.class,
                     ()-> PutOperations.putFixedShift(1000000001, date1, 1));
 
+            // Try to put fixed shift using invalid shiftType
+            assertThrows(ResponseStatusException.class,
+                    ()-> PutOperations.putFixedShift(id, date1, 7));
             // Try to put fixed rota shifts for new account 999999070
             PutOperations.putFixedShift(id, date1, 1);
             // Check row exists and values are correct
-            SQL = "SELECT accountId, date, shiftType FROM fixedRotaShifts WHERE accountId = 999999070; ";
+            SQL = "SELECT accountId, date, shiftType FROM fixedRotaShifts WHERE accountId = ? AND date = ?; ";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, id);
+                s.setDate(2, date1);
                 ResultSet r = s.executeQuery();
                 r.next();
                 assertEquals(id, r.getInt("accountId"));
@@ -112,8 +119,10 @@ public class PutOperationsTests {
             Date date2 = Date.valueOf("1922-07-19");
             PutOperations.putFixedShift(id, date2,2);
             // Check values have been updated
-            SQL = "SELECT accountId, date, shiftType FROM fixedRotaShifts WHERE accountId = 999999070;";
+            SQL = "SELECT accountId, date, shiftType FROM fixedRotaShifts WHERE accountId = ? AND date = ?; ";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, id);
+                s.setDate(2, date2);
                 ResultSet r = s.executeQuery();
                 r.next();
                 assertEquals(id, r.getInt("accountId"));

@@ -9,7 +9,7 @@ const ManageModal = ({ accountId, manage, setManage }) => {
     const toggleDisable = () => setDisable(!disable)
 
     useEffect(() => {
-        if(accountId != undefined){
+        if (accountId != undefined) {
             fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
                 mode: 'cors',
                 method: "GET",
@@ -19,19 +19,19 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                     'Accept': 'application/json'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                setAccountDetail(data)
-            })
-        }        
+                .then(response => response.json())
+                .then(data => {
+                    setAccountDetail(data)
+                })
+        }
     }, [accountId])
 
     const onChange = (e) => {
         setAccountDetail({ ...accountDetail, [e.target.name]: e.target.value });
-        
+
     };
 
-    function handleSubmit(e){
+    function handleSubmit(e) {
         e.preventDefault()
 
         try{
@@ -42,15 +42,15 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    "Access-Control-Allow-Credentials" : true
+                    "Access-Control-Allow-Credentials": true
                 },
                 body: JSON.stringify({
                     annualLeave: 16
                 }),
             })
-            .then(response => response.json())
-            .then(data => console.log(data))
-        }catch(error){
+                .then(response => response.json())
+                .then(data => console.log(data))
+        } catch (error) {
             console.log(error)
         }
 
@@ -64,7 +64,7 @@ const ManageModal = ({ accountId, manage, setManage }) => {
 
                     <div className="d-flex justify-content-between align-items-center">
                         <ModalTitle className="my-5">
-                            {   
+                            {
                                 accountDetail != undefined && accountDetail.username != undefined &&
                                 accountDetail.username
                             }
@@ -84,15 +84,16 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                 {
                                     accountDetail != undefined && accountDetail.annualLeave != undefined &&
                                     <Col xs={12} md={6}>
-                                        <input 
+                                        <input
                                             id="field-1"
                                             type="text"
                                             name="annualLeave"
-                                            className="mt-0" 
+                                            className="mt-0"
                                             value={accountDetail.annualLeave}
                                             disabled={disable}
-                                            autoFocus  
+                                            autoFocus
                                             onChange={onChange}
+                                            autoComplete='off'
                                         />
                                     </Col>
                                 }
@@ -102,18 +103,19 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                 <Col xs={12} md={6}>
                                     <Label htmlFor="field-2">Study Leave Entitled</Label>
                                 </Col>
-                                
+
                                 {
                                     accountDetail != undefined && accountDetail.studyLeave != undefined &&
                                     <Col xs={12} md={6}>
-                                        <input 
-                                            id="field-2" 
+                                        <input
+                                            id="field-2"
                                             type="text"
                                             name="studyLeave"
                                             className="mt-2"
                                             value={accountDetail.studyLeave}
-                                            disabled={disable} 
+                                            disabled={disable}
                                             onChange={onChange}
+                                            autoComplete='off'
                                         />
                                     </Col>
                                 }
@@ -123,18 +125,19 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                 <Col xs={12} md={6}>
                                     <Label htmlFor="field-3">Hours Required</Label>
                                 </Col>
-                
+
                                 {
                                     accountDetail != undefined && accountDetail.workingHours != undefined &&
                                     <Col xs={12} md={6}>
-                                        <input 
-                                            id="field-3" 
+                                        <input
+                                            id="field-3"
                                             type="text"
                                             name="workingHours"
-                                            className="mt-2" 
+                                            className="mt-2"
                                             value={accountDetail.workingHours}
                                             disabled={disable}
                                             onChange={onChange}
+                                            autoComplete='off'
                                         />
                                     </Col>
                                 }
@@ -145,12 +148,13 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                     <Label htmlFor="field-3">WTE/FTE</Label>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <input 
-                                        id="field-3" 
+                                    <input
+                                        id="field-3"
                                         type="text"
                                         placeholder="0.6 LTFT"
-                                        className="mt-2" 
-                                        disabled={disable} 
+                                        className="mt-2"
+                                        disabled={disable}
+                                        autoComplete='off'
                                     />
                                 </Col>
                             </Row>
@@ -161,12 +165,12 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                 </Col>
                                 <Col xs={12} md={6}>
                                     {
-                                        accountDetail != undefined && accountDetail.level == 1 && 
-                                        <Form.Select 
+                                        accountDetail != undefined && accountDetail.level == 1 &&
+                                        <Form.Select
                                             id="field-4"
                                             name="level"
-                                            className="mt-2" 
-                                            disabled={disable} 
+                                            className="mt-2"
+                                            disabled={disable}
                                             onChange={onChange}
                                             defaultValue="1"
                                         >
@@ -174,12 +178,12 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                             <option value="1">Admin</option>
                                         </Form.Select>
                                         ||
-                                        accountDetail != undefined && accountDetail.level == 0 && 
-                                        <Form.Select 
+                                        accountDetail != undefined && accountDetail.level == 0 &&
+                                        <Form.Select
                                             id="field-4"
                                             name="level"
-                                            className="p-2 mt-2" 
-                                            disabled={disable} 
+                                            className="p-2 mt-2"
+                                            disabled={disable}
                                             onChange={onChange}
                                             defaultValue="0"
                                         >
@@ -288,13 +292,3 @@ const EditIcon = styled.div`
     font-weight: bold;
     cursor: pointer;
 `
-
-// const Select = styled.select`
-//     font-size: 16px;
-//     height: 36px;
-//     width: 100%;
-//     margin-bottom: 6px;
-//     border: none;
-//     border-radius: 5px;
-//     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-// `

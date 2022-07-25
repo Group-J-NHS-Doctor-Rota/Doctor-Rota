@@ -1,7 +1,42 @@
 import styled from "styled-components";
 import { Modal } from "react-bootstrap"
+import { useState, useEffect } from "react";
 
 const LeaveDetailModal = ({ leaveDetail, setLeaveDetail }) => {
+    const [requestInfo, setRequstInfo] = useState()
+    const [accountInfo, setAccountInfo] = useState()
+    const accountId = 1 // temporary
+    const leaveId = 0 // temporary
+
+    useEffect(() => {
+        accountId !== undefined &&
+            fetch(`https://doctor-rota-spring-develop.herokuapp.com/notification/?accountId=${accountId}`, {
+                mode: 'cors',
+                method: "GET",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => setRequstInfo(data.leaveRequests))
+    }, [accountId])
+
+    useEffect(() => {
+        // accountId !== undefined &&
+        fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+            mode: 'cors',
+            method: "GET",
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => setAccountInfo(data))
+    }, [accountId])
 
     return (
         <>
@@ -15,7 +50,12 @@ const LeaveDetailModal = ({ leaveDetail, setLeaveDetail }) => {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">Dennis Liú</RowInfo>
+                                <RowInfo className="mb-0">
+                                    {
+                                        accountInfo !== undefined &&
+                                        accountInfo.username
+                                    }
+                                </RowInfo>
                             </div>
                         </div>
 
@@ -25,7 +65,12 @@ const LeaveDetailModal = ({ leaveDetail, setLeaveDetail }) => {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">Jul 25th - Jul 27th (a.m.)</RowInfo>
+                                <RowInfo className="mb-0">
+                                    {
+                                        requestInfo !== undefined &&
+                                        requestInfo[0].date
+                                    }
+                                </RowInfo>
                             </div>
                         </div>
 
@@ -35,7 +80,21 @@ const LeaveDetailModal = ({ leaveDetail, setLeaveDetail }) => {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">Study Leave</RowInfo>
+                                <RowInfo className="mb-0">
+                                    {
+                                        requestInfo !== undefined &&
+                                        (
+                                            requestInfo[leaveId].type === 0 &&
+                                            <p className="mb-0">Annual Leave</p>
+                                            || requestInfo[leaveId].type === 0 &&
+                                            <p className="mb-0">Study Leave</p>
+                                            || requestInfo[leaveId].type === 0 &&
+                                            <p className="mb-0">NOC Request</p>
+                                            || requestInfo[leaveId].type === 0 &&
+                                            <p className="mb-0">Others</p>
+                                        )
+                                    }
+                                </RowInfo>
                             </div>
                         </div>
 
@@ -45,7 +104,7 @@ const LeaveDetailModal = ({ leaveDetail, setLeaveDetail }) => {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">I am attending a 3-day first aid course in Cardiff, it is a mandantory step to pass the DBS check so that I can start working with vulnerable people. I will return to work on Wednesday afternoon.</RowInfo>
+                                <RowInfo className="mb-0">(200 OK)</RowInfo>
                             </div>
                         </div>
                     </div>
@@ -73,7 +132,7 @@ const ModalContainer = styled.div`
 const ModalTitle = styled.h1`
     font-size: 32px;
     font-weight: bold;
-    color: #168082;
+    color: #035eb8;
 
     @media (max-width: 575px){
         font-size: 24px;
@@ -83,7 +142,7 @@ const ModalTitle = styled.h1`
 const ConfirmButton = styled.button`
     min-width: 100px;
     font-size: 20px;
-    background-color: #168082;
+    background-color: #035eb8;
     border-radius: 5px;
     border: none;
     color: white;
@@ -98,6 +157,6 @@ const ConfirmButton = styled.button`
 
 const RowInfo = styled.p`
     font-size: 18px;
-    color: #168082;
+    color: #035eb8;
     margin-bottom: 0px;
 `

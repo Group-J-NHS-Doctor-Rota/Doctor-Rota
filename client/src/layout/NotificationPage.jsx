@@ -8,9 +8,11 @@ const NotificationPage = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [notifications, setNotifications] = useState()
     const [leaveDetail, setLeaveDetail] = useState(false);
+    const accountId = 1
+
 
     useEffect(() => {
-        const url = "https://doctor-rota-spring-develop.herokuapp.com/notification?accountId=1"
+        const url = `https://doctor-rota-spring-develop.herokuapp.com/notification?accountId=${accountId}`
 
         fetch(url, {
             mode: 'cors',
@@ -21,18 +23,17 @@ const NotificationPage = () => {
                 'Accept': 'application/json',
             }
         })
-        .then(response => response.json())
-        .then(data => {
-            const totalNumber = data.leaveRequests.length
-            setTotalPage(totalNumber/6)
-            setNotifications(data.leaveRequests)
-        })
+            .then(response => response.json())
+            .then(data => {
+                const totalNumber = data.leaveRequests.length
+                setTotalPage(totalNumber / 6)
+                setNotifications(data.leaveRequests)
+            })
     }, [])
 
-
-    function handleClick(){
+    function handleClick() {
         console.log(12)
-        // setLeaveDetail(true)
+        setLeaveDetail(true)
     }
 
     const getContent = () => {
@@ -43,13 +44,12 @@ const NotificationPage = () => {
                 <AlertMessage key={notification.id} className="mt-3">
                     <div className="d-flex">
                         <SenderTag className="px-4">
-                            {/* still need to confirm */}
                             <p className="mb-0">Admin</p>
                         </SenderTag>
                     </div>
                     <MessageInfo className="d-flex px-4 col-12 justify-content-between" onClick={() => handleClick()}>
-                        <div className="py-3">     
-                            <p className="mb-0">{notification.date}</p>    
+                        <div className="py-3">
+                            <p className="mb-0">{notification.date}</p>
                         </div>
 
                         <div className="py-3">
@@ -190,24 +190,3 @@ const PendingButton = styled.button`
         font-size: 13px
     }
 `
-
-    // for normal user view
-    // const DecisionButton = styled.button`
-    //     background-color: ${() =>
-    //         decision === "Pending" ? "#E7E7E7"
-    //             : (decision === "Approved" ? "#EDFCF9" : (decision === "Rejected" ? "#FFE2E2" : "purple"))
-    //     };
-    //     color: ${() =>
-    //         decision === "Pending" ? '#000000'
-    //             : (decision === "Approved" ? '#168082' : (decision === "Rejected" ? '#B01C2E' : '#ffffff'))
-    //     };
-    //     border: none;
-    //     border-radius: 4px;
-    //     `
-
-// const ViewButton = styled.button`
-//     background-color: lightyellow;
-//     color: orange;
-//     border: none;
-//     border-radius: 4px;
-// `

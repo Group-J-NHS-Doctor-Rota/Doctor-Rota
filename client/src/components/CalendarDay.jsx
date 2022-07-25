@@ -5,7 +5,7 @@ import CalendarDayModal from '../modals/CalendarDayModal'
 
 import styled from 'styled-components'
 
-export default function CalendarDay({ month, day, holiday }){
+export default function CalendarDay({ month, day, holiday }) {
     const date = month + "/" + day
     const [calendayDay, setCalendarDay] = useState(false)
     return (
@@ -13,16 +13,16 @@ export default function CalendarDay({ month, day, holiday }){
             <div className="d-block px-2">
                 <Shift type="night" />
                 <Shift type="morning" />
-                <MoreList className="d-flex mb-1 p-2">
-                    <div className="d-flex justify-content-center align-items-center px-1 py-2 rounded" style={{backgroundColor: '#E7E7E7'}}>
-                        <i className="bi bi-three-dots" style={{color: 'black'}}></i>
+                <MoreList className="d-flex mb-1 p-2" onClick={() => setCalendarDay(true)}>
+                    <div className="d-flex justify-content-center align-items-center px-1 py-2 rounded" style={{ backgroundColor: '#E7E7E7' }}>
+                        <i className="bi bi-three-dots" style={{ color: 'black' }}></i>
                     </div>
 
-                    <div className="d-flex align-items-center ms-2" onClick={() => setCalendarDay(true)}>
-                        <p className="mb-0" style={{fontSize: '13px'}}>More</p>
+                    <div className="d-flex align-items-center ms-2">
+                        <p className="mb-0" style={{ fontSize: '13px' }}>More</p>
                     </div>
                 </MoreList>
-                
+
                 <CalendarDayModal date={date} calendayDay={calendayDay} setCalendarDay={setCalendarDay} holiday={holiday} />
             </div>
         </div>

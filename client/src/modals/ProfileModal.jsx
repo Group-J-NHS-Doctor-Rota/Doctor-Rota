@@ -5,8 +5,10 @@ import { Modal } from 'react-bootstrap'
 import styled from 'styled-components'
 
 export default function ProfileModal({ profile, setProfile }) {
-    const handleSubmit = e => e.preventDefault()
+    // const handleSubmit = e => e.preventDefault()
     const [information, setInformation] = useState()
+    const accountId = 3 // temporary
+
 
     useEffect(() => {
         fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
@@ -18,13 +20,46 @@ export default function ProfileModal({ profile, setProfile }) {
                 'Accept': 'application/json'
             }
         })
-        .then(response => response.json())
-        .then(data => setInformation(data.accounts.filter((account) => account.id == 1)[0]))
+            .then(response => response.json())
+            .then(data => setInformation(data.accounts.filter((account) => account.id == 1)[0]))
     }, [])
 
     const onChange = (e) => {
         setInformation({ ...information, [e.target.name]: e.target.value });
     };
+
+    function handleSubmit(e) {
+        e.preventDefault()
+
+        console.log(information)
+
+        try {
+            fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+                mode: 'cors',
+                method: 'PATCH',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    "Access-Control-Allow-Credentials": true
+                },
+                body: JSON.stringify({
+
+                }),
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+        } catch (error) {
+            console.log(error)
+        }
+
+        setProfile(false)
+    }
+
+    const handleIcon = () => {
+
+    }
+
 
     return (
         <>
@@ -39,7 +74,8 @@ export default function ProfileModal({ profile, setProfile }) {
                                     <i className="bi bi-person-fill" style={{ fontSize: '30px' }} />
                                 </Label>
                                 <RowInfo className="d-flex mb-0">
-                                    {   
+                                    {
+
                                         information != undefined &&
                                         information.username
                                     }
@@ -65,7 +101,12 @@ export default function ProfileModal({ profile, setProfile }) {
                                     </Label>
                                     {
                                         information != undefined &&
-                                        <Input name="email" type="email" value={information.email} onChange={onChange}/>
+                                        <Input type="email"
+                                            name='email'
+                                            value={information.email}
+                                            autoComplete='off'
+                                            onChange={onChange} />
+
                                     }
                                     <LockIcon className="bi bi-unlock-fill ms-2" />
                                 </div>
@@ -76,7 +117,12 @@ export default function ProfileModal({ profile, setProfile }) {
                                     </Label>
                                     {
                                         information != undefined &&
-                                        <Input name="phone" type="tel" value={information.phone} onChange={onChange}/>
+                                        <Input type="tel"
+                                            name='phone'
+                                            value={information.phone}
+                                            autoComplete='off'
+                                            onChange={onChange} />
+
                                     }
                                     <LockIcon className="bi bi-lock-fill ms-2" />
                                 </div>

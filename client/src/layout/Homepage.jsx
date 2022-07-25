@@ -44,7 +44,12 @@ export default function Homgepage() {
                             <Icon className="bi bi-caret-left-fill" style={{ fontSize: '20px', cursor: 'pointer' }} onClick={() => handlePreviousMonth()}></Icon>
                         </div>
                         <div className="m-1">
-                            <p className="mb-0" style={{fontSize: '20px'}}>{year}/{month}</p>
+                            <p className="mb-0" style={{ fontSize: '20px' }}>
+                                {year}/
+                                {
+                                    ((month + '').length) === 2 ? month : ('0' + month)
+                                }
+                            </p>
                         </div>
                         <div className="m-1">
                             <Icon className="bi bi-caret-right-fill" style={{ fontSize: '20px', cursor: 'pointer' }} onClick={() => handleNextMonth()}></Icon>

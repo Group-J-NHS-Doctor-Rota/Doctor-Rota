@@ -14,6 +14,7 @@ export default function NavBar() {
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
 
+
     useEffect(() => {        
         const closeList = e => {
             if(e.target.id != "icon_list"){
@@ -24,6 +25,29 @@ export default function NavBar() {
         document.addEventListener('click', closeList)
         return () => document.removeEventListener('click', closeList)
     }, [open])
+
+    const [accountDetail, setAccountDetail] = useState()
+    const accountId = 3
+
+    useEffect(() => {
+        if (accountId != undefined) {
+            fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+                mode: 'cors',
+                method: "GET",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    setAccountDetail(data)
+                })
+        }
+    }, [accountId])
+
+
 
     function toggleList(type) {
         setOpen(!open)
@@ -41,13 +65,13 @@ export default function NavBar() {
         }
     }
 
-    function redirectPage(type){
+    function redirectPage(type) {
         setOpen(!open)
-        if(type == "account"){
+        if (type == "account") {
             navigate('/account')
         }
 
-        if(type == "notification"){
+        if (type == "notification") {
             navigate('/notification')
         }
     }
@@ -63,7 +87,13 @@ export default function NavBar() {
                             <Logo src='https://www.england.nhs.uk/nhsidentity/wp-content/themes/nhsengland-identity/templates/assets/img/global/nhs-logo.svg' />
                         </div>
                         <div className="d-flex justify-content-end me-2">
-                            <RefreshButton className="my-2 me-3">Refresh Rota</RefreshButton>
+
+                            {
+                                // check if the user is admin: level = 1 -> admin
+                                // accountDetail.level === 1 &&
+                                (<RefreshButton className="my-2 me-3">Refresh Rota</RefreshButton>)
+                            }
+
                             <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: 'white' }} onClick={() => toggleList()}></i>
                         </div>
                     </div>
@@ -79,7 +109,12 @@ export default function NavBar() {
                                 </div>
 
                                 <div className="d-flex align-items-center">
-                                    <p className="mb-0">Steven Lin</p>
+                                    <p className="mb-0">
+                                        {
+                                            accountDetail !== undefined &&
+                                            accountDetail.username
+                                        }
+                                    </p>
                                 </div>
                             </NavBarItem>
 

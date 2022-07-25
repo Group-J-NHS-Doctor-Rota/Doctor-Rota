@@ -7,14 +7,16 @@ import ProfileModal from '../modals/ProfileModal';
 import RequestLeaveModal from '../modals/RequestLeaveModal';
 
 import styled from 'styled-components'
+import { data } from 'autoprefixer';
 
 export default function NavBar() {
     const [open, setOpen] = useState(false)
     const [profile, setProfile] = useState(false)
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
+    const [accountDetail, setAccountDetail] = useState()
+    const accountId = 3 // temporary
 
-    
     const listRef = useRef()
 
     useEffect(() => {
@@ -30,6 +32,25 @@ export default function NavBar() {
 
         // return () => document.removeEventListener('click', closeList)
     }, [])
+
+    useEffect(() => {
+        if (accountId != undefined) {
+            fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+                mode: 'cors',
+                method: "GET",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    setAccountDetail(data)
+                })
+        }
+    }, [accountId])
+
 
     function toggleList(type) {
         setOpen(!open)
@@ -47,13 +68,13 @@ export default function NavBar() {
         }
     }
 
-    function redirectPage(type){
+    function redirectPage(type) {
         setOpen(!open)
-        if(type == "account"){
+        if (type == "account") {
             navigate('/account')
         }
 
-        if(type == "notification"){
+        if (type == "notification") {
             navigate('/notification')
         }
     }
@@ -69,10 +90,14 @@ export default function NavBar() {
                         <div onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
                             <Logo src='https://www.england.nhs.uk/nhsidentity/wp-content/themes/nhsengland-identity/templates/assets/img/global/nhs-logo.svg' />
                         </div>
+
                         <div className="d-flex justify-content-end me-2">
-                            <RefreshButton className="my-2 me-3">Refresh Rota</RefreshButton>
+                            {accountDetail.level === 1 &&
+                                (<RefreshButton className="my-2 me-3">Refresh Rota</RefreshButton>)
+                            }
                             <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: 'white' }} onClick={() => toggleList()}></i>
                         </div>
+
                     </div>
                 </Navbar>
 
@@ -86,7 +111,11 @@ export default function NavBar() {
                                 </div>
 
                                 <div className="d-flex align-items-center">
-                                    <p className="mb-0">Steven Lin</p>
+                                    <p className="mb-0">
+                                        {
+                                            accountDetail !== undefined &&
+                                            accountDetail.username
+                                        }</p>
                                 </div>
                             </NavBarItem>
 

@@ -190,24 +190,3 @@ const PendingButton = styled.button`
         font-size: 13px
     }
 `
-
-    // for normal user view
-    // const DecisionButton = styled.button`
-    //     background-color: ${() =>
-    //         decision === "Pending" ? "#E7E7E7"
-    //             : (decision === "Approved" ? "#EDFCF9" : (decision === "Rejected" ? "#FFE2E2" : "purple"))
-    //     };
-    //     color: ${() =>
-    //         decision === "Pending" ? '#000000'
-    //             : (decision === "Approved" ? '#168082' : (decision === "Rejected" ? '#B01C2E' : '#ffffff'))
-    //     };
-    //     border: none;
-    //     border-radius: 4px;
-    //     `
-
-// const ViewButton = styled.button`
-//     background-color: lightyellow;
-//     color: orange;
-//     border: none;
-//     border-radius: 4px;
-// `

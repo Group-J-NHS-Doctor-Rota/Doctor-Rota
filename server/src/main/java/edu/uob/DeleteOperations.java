@@ -1,5 +1,6 @@
 package edu.uob;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,7 +12,7 @@ import java.sql.SQLException;
 
 public class DeleteOperations {
 
-    public static ResponseEntity<String> deleteAccount(int accountId) {
+    public static ResponseEntity<ObjectNode> deleteAccount(int accountId) {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             if(!ConnectionTools.accountIdExists(accountId, c)) {
@@ -39,7 +40,7 @@ public class DeleteOperations {
                 s.setInt(8, accountId);
                 s.setInt(9, accountId);
                 s.executeUpdate();
-                return ResponseEntity.status(HttpStatus.OK).body("");
+                return IndexController.okResponse("All account data deleted successfully for accountId: " + accountId);
             }
             // Have to catch SQLException exception here
         } catch (SQLException e) {

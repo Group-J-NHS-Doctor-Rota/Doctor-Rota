@@ -177,19 +177,17 @@ public class GetOperations {
                     }
                 }
             }
-            SQL = "SELECT annualLeave, studyLeave FROM accounts WHERE id = ?; ";
+            SQL = "SELECT id, annualLeave, studyLeave FROM accounts WHERE id = ?; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
-                ArrayNode arrayNode = objectNode.putArray("leaves");
                 s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
                 ResultSet r = s.executeQuery();
-                while (r.next()) {
+                while(r.next()) {
                     double studyLeaves = r.getInt("studyLeave") - usedStudyLeaves;
                     double annualLeaves = r.getInt("annualLeave") - usedAnnualLeaves;
-                    ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
-                    objectNodeRow.put("studyLeave", studyLeaves);
-                    objectNodeRow.put("annualLeave", annualLeaves);
-                    arrayNode.add(objectNodeRow);
+                    objectNode.put("id", r.getInt("id"));
+                    objectNode.put("studyLeave", studyLeaves);
+                    objectNode.put("annualLeave", annualLeaves);
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             }

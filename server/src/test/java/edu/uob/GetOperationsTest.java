@@ -1,5 +1,6 @@
 package edu.uob;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -123,24 +124,20 @@ public class GetOperationsTest {
             assertTrue(rootNode.has("id"));
             assertTrue(rootNode.has("studyLeave"));
             assertTrue(rootNode.has("annualLeave"));
-            assertTrue(response.getBody().toString().equals(
-                    "{\"id\":"+id2+",\"studyLeave\":706,\"annualLeave\":76}"
-            ));
+            assertEquals("{\"id\":" + id2 + ",\"studyLeave\":706,\"annualLeave\":76}", response.getBody().toString());
             // Check response for one leaves (level 0 account)
             response = GetOperations.getLeaves(id1);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertTrue(rootNode.has("id"));
             assertTrue(rootNode.has("studyLeave"));
             assertTrue(rootNode.has("annualLeave"));
-            assertTrue(response.getBody().toString().equals(
-                    "{\"id\":"+id1+",\"studyLeave\":705,\"annualLeave\":75}"
-            ));
+            assertEquals("{\"id\":" + id1 + ",\"studyLeave\":705,\"annualLeave\":75}", response.getBody().toString());
 
             // Check response expecting no leaves (no account)
             response = GetOperations.getLeaves(1000000000);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertTrue(rootNode.isEmpty());
-            assertTrue(response.getBody().toString().equals("{}"));
+            assertEquals("{}", response.getBody().toString());
 
             // Delete all test data
             DeleteOperations.deleteAccount(id1);
@@ -207,36 +204,31 @@ public class GetOperationsTest {
     }
 
     @Test
-    void testGetAllAccounts() {
-        String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString)) {
-            ResponseEntity<ObjectNode> response = GetOperations.getAllAccounts();
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
-            int numberOfAccounts = rootNode.get("accounts").size();
-            // If there are no accounts, then empty list
-            if(numberOfAccounts <= 0) {
-                return;
-            }
-            // Check all accounts, have all the fields
-            for(int i = 0; i < numberOfAccounts; i++) {
-                JsonNode account = rootNode.get("accounts").get(0);
-                assertTrue(account.has("id"));
-                assertTrue(account.has("username"));
-                assertTrue(account.has("email"));
-                assertTrue(account.has("phone"));
-                assertTrue(account.has("doctorId"));
-                assertTrue(account.has("annualLeave"));
-                assertTrue(account.has("studyLeave"));
-                assertTrue(account.has("workingHours"));
-                assertTrue(account.has("accountStatus"));
-                assertTrue(account.has("doctorStatus"));
-                assertTrue(account.has("level"));
-                assertTrue(account.has("timeWorked"));
-                assertTrue(account.has("fixedWorking"));
-            }
-        } catch (Exception e) {
-            fail(e);
+    void testGetAllAccounts() throws JsonProcessingException {
+        ResponseEntity<ObjectNode> response = GetOperations.getAllAccounts();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
+        int numberOfAccounts = rootNode.get("accounts").size();
+        // If there are no accounts, then empty list
+        if(numberOfAccounts <= 0) {
+            return;
+        }
+        // Check all accounts, have all the fields
+        for(int i = 0; i < numberOfAccounts; i++) {
+            JsonNode account = rootNode.get("accounts").get(0);
+            assertTrue(account.has("id"));
+            assertTrue(account.has("username"));
+            assertTrue(account.has("email"));
+            assertTrue(account.has("phone"));
+            assertTrue(account.has("doctorId"));
+            assertTrue(account.has("annualLeave"));
+            assertTrue(account.has("studyLeave"));
+            assertTrue(account.has("workingHours"));
+            assertTrue(account.has("accountStatus"));
+            assertTrue(account.has("doctorStatus"));
+            assertTrue(account.has("level"));
+            assertTrue(account.has("timeWorked"));
+            assertTrue(account.has("fixedWorking"));
         }
     }
 

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 
+import { Form } from "react-bootstrap"
+
 import Pagination from '../components/Pagination'
 import ManageModal from '../modals/ManageModal'
 import CreateUsersModal from '../modals/CreateUsersModal'
@@ -10,11 +12,15 @@ import styled from 'styled-components'
 
 export default function AccountPage() {
     const [currentPage, setCurrentPage] = useState(1)
-    const [manage, setManage] = useState(false)
-    const [accounts, setAccounts] = useState()
     const [totalPage, setTotalPage] = useState(0)
+    
+    const [accounts, setAccounts] = useState()
     const [accountId, setAccountId] = useState()
+    const [search, setSearch] = useState("")
+    
+    const [manage, setManage] = useState(false)
     const [create, setCreate] = useState(false)
+
 
     const { width } = useWindowDimensions();
 
@@ -87,21 +93,51 @@ export default function AccountPage() {
         return content;
     }
 
+    function onChange(e){
+        setSearch(e.target.value)
+    }
+
+    function handleSubmit(e){
+        if(e && e.preventDefault){
+            e.preventDefault()
+        }        
+
+        try{
+            fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
+                mode: 'cors',
+                method: "GET",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const result = data.accounts.filter(result => result.username.includes(search))
+                    setTotalPage(Math.ceil(result.length/6))
+                    setAccounts(result)
+                })
+        }catch(error){
+            console.log(error)
+        }
+    }
+
     return (
         <div>
             <PageContainer className="mt-3">
                 <div className='d-flex justify-content-between'>
                     <div>
-                        <form id="search_account_form" className="d-flex mb-3" action="#" method="POST">
+                        <Form id="search_account_form" className="d-flex mb-3" onSubmit={handleSubmit}>
                             <SearchRegion className="me-3">
                                 <div className="d-flex">
                                     <i className="bi bi-search me-3" style={{ fontSize: '20px' }}></i>
 
-                                    <Input />
+                                    <Input onChange={onChange}/>
                                 </div>
                             </SearchRegion>
-                            <Button type="submit">Search</Button>
-                        </form>
+                            <Button type="submit" onClick={() => handleSubmit()}>Search</Button>
+                        </Form>
                     </div>
                     <Button className='mb-3' onClick={() => { setCreate(true) }}><i className="bi bi-person-plus-fill me-2" />Create Users</Button>
                 </div>

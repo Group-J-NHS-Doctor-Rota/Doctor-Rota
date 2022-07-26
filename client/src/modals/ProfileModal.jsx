@@ -30,9 +30,7 @@ export default function ProfileModal({ profile, setProfile }) {
 
     function handleSubmit(e) {
         e.preventDefault()
-
-        console.log(information)
-
+        
         try {
             fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
                 mode: 'cors',

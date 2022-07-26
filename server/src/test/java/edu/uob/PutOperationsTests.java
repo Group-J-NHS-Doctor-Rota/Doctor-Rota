@@ -1,6 +1,5 @@
 package edu.uob;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,7 +15,7 @@ public class PutOperationsTests {
         int id1 = TestTools.getTestAccountId();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // Create new account with id 999999999 (definitely unused)
+            // Create new account with id (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
                     "VALUES (?, 'Test McTester', 'ndsjkfgndsfpgn', '98765', 'mctester@test.com', 15, 15, 48, 0);";
@@ -82,7 +81,7 @@ public class PutOperationsTests {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             Date date1 = Date.valueOf("1922-07-18");
-            // Create new account with id 999999070 (definitely unused)
+            // Create new account with id (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
                     "VALUES (?, '070 Test User', 'pwd999999070', '9070', 'test_user070@test.com', 15, 15, 48, 0);";
@@ -93,12 +92,12 @@ public class PutOperationsTests {
             // Check account creation
             assertTrue(ConnectionTools.accountIdExists(id1, c));
 
-            // Try to put fixed rota shifts for an account id which doesn't exist (1000000001)
+            // Try to put fixed rota shifts for an account id which doesn't exist (1000000000)
             assertFalse(ConnectionTools.accountIdExists(1000000000, c));
             assertThrows(ResponseStatusException.class,
                     ()-> PutOperations.putFixedShift(1000000000, date1, 1));
 
-            // Try to put fixed rota shifts for new account 999999070
+            // Try to put fixed rota shifts for new account
             PutOperations.putFixedShift(id1, date1, 1);
             // Check row exists and values are correct
             SQL = "SELECT accountId, date, shiftType FROM fixedRotaShifts WHERE accountId = ?; ";

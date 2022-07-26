@@ -15,7 +15,7 @@ public class PostOperationsTests {
         int id1 = TestTools.getTestAccountId();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // Create new account with id 999999999 (definitely unused)
+            // Create new account with id (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
                     "VALUES (?, 'Testy Tim', 'dfjghkjhk', 's6w7ju', 'tim@test.com', 15, 15, 48, 0);";

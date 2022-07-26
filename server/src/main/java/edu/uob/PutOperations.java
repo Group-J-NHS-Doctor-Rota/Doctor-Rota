@@ -49,14 +49,15 @@ public class PutOperations {
                         "Account with id "+accountId+" does not exist");
             }
             // Delete old data, if any, then insert new data
-            String SQL = "DELETE FROM fixedRotaShifts WHERE accountId = ?;" +
-                    "INSERT INTO fixedRotaShifts (accountId, date, shiftType) VALUES (?, ?, ?);";
+            String SQL = "DELETE FROM fixedRotaShifts WHERE accountId = ? AND date = ?; " +
+                    "INSERT INTO fixedRotaShifts (accountId, date, shiftType) VALUES (?, ?, ?); ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, accountId);
-                s.setInt(2, accountId);
-                s.setDate(3, date);
+                s.setDate(2, date);
+                s.setInt(3, accountId);
+                s.setDate(4, date);
 //              shiftType: 0: 'Normal Working Day', 1: 'Long Day', 2: 'Night'
-                s.setInt(4, shiftType);
+                s.setInt(5, shiftType);
                 s.executeUpdate();
                 return ResponseEntity.status(HttpStatus.OK).body("");
             }

@@ -100,7 +100,7 @@ public class GetOperationsTest {
         int id2 = TestTools.getTestAccountId();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // Create new accounts with ids 999999075 and 999999076 (definitely unused)
+            // Create new accounts with random ids (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             assertFalse(ConnectionTools.accountIdExists(id2, c));
             assertFalse(ConnectionTools.accountIdExists(1000000000, c));
@@ -116,7 +116,7 @@ public class GetOperationsTest {
             assertTrue(ConnectionTools.accountIdExists(id2, c));
 
             // Check response:
-            // Check response for one leaves (level 1 account 999999076)
+            // Check response for one leaves (level 1 account)
             ResponseEntity<ObjectNode> response = GetOperations.getLeaves(id2);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
@@ -126,7 +126,7 @@ public class GetOperationsTest {
             assertTrue(response.getBody().toString().equals(
                     "{\"id\":"+id2+",\"studyLeave\":706,\"annualLeave\":76}"
             ));
-            // Check response for one leaves (level 0 account 999999075)
+            // Check response for one leaves (level 0 account)
             response = GetOperations.getLeaves(id1);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertTrue(rootNode.has("id"));
@@ -248,7 +248,7 @@ public class GetOperationsTest {
         int year = 1922;
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // Create new accounts with ids 999999001 and 999999077 (definitely unused)
+            // Create new accounts with random ids (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             assertFalse(ConnectionTools.accountIdExists(id2, c));
             assertFalse(ConnectionTools.accountIdExists(id3, c));
@@ -272,7 +272,7 @@ public class GetOperationsTest {
                 s.executeUpdate();
             }
             // Check response:
-            // level 1 account 999999077 will get all the shift data from table 'shift'
+            // level 1 account will get all the shift data from table 'shift'
             ResponseEntity<ObjectNode> response = GetOperations.getShifts(year, id2);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));

@@ -1,5 +1,6 @@
 package edu.uob;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,7 +13,7 @@ import java.sql.SQLException;
 import java.sql.Date;
 
 public class PostOperations {
-    public static ResponseEntity<String> postRequestLeave(int accountId, String date, int type, int length, String note) {
+    public static ResponseEntity<ObjectNode> postRequestLeave(int accountId, String date, int type, int length, String note) {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString);) {
             if(!ConnectionTools.accountIdExists(accountId, c)) {
@@ -40,7 +41,7 @@ public class PostOperations {
                 s.setInt(10, accountId);
                 s.setDate(11, Date.valueOf(date));
                 s.executeUpdate();
-                return ResponseEntity.status(HttpStatus.OK).body("");
+                return IndexController.okResponse("Leave request successful for accountId: " + accountId);
             }
             // Have to catch SQLException exception here
         } catch (SQLException e) {

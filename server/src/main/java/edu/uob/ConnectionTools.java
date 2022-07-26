@@ -10,18 +10,23 @@ public class ConnectionTools {
 
     // Get the database connection string
     public static String getConnectionString() {
-        String JDBC_DATABASE_URL = "";
+        return getEnvOrSysVariable("JDBC_DATABASE_URL");
+    }
+
+    // Get any variable from .env file or system
+    public static String getEnvOrSysVariable(String variableName) {
+        String variable = "";
         // First try and get the variable from .env file
         try {
-            JDBC_DATABASE_URL = Dotenv.configure().load().get("JDBC_DATABASE_URL");
+            variable = Dotenv.configure().load().get(variableName);
         } catch (Exception ignored) {
             //Likely no .env file
         }
         // If not variable available, get from the system instead
-        if(JDBC_DATABASE_URL == null || JDBC_DATABASE_URL.equals("")) {
-            JDBC_DATABASE_URL = System.getenv("JDBC_DATABASE_URL");
+        if(variable == null || variable.equals("")) {
+            variable = System.getenv(variableName);
         }
-        return JDBC_DATABASE_URL;
+        return variable;
     }
 
     public static boolean idExistInTable(int id, String columnName, String tableName, Connection c) {

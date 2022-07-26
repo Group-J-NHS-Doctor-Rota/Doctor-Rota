@@ -11,7 +11,7 @@ import java.sql.*;
 
 public class PatchOperations {
 
-    public static ResponseEntity<String> patchAccount(int accountId, String annualLeave, String studyLeave,
+    public static ResponseEntity<ObjectNode> patchAccount(int accountId, String annualLeave, String studyLeave,
                                                       String workingHours, String level, String email, String phone,
                                                       String doctorId, String accountStatus, String doctorStatus,
                                                       String timeWorked, String fixedWorking) {
@@ -33,7 +33,7 @@ public class PatchOperations {
             updateVariable(doctorStatus, "int", "doctorStatus", "accounts", accountId, c);
             updateVariable(timeWorked, "float", "timeWorked", "accounts", accountId, c);
             updateVariable(fixedWorking, "boolean", "fixedWorking", "accounts", accountId, c);
-            return ResponseEntity.status(HttpStatus.OK).body("");
+            return IndexController.okResponse("Account data updated successfully for accountId: " + accountId);
             // Have to catch SQLException exception here
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
@@ -60,7 +60,7 @@ public class PatchOperations {
         }
     }
 
-    public static ResponseEntity<String> patchNotification(int notificationId, int accountId, String status) {
+    public static ResponseEntity<ObjectNode> patchNotification(int notificationId, int accountId, String status) {
         String connectionString = ConnectionTools.getConnectionString();
         try (Connection c = DriverManager.getConnection(connectionString)) {
             // Only if account id exists, then try to patch data
@@ -94,7 +94,7 @@ public class PatchOperations {
 
 
             }
-            return ResponseEntity.status(HttpStatus.OK).body("");
+            return IndexController.okResponse("Notification updated successfully for id: " + notificationId);
             // Have to catch SQLException exception here
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());

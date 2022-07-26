@@ -116,10 +116,6 @@ public class IndexController {
     public ResponseEntity<ObjectNode> putFixedShift(@PathVariable int accountId,
                                                 @RequestParam Date date,
                                                 @RequestParam int shiftType) {
-        if (shiftType > 2 || shiftType < 0) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "The value of shiftType should from 0 to 2");
-        }
         return PutOperations.putFixedShift(accountId, date, shiftType);
     }
 

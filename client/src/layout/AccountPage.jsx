@@ -36,11 +36,14 @@ export default function AccountPage() {
         })
             .then(response => response.json())
             .then(data => {
-                const totalNumber = data.accounts.length
-                setTotalPage(Math.ceil(totalNumber/6))
-                setAccounts(data.accounts)
+                // const totalNumber = data.accounts.length
+                // setTotalPage(Math.ceil(totalNumber/6))
+                // setAccounts(data.accounts)
+                const result = data.accounts.filter(result => result.username.includes(search))
+                setTotalPage(Math.ceil(result.length/6))
+                setAccounts(result)
             })
-    }, [])
+    }, [search])
 
     function handleClick(id) {
         setAccountId(id)

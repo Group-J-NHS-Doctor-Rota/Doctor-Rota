@@ -85,7 +85,7 @@ public class Encryption {
         return pbkdf2PasswordEncoder.matches(passwordStr, hashedPassword);
     }
 
-    public String getRandomToken() {
+    public static String getRandomToken() {
         return RandomStringUtils.randomAlphanumeric(20);
     }
 

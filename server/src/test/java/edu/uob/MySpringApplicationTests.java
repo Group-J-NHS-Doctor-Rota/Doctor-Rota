@@ -63,8 +63,6 @@ public class MySpringApplicationTests {
 		assertTrue(node.has("token"));
 		assertTrue(node.has("accountId"));
 		assertTrue(node.has("level"));
-		// Check creating an account needs a request parameter
-		mockMvc.perform(put("/account?username=gr8Name")).andExpect(status().isOk());
 		// Check password needs a request parameter and two header variables
 		mockMvc.perform(patch("/password?accountId=1").header("oldPassword", "myPassword")
 				.header("newPassword", "myPassword2")).andExpect(status().isOk());

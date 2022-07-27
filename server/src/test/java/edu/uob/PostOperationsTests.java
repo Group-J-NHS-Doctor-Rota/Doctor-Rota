@@ -1,16 +1,12 @@
 package edu.uob;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.*;
-import java.util.HashMap;
 
 public class PostOperationsTests {
 
@@ -90,6 +86,9 @@ public class PostOperationsTests {
         String email = RandomStringUtils.randomAlphabetic(16);
         int accountId = 0; //Needs to have value and 0 will always cause exception if not overwritten
         PostOperations.postAccount(username, email);
+        // Try to make new account with same username
+        assertThrows(ResponseStatusException.class, ()-> PostOperations.postAccount(username, email),
+                "Should not be able to create a second account with the same username!");
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Check values
@@ -113,6 +112,54 @@ public class PostOperationsTests {
         }
         // Delete account
         DeleteOperations.deleteAccount(accountId);
+    }
+
+    @Test
+    void testPostAccountWithoutEmail() {
+        // Make new account
+        String username = RandomStringUtils.randomAlphabetic(20);
+        int accountId = 0; //Needs to have value and 0 will always cause exception if not overwritten
+        PostOperations.postAccount(username, null);
+        // Try to make new account with same username
+        assertThrows(ResponseStatusException.class, ()-> PostOperations.postAccount(username, null),
+                "Should not be able to create a second account with the same username!");
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Check values
+            String SQL = "SELECT * FROM accounts WHERE username = ?; ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, username);
+                ResultSet r = s.executeQuery();
+                r.next();
+                assertEquals(username, r.getString("username"));
+                assertNull(r.getString("email"));
+                accountId = r.getInt("id");
+            }
+        } catch (SQLException e) {
+            fail(e.toString());
+        }
+        // Delete account
+        DeleteOperations.deleteAccount(accountId);
+    }
+
+    @Test
+    void notTest() {
+        Encryption encryption = new Encryption();
+        //String salt = encryption.getRandomSalt();
+        // Get default password
+        String default_password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+
+        // Create hashed password
+        String hashed_password1 = encryption.hashPassword(default_password);
+        String hashed_password2 = encryption.hashPassword(default_password);
+        String hashed_password3 = encryption.hashPassword(default_password);
+        System.out.println(encryption.passwordMatches(default_password, hashed_password1));
+        System.out.println(encryption.passwordMatches(default_password, hashed_password2));
+        System.out.println(encryption.passwordMatches(default_password, hashed_password3));
+        System.out.println(encryption.passwordMatches(default_password, "6c92c731386b62a923126c9606da5a87b8ac658f3dedccea340f73e579488bd9f42738fb6e2fba5e"));
+        System.out.println(encryption.passwordMatches(default_password, "2c2448b91c025358e7d1b32611aea7eb3c223727a20f83fd1fa3d858e16bf805c9e2946c40e9ea66"));
+        System.out.println(hashed_password1 + "\n" + hashed_password2 + "\n" + hashed_password3);
+
     }
 
 }

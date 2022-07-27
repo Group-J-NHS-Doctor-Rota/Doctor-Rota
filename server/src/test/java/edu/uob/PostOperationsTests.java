@@ -103,6 +103,13 @@ public class PostOperationsTests {
                 hashed_password = r.getString("password");
                 accountId = r.getInt("id");
             }
+            SQL = "SELECT EXISTS ( SELECT accountId FROM tokens WHERE accountId = ?); ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, accountId);
+                ResultSet r = s.executeQuery();
+                r.next();
+                assertTrue(r.getBoolean(1));
+            }
             // Check password
             Encryption encryption = new Encryption();
             String default_password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");

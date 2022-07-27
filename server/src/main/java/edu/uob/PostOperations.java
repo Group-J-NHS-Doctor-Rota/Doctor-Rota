@@ -90,4 +90,8 @@ public class PostOperations {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
+
+    public static ResponseEntity<ObjectNode> postAccount(String username) {
+        return postAccount(username, null);
+    }
 }

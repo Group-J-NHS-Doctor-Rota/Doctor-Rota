@@ -37,4 +37,12 @@ public class EncryptionTests {
         assertNotEquals(randomToken1, randomToken2, "Tokens should not be the same");
         assertEquals(randomToken1.length(), randomToken2.length(), "Token lengths should be the same");
     }
+
+    @Test
+    void testGetPepper() {
+        String connectionString = ConnectionTools.getEnvOrSysVariable("PEPPER");
+        // Check connection sting has been found, so is not empty or null
+        assertNotEquals("", connectionString);
+        assertNotEquals(null, connectionString);
+    }
 }

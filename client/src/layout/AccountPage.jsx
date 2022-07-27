@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 
 import { Form } from "react-bootstrap"
 
+import { useUrl } from '../contexts/UrlContexts' 
+
 import Pagination from '../components/Pagination'
 import ManageModal from '../modals/ManageModal'
 import CreateUsersModal from '../modals/CreateUsersModal'
@@ -23,6 +25,12 @@ export default function AccountPage() {
 
 
     const { width } = useWindowDimensions();
+
+    const { url, getUrl } = useUrl()
+
+    useEffect(() => {
+        getUrl()
+    }, [])
 
     useEffect(() => {
         fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
@@ -59,8 +67,14 @@ export default function AccountPage() {
                     <AccountCard key={account.id} onClick={() => handleClick(account.id)}>
                         <TableTd>{account.username}</TableTd>
                         <TableTd>{account.email}</TableTd>
-                        <TableTd>1.0</TableTd>
-                        <TableTd>employed</TableTd>
+                        <TableTd>{account.timeWorked}</TableTd>
+                        {
+                            account.doctorStatus == 1 &&
+                            <TableTd>employed</TableTd>
+                            ||
+                            account.doctorStatus == 0 &&
+                            <TableTd>not employed</TableTd>
+                        }
                     </AccountCard>
                 )
             ))
@@ -115,12 +129,12 @@ export default function AccountPage() {
                     'Accept': 'application/json'
                 }
             })
-                .then(response => response.json())
-                .then(data => {
-                    const result = data.accounts.filter(result => result.username.includes(search))
-                    setTotalPage(Math.ceil(result.length/6))
-                    setAccounts(result)
-                })
+            .then(response => response.json())
+            .then(data => {
+                const result = data.accounts.filter(result => result.username.includes(search))
+                setTotalPage(Math.ceil(result.length/6))
+                setAccounts(result)
+            })
         }catch(error){
             console.log(error)
         }
@@ -136,10 +150,10 @@ export default function AccountPage() {
                                 <div className="d-flex">
                                     <i className="bi bi-search me-3" style={{ fontSize: '20px' }}></i>
 
-                                    <Input onChange={onChange}/>
+                                    <Input placeholder="Search" onChange={onChange}/>
                                 </div>
                             </SearchRegion>
-                            <Button type="submit" onClick={() => handleSubmit()}>Search</Button>
+                            {/* <Button type="submit" onClick={() => handleSubmit()}>Search</Button> */}
                         </Form>
                     </div>
                     <Button className='mb-3' onClick={() => { setCreate(true) }}><i className="bi bi-person-plus-fill me-2" />Create Users</Button>

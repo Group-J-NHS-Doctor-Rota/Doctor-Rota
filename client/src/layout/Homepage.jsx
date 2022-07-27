@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 
+import { useUrl } from '../contexts/UrlContexts' 
+
 import DataBar from '../components/DataBar'
 import CalendarTable from '../components/CalendarTable'
 import FilterCard from '../components/FilterCard'
@@ -12,6 +14,10 @@ export default function Homgepage() {
     const [year, setYear] = useState(today.getFullYear())
     const [month, setMonth] = useState(today.getMonth() + 1)
     const [open, setOpen] = useState(false)
+
+    const { url, getUrl } = useUrl()
+
+    // console.log(url)
 
     function handleNextMonth() {
         if (month == 12) {

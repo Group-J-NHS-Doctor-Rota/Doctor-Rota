@@ -9,6 +9,8 @@ import {
   Route
 } from 'react-router-dom';
 
+import { UrlProvider } from './contexts/UrlContexts';
+
 import SignInPage from './layout/SignInPage';
 import SignUpPage from './layout/SignUpPage';
 import Homepage from './layout/Homepage';
@@ -19,17 +21,19 @@ import NavBar from './components/NavBar';
 const App = () => {
   return (
     <div>
+      <UrlProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<NavBar />}>
-            <Route index path="/" element={<Homepage />} />
-            <Route path="account" element={<AccountPage />} />
-            <Route path="notification" element={<NotificationPage />} />
-          </Route>
-          <Route path="signin" element={<SignInPage />} />
-          <Route path="signup" element={<SignUpPage />} />
+            <Route path="/" element={<NavBar />}>
+              <Route index path="/" element={<Homepage />} />
+              <Route path="account" element={<AccountPage />} />
+              <Route path="notification" element={<NotificationPage />} />
+            </Route>
+            <Route path="signin" element={<SignInPage />} />
+            <Route path="signup" element={<SignUpPage />} />
         </Routes>
       </Router>
+      </UrlProvider>
     </div>
   );
 }

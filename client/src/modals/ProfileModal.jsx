@@ -5,10 +5,20 @@ import { Modal } from 'react-bootstrap'
 import styled from 'styled-components'
 
 export default function ProfileModal({ profile, setProfile }) {
-    // const handleSubmit = e => e.preventDefault()
-    const [information, setInformation] = useState()
-    const accountId = 3 // temporary
+    const [information, setInformation] = useState({
+        email: "",
+        phone: ""
+    })
+    const [initial, setInitial] = useState({
+        email: "",
+        phone: ""
+    })
+    const accountId = 3 
 
+    const [errorMsg, setErrorMsg] = useState({
+        email_invalid: false,
+        phone_invalid: false
+    })
 
     useEffect(() => {
         fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
@@ -21,36 +31,86 @@ export default function ProfileModal({ profile, setProfile }) {
             }
         })
             .then(response => response.json())
-            .then(data => setInformation(data.accounts.filter((account) => account.id == 1)[0]))
+            .then(data => {
+                const result = data.accounts.filter((account) => account.id == 1)[0]
+                setInformation(result)
+                setInitial({
+                    email: result.email,
+                    phone: result.phone,
+                    username: result.username,
+                    doctorId: result.doctorId
+                })
+            })
     }, [])
 
     const onChange = (e) => {
         setInformation({ ...information, [e.target.name]: e.target.value });
+        checkInputValidation(e.target.name, e.target.value)
     };
+
+
+    function checkInputValidation(name, value){
+        const numberOfValue = value.length
+        
+        if(name == "email"){
+            if(value.slice(numberOfValue-4, numberOfValue) == ".com" && value.includes("@")){
+                setErrorMsg({... errorMsg, ["email_invalid"]: false})
+            }else{
+                setErrorMsg({... errorMsg, ["email_invalid"]: true})
+            }
+        }
+        if(name == "phone"){
+
+            const pattern = /^[0-9]+$/
+            if(!pattern.test(value)){
+                setErrorMsg({... errorMsg, ["phone_invalid"]: true})
+            }else{
+                setErrorMsg({... errorMsg, ["phone_invalid"]: false})
+            }
+        }
+    }
 
     function handleSubmit(e) {
         e.preventDefault()
-        
-        try {
-            fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
-                mode: 'cors',
-                method: 'PATCH',
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    "Access-Control-Allow-Credentials": true
-                },
-                body: JSON.stringify({
 
-                }),
-            })
-                .then(response => response.json())
-                .then(data => console.log(data))
-        } catch (error) {
-            console.log(error)
+        if(errorMsg.email_invalid != true && errorMsg.phone_invalid != true){
+            try {
+                fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+                    mode: 'cors',
+                    method: 'PATCH',
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Credentials": true
+                    },
+                    body: JSON.stringify({
+                        annualLeave : 1
+                    }),
+                })
+                .then(response => console.log(response))
+
+                setProfile(false)
+            } catch (error) {
+                console.log(error)
+            }
+        }else{
+            setProfile(true)
         }
 
+    }
+
+    function handleCancel(){
+        setErrorMsg({
+            email_invalid: false,
+            phone_invalid: false
+        })
+        setInformation({
+            email: initial.email,
+            phone: initial.phone,
+            username: initial.username,
+            doctorId: initial.doctorId
+        })
         setProfile(false)
     }
 
@@ -58,22 +118,19 @@ export default function ProfileModal({ profile, setProfile }) {
 
     }
 
-
     return (
         <>
             <Modal show={profile}>
                 <ModalContainer>
                     <ModalTitle className="my-5">Profile</ModalTitle>
-                    <form id="profile" action="#" onSubmit={handleSubmit}>
+                    <form id="profile" onSubmit={handleSubmit}>
                         <div className="d-block">
-
                             <div className="d-flex align-items-center my-3">
                                 <Label className="d-flex me-3">
                                     <i className="bi bi-person-fill" style={{ fontSize: '30px' }} />
                                 </Label>
                                 <RowInfo className="d-flex mb-0">
                                     {
-
                                         information != undefined &&
                                         information.username
                                     }
@@ -93,43 +150,97 @@ export default function ProfileModal({ profile, setProfile }) {
                             </div>
 
                             <div className='d-block'>
-                                <div className="d-flex align-items-center my-3">
-                                    <Label className="d-flex me-3">
-                                        <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
-                                    </Label>
-                                    {
-                                        information != undefined &&
-                                        <Input type="email"
-                                            name='email'
-                                            value={information.email}
-                                            autoComplete='off'
-                                            onChange={onChange} />
+                                {
+                                    errorMsg.email_invalid &&
+                                    <div>
+                                        <div className="d-flex align-items-center mt-3">
+                                            <Label htmlFor="email" className="d-flex me-3">
+                                                <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
+                                            </Label>
+                                            {
+                                                information != undefined &&
+                                                <Input 
+                                                    type="email"
+                                                    name='email'
+                                                    value={information.email}
+                                                    autoComplete='off'
+                                                    onChange={onChange} 
+                                                />
+                                            }
+                                            <LockIcon className="bi bi-unlock-fill ms-2" />
+                                        </div>
+                                        <div>
+                                            <ErrorMessage>The email format is wrong</ErrorMessage>
+                                        </div>
+                                    </div>
+                                    ||
+                                    <div className="d-flex align-items-center my-3">
+                                        <Label htmlFor="email" className="d-flex me-3">
+                                            <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
+                                        </Label>
+                                        {
+                                            information != undefined &&
+                                            <Input 
+                                                type="email"
+                                                name='email'
+                                                value={information.email}
+                                                autoComplete='off'
+                                                onChange={onChange} 
+                                            />
+                                        }
+                                        <LockIcon className="bi bi-unlock-fill ms-2" />
+                                    </div>
+                                }
 
-                                    }
-                                    <LockIcon className="bi bi-unlock-fill ms-2" />
-                                </div>
+                                {
+                                    errorMsg.phone_invalid &&
+                                    <div>
+                                        <div className="d-flex align-items-center mt-3">
+                                            <Label htmlFor="phone" className="d-flex me-3">
+                                                <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
+                                            </Label>
+                                            {
+                                                information != undefined &&
+                                                <Input 
+                                                    type="tel"
+                                                    name='phone'
+                                                    value={information.phone}
+                                                    autoComplete='off'
+                                                    onChange={onChange} 
+                                                />
 
-                                <div className="d-flex align-items-center my-3">
-                                    <Label className="d-flex me-3">
-                                        <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
-                                    </Label>
-                                    {
-                                        information != undefined &&
-                                        <Input type="tel"
-                                            name='phone'
-                                            value={information.phone}
-                                            autoComplete='off'
-                                            onChange={onChange} />
-
-                                    }
-                                    <LockIcon className="bi bi-lock-fill ms-2" />
-                                </div>
+                                            }
+                                            <LockIcon className="bi bi-lock-fill ms-2" />
+                                        </div>
+                                        <div>
+                                            <ErrorMessage>The phone format is wrong</ErrorMessage>
+                                        
+                                        </div>
+                                    </div>
+                                    ||
+                                    <div className="d-flex align-items-center my-3">
+                                        <Label htmlFor="phone" className="d-flex me-3">
+                                            <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
+                                        </Label>
+                                        {
+                                            information != undefined &&
+                                            <Input 
+                                                type="tel"
+                                                name='phone'
+                                                value={information.phone}
+                                                autoComplete='off'
+                                                onChange={onChange} 
+                                            />
+                                        }
+                                        <LockIcon className="bi bi-lock-fill ms-2" />
+                                    </div>
+                                }
                             </div>
                             <div className="d-flex justify-content-center my-5">
-                                <CloseButton className="m-2" onClick={() => setProfile(false)}>
+                                <CloseButton type="button" className="m-2" onClick={handleCancel}>
                                     Close
                                 </CloseButton>
-                                <ConfirmButton className="m-2" onClick={() => setProfile(false)}>
+                                <ConfirmButton type="sunbit" className="m-2" onClick={() => setProfile(false)}>
                                     Update
                                 </ConfirmButton>
                             </div>
@@ -211,4 +322,10 @@ const Input = styled.input`
 const LockIcon = styled.i`
     font-size: 20px;
     cursor: pointer;
+`
+
+const ErrorMessage = styled.p`
+    font-size: 12px;
+    padding: 3px;
+    color: red;
 `

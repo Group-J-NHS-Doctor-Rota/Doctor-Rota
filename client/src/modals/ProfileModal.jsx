@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react'
 
+import { useUrl } from '../contexts/UrlContexts' 
+
 import { Modal } from 'react-bootstrap'
 
 import styled from 'styled-components'
 
 export default function ProfileModal({ profile, setProfile }) {
+    const { getUrl } = useUrl()
+
+    const url =  getUrl()
+
     const [information, setInformation] = useState({
         email: "",
         phone: ""
@@ -13,7 +19,7 @@ export default function ProfileModal({ profile, setProfile }) {
         email: "",
         phone: ""
     })
-    const accountId = 3 
+    const accountId = 1
 
     const [errorMsg, setErrorMsg] = useState({
         email_invalid: false,
@@ -21,15 +27,16 @@ export default function ProfileModal({ profile, setProfile }) {
     })
 
     useEffect(() => {
-        fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
-            mode: 'cors',
-            method: "GET",
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        })
+        if(url != undefined){
+            fetch(`${url}account`, {
+                mode: 'cors',
+                method: "GET",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
             .then(response => response.json())
             .then(data => {
                 const result = data.accounts.filter((account) => account.id == 1)[0]
@@ -41,13 +48,13 @@ export default function ProfileModal({ profile, setProfile }) {
                     doctorId: result.doctorId
                 })
             })
+        }
     }, [])
 
     const onChange = (e) => {
         setInformation({ ...information, [e.target.name]: e.target.value });
         checkInputValidation(e.target.name, e.target.value)
     };
-
 
     function checkInputValidation(name, value){
         const numberOfValue = value.length
@@ -60,7 +67,6 @@ export default function ProfileModal({ profile, setProfile }) {
             }
         }
         if(name == "phone"){
-
             const pattern = /^[0-9]+$/
             if(!pattern.test(value)){
                 setErrorMsg({... errorMsg, ["phone_invalid"]: true})
@@ -75,20 +81,23 @@ export default function ProfileModal({ profile, setProfile }) {
 
         if(errorMsg.email_invalid != true && errorMsg.phone_invalid != true){
             try {
-                fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
-                    mode: 'cors',
-                    method: 'PATCH',
-                    headers: {
-                        'Access-Control-Allow-Origin': '*',
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        "Access-Control-Allow-Credentials": true
-                    },
-                    body: JSON.stringify({
-                        annualLeave : 1
-                    }),
-                })
-                .then(response => console.log(response))
+                if(url != undefined){
+                    fetch(`${url}account/${accountId}`, {
+                        mode: 'cors',
+                        method: 'PATCH',
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            "Access-Control-Allow-Credentials": true
+                        },
+                        body: JSON.stringify({
+                            phone : information.phone,
+                            email: information.email
+                        }),
+                    })
+                    .then(response => console.log(response))
+                }
 
                 setProfile(false)
             } catch (error) {

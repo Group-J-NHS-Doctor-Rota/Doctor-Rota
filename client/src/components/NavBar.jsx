@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 
 import { Outlet, useNavigate } from 'react-router-dom';
 
+import { useUrl } from '../contexts/UrlContexts' 
+
 import LogoutModal from '../modals/LogoutModal'
 import ProfileModal from '../modals/ProfileModal';
 import RequestLeaveModal from '../modals/RequestLeaveModal';
@@ -14,6 +16,9 @@ export default function NavBar() {
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
 
+    const { getUrl } = useUrl()
+
+    const url =  getUrl()
 
     useEffect(() => {        
         const closeList = e => {
@@ -27,27 +32,27 @@ export default function NavBar() {
     }, [open])
 
     const [accountDetail, setAccountDetail] = useState()
-    const accountId = 3
+    const accountId = 1
 
     useEffect(() => {
         if (accountId != undefined) {
-            fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
-                mode: 'cors',
-                method: "GET",
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
+            if(url != undefined){
+                fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+                    mode: 'cors',
+                    method: "GET",
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                })
                 .then(response => response.json())
                 .then(data => {
                     setAccountDetail(data)
                 })
+            }
         }
     }, [accountId])
-
-
 
     function toggleList(type) {
         setOpen(!open)

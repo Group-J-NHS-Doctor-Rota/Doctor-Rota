@@ -21,8 +21,8 @@ export default function ShiftModal({ accountId, shift, setShift }) {
                     'Accept': 'application/json'
                 }
             })
-                .then(response => response.json())
-                .then(data => setShiftInfo(data.shifts))
+            .then(response => response.json())
+            .then(data => setShiftInfo(data.shifts))
     }, [accountId])
 
     return (
@@ -38,12 +38,12 @@ export default function ShiftModal({ accountId, shift, setShift }) {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">
+                                <div className="mb-0">
                                     {
                                         shiftInfo != undefined &&
                                         shiftInfo[accountId].username
                                     }
-                                </RowInfo>
+                                </div>
                             </div>
                         </div>
 
@@ -53,12 +53,12 @@ export default function ShiftModal({ accountId, shift, setShift }) {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">
+                                <div className="mb-0">
                                     {
                                         shiftInfo != undefined &&
                                         shiftInfo[accountId].date
                                     }
-                                </RowInfo>
+                                </div>
                             </div>
                         </div>
 
@@ -68,7 +68,7 @@ export default function ShiftModal({ accountId, shift, setShift }) {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">
+                                <div className="mb-0">
                                     {
                                         shiftInfo != undefined &&
                                         (
@@ -82,7 +82,7 @@ export default function ShiftModal({ accountId, shift, setShift }) {
                                             <p className="mb-0">Third On</p>
                                         )
                                     }
-                                </RowInfo>
+                                </div>
                             </div>
                         </div>
 
@@ -92,7 +92,7 @@ export default function ShiftModal({ accountId, shift, setShift }) {
                             </div>
 
                             <div className="d-flex">
-                                <RowInfo className="mb-0">
+                                <div className="mb-0">
                                     {
                                         shiftInfo != undefined &&
                                         (
@@ -108,7 +108,7 @@ export default function ShiftModal({ accountId, shift, setShift }) {
                                             <p className="mb-0">On Leave</p>
                                         )
                                     }
-                                </RowInfo>
+                                </div>
                             </div>
                         </div>
                     </div>

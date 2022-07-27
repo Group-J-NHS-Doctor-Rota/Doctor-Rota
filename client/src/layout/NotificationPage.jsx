@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { useUrl } from '../contexts/UrlContexts' 
 import Pagination from "../components/Pagination"
 import { useState, useEffect } from "react"
 import LeaveDetailModal from "../modals/LeaveDetailModal"
@@ -11,25 +12,31 @@ const NotificationPage = () => {
     const [leaveDetail, setLeaveDetail] = useState(false);
     const accountId = 1
 
+    const { getUrl } = useUrl()
+
+    const url =  getUrl()
 
     useEffect(() => {
-        const url = `https://doctor-rota-spring-develop.herokuapp.com/notification?accountId=${accountId}`
+        if(url != undefined){
+            const newUrl = `${url}notification?accountId=${accountId}`
 
-        fetch(url, {
-            mode: 'cors',
-            method: "GET",
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                const totalNumber = data.leaveRequests.length
-                setTotalPage(Math.ceil(totalNumber / 6))
-                setNotifications(data.leaveRequests)
+            fetch(newUrl, {
+                mode: 'cors',
+                method: "GET",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
             })
+                .then(response => response.json())
+                .then(data => {
+                    const totalNumber = data.leaveRequests.length
+                    setTotalPage(Math.ceil(totalNumber / 6))
+                    setNotifications(data.leaveRequests)
+                })
+        }
+
     }, [])
 
     function handleClick(notification) {

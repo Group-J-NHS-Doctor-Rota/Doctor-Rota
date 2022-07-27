@@ -1,23 +1,31 @@
 import styled from "styled-components";
 import { Modal } from "react-bootstrap"
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
+import { useUrl } from '../contexts/UrlContexts' 
+
 
 const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
     const [accountInfo, setAccountInfo] = useState()
 
+    const { getUrl } = useUrl()
+
+    const url =  getUrl()
+
     useEffect(() => {
-        notification !== undefined &&
-        fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${notification.accountId}`, {
-            mode: 'cors',
-            method: "GET",
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        })
+        if(url != undefined){
+            notification !== undefined &&
+            fetch(`${url}account/${notification.accountId}`, {
+                mode: 'cors',
+                method: "GET",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
             .then(response => response.json())
             .then(data => setAccountInfo(data))
+        }
     }, [notification])
 
     return (

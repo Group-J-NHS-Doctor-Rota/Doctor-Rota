@@ -1,4 +1,5 @@
 import styled from "styled-components"
+import { useUrl } from '../contexts/UrlContexts' 
 import { Modal, Row, Col, Form } from "react-bootstrap"
 import { useState, useEffect } from "react"
 
@@ -6,23 +7,29 @@ const ManageModal = ({ accountId, manage, setManage }) => {
     const [disable, setDisable] = useState(true)
     const [accountDetail, setAccountDetail] = useState()
 
+    const { getUrl } = useUrl()
+
+    const url =  getUrl()
+
     const toggleDisable = () => setDisable(!disable)
 
     useEffect(() => {
         if (accountId != undefined) {
-            fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
-                mode: 'cors',
-                method: "GET",
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
+            if(url != undefined){
+                fetch(`${url}account/${accountId}`, {
+                    mode: 'cors',
+                    method: "GET",
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                })
                 .then(response => response.json())
                 .then(data => {
                     setAccountDetail(data)
                 })
+            }
         }
     }, [accountId])
 
@@ -35,21 +42,22 @@ const ManageModal = ({ accountId, manage, setManage }) => {
         e.preventDefault()
 
         try{
-            fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
-                mode: 'cors',
-                method: 'PATCH',
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    "Access-Control-Allow-Credentials": true
-                },
-                body: JSON.stringify({
-                    annualLeave: 16
-                }),
-            })
-                .then(response => response.json())
-                .then(data => console.log(data))
+            if(url != undefined){
+                fetch(`${url}account/${accountId}`, {
+                    mode: 'cors',
+                    method: 'PATCH',
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Credentials": true
+                    },
+                    body: JSON.stringify({
+                        annualLeave: 16
+                    }),
+                })
+                .then(response => response)
+            }
         } catch (error) {
             console.log(error)
         }

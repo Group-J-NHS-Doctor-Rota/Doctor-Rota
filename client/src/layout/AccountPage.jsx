@@ -26,31 +26,28 @@ export default function AccountPage() {
 
     const { width } = useWindowDimensions();
 
-    const { url, getUrl } = useUrl()
+    const { getUrl } = useUrl()
 
+    const url =  getUrl()
+    
     useEffect(() => {
-        getUrl()
-    }, [])
-
-    useEffect(() => {
-        fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
-            mode: 'cors',
-            method: "GET",
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        })
+        if(url != undefined){
+            fetch(`${url}account`, {
+                mode: 'cors',
+                method: "GET",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
             .then(response => response.json())
             .then(data => {
-                // const totalNumber = data.accounts.length
-                // setTotalPage(Math.ceil(totalNumber/6))
-                // setAccounts(data.accounts)
                 const result = data.accounts.filter(result => result.username.includes(search))
                 setTotalPage(Math.ceil(result.length/6))
                 setAccounts(result)
             })
+        }
     }, [search])
 
     function handleClick(id) {
@@ -120,21 +117,23 @@ export default function AccountPage() {
         }        
 
         try{
-            fetch('https://doctor-rota-spring-develop.herokuapp.com/account', {
-                mode: 'cors',
-                method: "GET",
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                const result = data.accounts.filter(result => result.username.includes(search))
-                setTotalPage(Math.ceil(result.length/6))
-                setAccounts(result)
-            })
+            if(url != undefined){
+                fetch(`${url}account`, {
+                    mode: 'cors',
+                    method: "GET",
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const result = data.accounts.filter(result => result.username.includes(search))
+                    setTotalPage(Math.ceil(result.length/6))
+                    setAccounts(result)
+                })
+            }
         }catch(error){
             console.log(error)
         }

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
+import { useUrl } from '../contexts/UrlContexts' 
+
 import styled from 'styled-components'
 
 export default function DataBar() {
@@ -8,23 +10,31 @@ export default function DataBar() {
         studyLeave: 0
     })
 
+    const { getUrl } = useUrl()
+
+    const url =  getUrl()
+
     useEffect(() => {
-        const url = `https://doctor-rota-spring-develop.herokuapp.com/leaves` + '?accountId=1'
-        
-        fetch(url, {
-            mode: 'cors',
-            method: 'GET',
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            }
-        })
-        .then(response => response.json())
-        .then(data => setValues({
-            annualLeave: data.annualLeave,
-            studyLeave: data.studyLeave
-        }))
+        if(url != undefined){
+            const newUrl = `${url}leaves?accountId=1`
+
+            console.log(newUrl)
+            
+            fetch(newUrl, {
+                mode: 'cors',
+                method: 'GET',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => setValues({
+                annualLeave: data.annualLeave,
+                studyLeave: data.studyLeave
+            }))
+        }
     }, [])
 
     return (

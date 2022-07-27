@@ -7,15 +7,14 @@ export function useUrl() {
 }
 
 export function UrlProvider({ children }) {
-    const [url, setUrl] = useState()
     
     function getUrl(){
         const url = process.env.REACT_APP_BASE_URL
-        setUrl(url)
+
+        return url
     }
 
     const value = {
-        url,
         getUrl
     }
 

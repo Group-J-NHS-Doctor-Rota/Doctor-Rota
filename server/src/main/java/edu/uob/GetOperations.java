@@ -210,4 +210,51 @@ public class GetOperations {
             default -> throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
+    public static ResponseEntity<ObjectNode> getLogin(String username, String password) {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Check username exists
+            String SQL = "SELECT EXISTS (SELECT username FROM accounts WHERE username = ?);";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, username);
+                ResultSet r = s.executeQuery();
+                r.next();
+                if(!r.getBoolean(1)) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Account and password combination is incorrect");
+                }
+            }
+            // Get information for that user
+            SQL = "SELECT a.id, a.password, a.level, t.token FROM accounts a " +
+                    "LEFT JOIN tokens t ON a.id = t.accountId WHERE a.username = ?; ";
+            int accountId;
+            String hashedPassword;
+            int level;
+            String token;
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, username);
+                ResultSet r = s.executeQuery();
+                r.next();
+                accountId = r.getInt("id");
+                hashedPassword = r.getString("password");
+                level = r.getInt("level");
+                token = r.getString("token");
+            }
+            // Check password is correct
+            Encryption encryption = new Encryption();
+            if(!encryption.passwordMatches(password, hashedPassword)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Account and password combination is incorrect");
+            }
+            // Return information for user
+            ObjectNode objectNode = new ObjectMapper().createObjectNode();
+            objectNode.put("token", token);
+            objectNode.put("accountId", accountId);
+            objectNode.put("level", level);
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+
 }

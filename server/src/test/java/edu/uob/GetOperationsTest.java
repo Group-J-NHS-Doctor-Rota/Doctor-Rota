@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
@@ -327,5 +328,33 @@ public class GetOperationsTest {
         } catch (Exception e) {
             fail("Database connection and SQL queries should have worked\n" + e);
         }
+    }
+
+    @Test
+    void testGetLogin() throws JsonProcessingException {
+        String username = RandomStringUtils.randomAlphanumeric(20);
+        String password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+        // Create account
+        PostOperations.postAccount(username);
+        // Try wrong username
+        assertThrows(ResponseStatusException.class, ()-> GetOperations.getLogin(username+"a", password),
+                "Should not allow login for incorrect username");
+        // Try wrong password
+        assertThrows(ResponseStatusException.class, ()-> GetOperations.getLogin(username, password+"a"),
+                "Should not allow login for incorrect username");
+        // Try both wrong
+        assertThrows(ResponseStatusException.class, ()-> GetOperations.getLogin(username+"a", password+"a"),
+                "Should not allow login for incorrect username");
+        // Try correct combination
+        ResponseEntity<ObjectNode> response = GetOperations.getLogin(username, password);
+        // Validate return data
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
+        assertTrue(rootNode.has("token"));
+        assertTrue(rootNode.has("accountId"));
+        int accountId = rootNode.get("accountId").asInt();
+        assertTrue(rootNode.has("level"));
+        // Delete account
+        DeleteOperations.deleteAccount(accountId);
     }
 }

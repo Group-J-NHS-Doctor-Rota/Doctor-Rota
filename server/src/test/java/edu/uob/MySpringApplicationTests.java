@@ -55,14 +55,6 @@ public class MySpringApplicationTests {
 		ObjectMapper mapper = new ObjectMapper();
 		// Check rotabuild works without any variables
 		mockMvc.perform(put("/rotabuild")).andExpect(status().isOk());
-		// Check login needs a request parameter and a header variable
-		mockMvc.perform(get("/login?username=asdfasdf").header("password", "myPassword")).andExpect(status().isOk());
-		// Check login returns three parameters in JSON format
-		MvcResult result = mockMvc.perform(get("/login?username=5dgsdf4t").header("password", "myPassword")).andReturn();
-		JsonNode node = mapper.readTree(result.getResponse().getContentAsString());
-		assertTrue(node.has("token"));
-		assertTrue(node.has("accountId"));
-		assertTrue(node.has("level"));
 		// Check password needs a request parameter and two header variables
 		mockMvc.perform(patch("/password?accountId=1").header("oldPassword", "myPassword")
 				.header("newPassword", "myPassword2")).andExpect(status().isOk());

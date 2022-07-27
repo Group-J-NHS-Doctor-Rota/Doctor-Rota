@@ -48,4 +48,9 @@ public class PostOperations {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
+
+    public static ResponseEntity<ObjectNode> postAccount(String username, String email) {
+        //TODO complete this
+        return IndexController.okResponse("Account creation successful for username: " + username);
+    }
 }

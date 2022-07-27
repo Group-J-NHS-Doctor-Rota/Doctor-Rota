@@ -142,11 +142,10 @@ public class IndexController {
         return ResponseEntity.status(HttpStatus.OK).body(objectNode);
     }
 
-    @PutMapping(value = "/account", produces = "application/json")
-    public ResponseEntity<ObjectNode> putAccount(@RequestParam String username) {
+    @PostMapping(value = "/account", produces = "application/json")
+    public ResponseEntity<ObjectNode> postAccount(@RequestParam String username, String email) {
         //todo check token is valid
-        //todo input full logic
-        return okResponse("");
+        return PostOperations.postAccount(username, email);
     }
 
     @PatchMapping(value = "/password", produces = "application/json")

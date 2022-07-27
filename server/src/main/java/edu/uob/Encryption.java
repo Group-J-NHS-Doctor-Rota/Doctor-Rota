@@ -1,7 +1,10 @@
 package edu.uob;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -10,10 +13,12 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 
 public class Encryption {
-    private BCryptPasswordEncoder encoder;
+    private final BCryptPasswordEncoder encoder;
+    private final Pbkdf2PasswordEncoder pbkdf2PasswordEncoder;
 
     public Encryption() {
         encoder = new BCryptPasswordEncoder();
+        pbkdf2PasswordEncoder = new Pbkdf2PasswordEncoder();
     }
 
     /**
@@ -61,5 +66,26 @@ public class Encryption {
     // Some people don't advise using pepper?
 //    https://stackoverflow.com/questions/71813290/how-do-i-implement-a-pepper-in-spring-mvc
 //    https://stackoverflow.com/questions/16891729/best-practices-salting-peppering-passwords
+
+    public String getRandomSalt() {
+        return RandomStringUtils.randomAlphanumeric(20);
+    }
+
+    public String getPepper() {
+        return ConnectionTools.getEnvOrSysVariable("PEPPER");
+    }
+
+    //https://docs.spring.io/spring-security/site/docs/5.1.4.RELEASE/api/org/springframework/security/crypto/password/Pbkdf2PasswordEncoder.html
+    public String hashPassword(String password) {
+        return pbkdf2PasswordEncoder.encode(password);
+    }
+
+    public boolean passwordMatches(String password, String hashedPassword) {
+        return pbkdf2PasswordEncoder.matches(password, hashedPassword);
+    }
+
+    public String getRandomToken() {
+        return RandomStringUtils.randomAlphanumeric(20);
+    }
 
 }

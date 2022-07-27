@@ -6,16 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Date;
+import java.sql.*;
 
 public class PostOperations {
     public static ResponseEntity<ObjectNode> postRequestLeave(int accountId, String date, int type, int length, String note) {
         String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString);) {
+        try(Connection c = DriverManager.getConnection(connectionString)) {
             if(!ConnectionTools.accountIdExists(accountId, c)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
             }
@@ -50,7 +46,51 @@ public class PostOperations {
     }
 
     public static ResponseEntity<ObjectNode> postAccount(String username, String email) {
-        //TODO complete this
-        return IndexController.okResponse("Account creation successful for username: " + username);
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Check if username already exists
+            String SQL = "SELECT EXISTS (SELECT username FROM accounts WHERE username = ?);";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, username);
+                ResultSet r = s.executeQuery();
+                r.next();
+                if(r.getBoolean(1)) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Account with username "+username+" already exists");
+                }
+            }
+            // Generate unique salt
+            Encryption encryption = new Encryption();
+            String salt = encryption.getRandomSalt();
+            // Get pepper and default password
+            String pepper = encryption.getPepper();
+            String default_password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+            // Create hashed password
+            String hashed_password = encryption.hashPassword(default_password+salt+pepper);
+            // Store information in database
+            SQL = "INSERT INTO accounts (username, password, salt, email) " +
+                    "VALUES (?, ?, ?, ?); " +
+                    "SELECT accountId FROM accounts WHERE username = ?; ";
+            int accountId;
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, username);
+                s.setString(2, hashed_password);
+                s.setString(3, salt);
+                s.setString(4, email);
+                s.setString(5, username);
+                ResultSet r = s.executeQuery();
+                accountId = r.getInt("accountId");
+            }
+            // Create and store token
+            SQL = "INSERT INTO tokens (accountid, token) VALUES (?, ?); ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, accountId);
+                s.setString(2, encryption.getRandomToken());
+                s.executeUpdate();
+            }
+            return IndexController.okResponse("Account creation successful for username: " + username);
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
     }
 }

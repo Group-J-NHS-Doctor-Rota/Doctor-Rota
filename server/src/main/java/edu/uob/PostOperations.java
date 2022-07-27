@@ -60,30 +60,27 @@ public class PostOperations {
             }
             // Generate unique salt
             Encryption encryption = new Encryption();
-            String salt = encryption.getRandomSalt();
             // Get pepper and default password
-            String pepper = encryption.getPepper();
             String default_password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
             // Create hashed password
-            String hashed_password = encryption.hashPassword(default_password+salt+pepper);
+            String hashed_password = encryption.hashPassword(default_password);
+            //Not actually the salt but unique. Currently, this salt is not used (as incorporated above)
+            String salt = hashed_password.substring(0,20);
             // Store information in database
             SQL = "INSERT INTO accounts (username, password, salt, email) " +
-                    "VALUES (?, ?, ?, ?); " +
-                    "SELECT accountId FROM accounts WHERE username = ?; ";
+                    "VALUES (?, ?, ?, ?); ";
             int accountId;
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setString(1, username);
                 s.setString(2, hashed_password);
                 s.setString(3, salt);
                 s.setString(4, email);
-                s.setString(5, username);
-                ResultSet r = s.executeQuery();
-                accountId = r.getInt("accountId");
+                s.executeUpdate();
             }
             // Create and store token
-            SQL = "INSERT INTO tokens (accountid, token) VALUES (?, ?); ";
+            SQL = "INSERT INTO tokens (accountid, token) VALUES ((SELECT id FROM accounts WHERE username = ?), ?); ";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
-                s.setInt(1, accountId);
+                s.setString(1, username);
                 s.setString(2, encryption.getRandomToken());
                 s.executeUpdate();
             }

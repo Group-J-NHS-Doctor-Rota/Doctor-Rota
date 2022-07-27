@@ -1,11 +1,16 @@
 package edu.uob;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.*;
+import java.util.HashMap;
 
 public class PostOperationsTests {
 
@@ -76,6 +81,38 @@ public class PostOperationsTests {
             TestTools.deleteAnyTestData();
             fail("Database connection and SQL queries should have worked\n" + e);
         }
+    }
+
+    @Test
+    void testPostAccount() {
+        // Make new account
+        String username = RandomStringUtils.randomAlphabetic(20);
+        String email = RandomStringUtils.randomAlphabetic(16);
+        int accountId = 0; //Needs to have value and 0 will always cause exception if not overwritten
+        PostOperations.postAccount(username, email);
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Check values
+            String SQL = "SELECT * FROM accounts WHERE username = ?; ";
+            String hashed_password;
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, username);
+                ResultSet r = s.executeQuery();
+                r.next();
+                assertEquals(username, r.getString("username"));
+                assertEquals(email, r.getString("email"));
+                hashed_password = r.getString("password");
+                accountId = r.getInt("id");
+            }
+            // Check password
+            Encryption encryption = new Encryption();
+            String default_password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+            assertTrue(encryption.passwordMatches(default_password, hashed_password));
+        } catch (SQLException e) {
+            fail(e.toString());
+        }
+        // Delete account
+        DeleteOperations.deleteAccount(accountId);
     }
 
 }

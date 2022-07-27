@@ -1,5 +1,7 @@
 package edu.uob;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,6 +13,7 @@ import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Encryption {
     private final BCryptPasswordEncoder encoder;
@@ -67,21 +70,19 @@ public class Encryption {
 //    https://stackoverflow.com/questions/71813290/how-do-i-implement-a-pepper-in-spring-mvc
 //    https://stackoverflow.com/questions/16891729/best-practices-salting-peppering-passwords
 
-    public String getRandomSalt() {
-        return RandomStringUtils.randomAlphanumeric(20);
-    }
-
-    public String getPepper() {
+    private String getPepper() {
         return ConnectionTools.getEnvOrSysVariable("PEPPER");
     }
 
     //https://docs.spring.io/spring-security/site/docs/5.1.4.RELEASE/api/org/springframework/security/crypto/password/Pbkdf2PasswordEncoder.html
     public String hashPassword(String password) {
-        return pbkdf2PasswordEncoder.encode(password);
+        String passwordStr = password + getPepper();
+        return pbkdf2PasswordEncoder.encode(passwordStr);
     }
 
     public boolean passwordMatches(String password, String hashedPassword) {
-        return pbkdf2PasswordEncoder.matches(password, hashedPassword);
+        String passwordStr = password + getPepper();
+        return pbkdf2PasswordEncoder.matches(passwordStr, hashedPassword);
     }
 
     public String getRandomToken() {

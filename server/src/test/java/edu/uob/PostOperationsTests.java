@@ -142,24 +142,4 @@ public class PostOperationsTests {
         DeleteOperations.deleteAccount(accountId);
     }
 
-    @Test
-    void notTest() {
-        Encryption encryption = new Encryption();
-        //String salt = encryption.getRandomSalt();
-        // Get default password
-        String default_password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
-
-        // Create hashed password
-        String hashed_password1 = encryption.hashPassword(default_password);
-        String hashed_password2 = encryption.hashPassword(default_password);
-        String hashed_password3 = encryption.hashPassword(default_password);
-        System.out.println(encryption.passwordMatches(default_password, hashed_password1));
-        System.out.println(encryption.passwordMatches(default_password, hashed_password2));
-        System.out.println(encryption.passwordMatches(default_password, hashed_password3));
-        System.out.println(encryption.passwordMatches(default_password, "6c92c731386b62a923126c9606da5a87b8ac658f3dedccea340f73e579488bd9f42738fb6e2fba5e"));
-        System.out.println(encryption.passwordMatches(default_password, "2c2448b91c025358e7d1b32611aea7eb3c223727a20f83fd1fa3d858e16bf805c9e2946c40e9ea66"));
-        System.out.println(hashed_password1 + "\n" + hashed_password2 + "\n" + hashed_password3);
-
-    }
-
 }

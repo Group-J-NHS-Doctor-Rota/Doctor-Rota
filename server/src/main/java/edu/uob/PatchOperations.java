@@ -1,11 +1,8 @@
 package edu.uob;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.*;
@@ -144,7 +141,6 @@ public class PatchOperations {
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Check account exists for username and password
             String SQL = "SELECT EXISTS (SELECT id FROM accounts WHERE username = ? AND email = ?);";
-            String oldHashedPassword;
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setString(1, username);
                 s.setString(2, email);

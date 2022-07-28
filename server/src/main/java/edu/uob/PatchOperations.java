@@ -171,4 +171,20 @@ public class PatchOperations {
         }
     }
 
+    public static ResponseEntity<ObjectNode> patchLogout(String token) {
+        // Update token
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            String SQL = "UPDATE tokens SET token = ? WHERE token = ?; ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, Encryption.getRandomToken());
+                s.setString(2, token);
+                s.executeUpdate();
+                return IndexController.okResponse("User logged out");
+                // Have to catch SQLException exception here
+            }
+        } catch(SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
 }

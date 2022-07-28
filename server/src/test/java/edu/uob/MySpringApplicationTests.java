@@ -55,8 +55,6 @@ public class MySpringApplicationTests {
 		ObjectMapper mapper = new ObjectMapper();
 		// Check rotabuild works without any variables
 		mockMvc.perform(put("/rotabuild")).andExpect(status().isOk());
-		// Check logout works without any variables
-		mockMvc.perform(patch("/logout")).andExpect(status().isOk());
 	}
 
 }

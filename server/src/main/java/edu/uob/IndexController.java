@@ -155,10 +155,9 @@ public class IndexController {
     }
 
     @PatchMapping(value = "/logout", produces = "application/json")
-    public ResponseEntity<ObjectNode> patchLogout() {
+    public ResponseEntity<ObjectNode> patchLogout(@RequestHeader String token) {
         //todo check token is valid
-        //todo input full logic
-        return okResponse("");
+        return PatchOperations.patchLogout(token);
     }
 
 }

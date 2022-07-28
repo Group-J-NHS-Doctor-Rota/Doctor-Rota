@@ -241,4 +241,27 @@ public class PatchOperationsTests {
         // Delete account
         DeleteOperations.deleteAccount(accountId);
     }
+
+    @Test
+    void testPatchLogout() throws JsonProcessingException {
+        // Create account
+        String username = RandomStringUtils.randomAlphabetic(12);
+        PostOperations.postAccount(username);
+        // Login
+        String password1 = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+        ResponseEntity<ObjectNode> response = GetOperations.getLogin(username, password1);
+        JsonNode rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
+        int accountId = rootNode.get("accountId").asInt();
+        String token1 = rootNode.get("token").asText();
+        // Logout
+        PatchOperations.patchLogout(token1);
+        // Login
+        response = GetOperations.getLogin(username, password1);
+        rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
+        String token2 = rootNode.get("token").asText();
+        // Compare tokens
+        assertNotEquals(token1, token2, "Token should have changed after logout");
+        // Delete account
+        DeleteOperations.deleteAccount(accountId);
+    }
 }

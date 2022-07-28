@@ -82,7 +82,7 @@ export default function ProfileModal({ profile, setProfile }) {
         if(errorMsg.email_invalid != true && errorMsg.phone_invalid != true){
             try {
                 if(url != undefined){
-                    fetch(`${url}account/${accountId}`, {
+                    fetch(`${url}account/${accountId}?phone=${information.phone}&email=${information.email}`, {
                         mode: 'cors',
                         method: 'PATCH',
                         headers: {
@@ -90,11 +90,7 @@ export default function ProfileModal({ profile, setProfile }) {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
                             "Access-Control-Allow-Credentials": true
-                        },
-                        body: JSON.stringify({
-                            phone : information.phone,
-                            email: information.email
-                        }),
+                        }
                     })
                     .then(response => console.log(response))
                 }
@@ -249,7 +245,7 @@ export default function ProfileModal({ profile, setProfile }) {
                                 <CloseButton type="button" className="m-2" onClick={handleCancel}>
                                     Close
                                 </CloseButton>
-                                <ConfirmButton type="sunbit" className="m-2" onClick={() => setProfile(false)}>
+                                <ConfirmButton type="sunbit" className="m-2">
                                     Update
                                 </ConfirmButton>
                             </div>

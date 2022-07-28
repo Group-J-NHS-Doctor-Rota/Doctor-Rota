@@ -4,8 +4,7 @@ import { Modal } from 'react-bootstrap'
 
 import styled from 'styled-components'
 
-export default function ShiftModal({ accountId, shift, setShift }) {
-    const handleSubmit = e => e.preventDefault()
+export default function ShiftModal({ data, accountId, shift, setShift }) {
     const [shiftInfo, setShiftInfo] = useState()
     const today = new Date()
     const currentYear = today.getFullYear()
@@ -39,10 +38,7 @@ export default function ShiftModal({ accountId, shift, setShift }) {
 
                             <div className="d-flex">
                                 <div className="mb-0">
-                                    {
-                                        shiftInfo != undefined &&
-                                        shiftInfo[accountId].username
-                                    }
+                                    <RowInfo>{data.username}</RowInfo>
                                 </div>
                             </div>
                         </div>
@@ -54,10 +50,7 @@ export default function ShiftModal({ accountId, shift, setShift }) {
 
                             <div className="d-flex">
                                 <div className="mb-0">
-                                    {
-                                        shiftInfo != undefined &&
-                                        shiftInfo[accountId].date
-                                    }
+                                    <RowInfo>{data.date}</RowInfo>
                                 </div>
                             </div>
                         </div>
@@ -70,17 +63,14 @@ export default function ShiftModal({ accountId, shift, setShift }) {
                             <div className="d-flex">
                                 <div className="mb-0">
                                     {
-                                        shiftInfo != undefined &&
-                                        (
-                                            shiftInfo[accountId].rotaType == 0 &&
-                                            <p className="mb-0">First On</p>
-                                            || shiftInfo[accountId].rotaType == 1 &&
-                                            <p className="mb-0">Obstetric</p>
-                                            || shiftInfo[accountId].rotaType == 2 &&
-                                            <p className="mb-0">Second On</p>
-                                            || shiftInfo[accountId].rotaType == 3 &&
-                                            <p className="mb-0">Third On</p>
-                                        )
+                                        data.rotaType == 1 &&
+                                        <RowInfo className="mb-0">First On</RowInfo>
+                                        || data.rotaType == 2 &&
+                                        <RowInfo className="mb-0">Obstetric</RowInfo>
+                                        || data.rotaType == 3 &&
+                                        <RowInfo className="mb-0">Second On</RowInfo>
+                                        || data.rotaType == 4 &&
+                                        <RowInfo className="mb-0">Third On</RowInfo>
                                     }
                                 </div>
                             </div>
@@ -96,16 +86,16 @@ export default function ShiftModal({ accountId, shift, setShift }) {
                                     {
                                         shiftInfo != undefined &&
                                         (
-                                            shiftInfo[accountId].type == 0 &&
-                                            <p className="mb-0">Theater Day</p>
-                                            || shiftInfo[accountId].type == 1 &&
-                                            <p className="mb-0">Night Shift</p>
-                                            || shiftInfo[accountId].type == 2 &&
-                                            <p className="mb-0">Long Day</p>
-                                            || shiftInfo[accountId].type == 3 &&
-                                            <p className="mb-0">Trainee-off Day</p>
-                                            || shiftInfo[accountId].type == 4 &&
-                                            <p className="mb-0">On Leave</p>
+                                            data.type == 0 &&
+                                            <RowInfo className="mb-0">Theater Day</RowInfo>
+                                            || data.type == 1 &&
+                                            <RowInfo className="mb-0">Long Day</RowInfo>
+                                            || data.type == 2 &&
+                                            <RowInfo className="mb-0">Night Shift</RowInfo>
+                                            || data.type == 3 &&
+                                            <RowInfo className="mb-0">Trainee off Day</RowInfo>
+                                            || data.type == 9 &&
+                                            <RowInfo className="mb-0">Other</RowInfo>
                                         )
                                     }
                                 </div>
@@ -114,12 +104,12 @@ export default function ShiftModal({ accountId, shift, setShift }) {
                     </div>
 
                     <div className="d-flex justify-content-center my-3">
-                        <CloseButton className="m-2" onClick={() => setShift(false)}>
+                        {/* <CloseButton className="m-2" onClick={() => setShift(false)}>
                             Close
-                        </CloseButton>
+                        </CloseButton> */}
 
                         <ConfirmButton className="m-2" onClick={() => setShift(false)}>
-                            Swap
+                            OK
                         </ConfirmButton>
                     </div>
                 </ModalContainer>

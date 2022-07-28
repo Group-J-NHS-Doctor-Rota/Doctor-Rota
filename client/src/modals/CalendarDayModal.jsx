@@ -6,7 +6,7 @@ import Shift from '../components/Shift'
 
 import styled from "styled-components"
 
-export default function CalendarDayModal({ date, calendayDay, setCalendarDay, holiday }){
+export default function CalendarDayModal({ shifts, date, calendayDay, setCalendarDay, holiday }){
 
     return (
         <>
@@ -23,19 +23,17 @@ export default function CalendarDayModal({ date, calendayDay, setCalendarDay, ho
                     }
 
                     <ShiftRegion className="p-4">
-                        <Shift type="night" />
-                        <Shift type="morning" />
-                        <Shift type="morning" />
-                        <Shift type="night" />
-                        <Shift type="night" />
-                        <Shift type="morning" />
-                        <Shift type="night" />
+                    {
+                        shifts.map(shift => (
+                            <Shift key={shift.id} data={shift}/>
+                        ))
+                    }
                     </ShiftRegion>
 
 
                     <div className="d-flex justify-content-center my-3">
                         <ConfirmButton className="m-2" onClick={() => setCalendarDay(false)}>
-                            Confirm
+                            OK
                         </ConfirmButton>
                     </div>
                 </ModalContainer>

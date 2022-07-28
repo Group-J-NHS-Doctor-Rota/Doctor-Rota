@@ -17,8 +17,6 @@ export default function DataBar() {
     useEffect(() => {
         if(url != undefined){
             const newUrl = `${url}leaves?accountId=1`
-
-            console.log(newUrl)
             
             fetch(newUrl, {
                 mode: 'cors',

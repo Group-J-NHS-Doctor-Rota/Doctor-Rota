@@ -1,39 +1,87 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import Shift from './Shift'
 import CalendarDayModal from '../modals/CalendarDayModal'
 
 import styled from 'styled-components'
 
-export default function CalendarDay({ month, day, holiday }) {
-    const date = month + "/" + day
+export default function CalendarDay({ allShift, year, month, day, holiday }) {
+    // const date = month + "/" + day
+    const dateIncludeYear = day + "/" + month + "/" + year
+    
     const [calendayDay, setCalendarDay] = useState(false)
+    const [shifts, setShifts] = useState([])
+    
+    useEffect(() => {
+        setShifts([])
+        if(allShift != undefined){
+            allShift.forEach(shift => {
+                isDateMatch(shift.date) && setValue(shift)
+            })
+        }
+    }, [month])
+
+    function isDateMatch(date){
+        let shiftMonth = date.slice(5, 7)
+        let shiftDay = date.slice(8, 10)
+
+        if(shiftMonth[0] == 0){
+            shiftMonth = date.slice(6, 7)
+        }
+        if(shiftDay[0] == 0){
+            shiftDay = date.slice(9, 10)
+        }
+
+        if(shiftMonth == month && shiftDay == day){
+            return true
+        }else{
+            return false
+        }
+    }
+
+    function setValue(newShift){
+        setShifts(prevShifts => [
+            ...prevShifts, newShift
+        ])
+    }
+
     return (
         <div>
             <div className="d-block px-2">
-                <Shift type="night" />
-                <Shift type="morning" />
-                <MoreList className="d-flex mb-1 p-2" onClick={() => setCalendarDay(true)}>
-                    <div className="d-flex justify-content-center align-items-center px-1 py-2 rounded" style={{ backgroundColor: '#E7E7E7' }}>
-                        <i className="bi bi-three-dots" style={{ color: 'black' }}></i>
-                    </div>
+                {
+                    shifts.filter((shift, index) => index <= 2).map(shift => (
+                        <Shift key={shift.id} data={shift}/>
+                    ))
+                }
 
-                    <div className="d-flex align-items-center ms-2">
-                        <p className="mb-0" style={{ fontSize: '13px' }}>More</p>
-                    </div>
-                </MoreList>
+                {
+                    shifts.length > 3 &&
+                    <List className="d-flex mb-1 p-2" onClick={() => setCalendarDay(true)}>
+                        <div className="d-flex justify-content-center align-items-center px-1 py-2 rounded" style={{ backgroundColor: '#E7E7E7' }}>
+                            <i className="bi bi-three-dots" style={{ color: 'black' }}></i>
+                        </div>
 
-                <CalendarDayModal date={date} calendayDay={calendayDay} setCalendarDay={setCalendarDay} holiday={holiday} />
+                        <div className="d-flex align-items-center ms-2">
+                            <p className="mb-0" style={{ fontSize: '13px' }}>More</p>
+                        </div>
+                    </List>
+                    ||
+                    shifts.length == 0 &&
+                    <List className="p-2">No shift today</List>
+                }
+
+                <CalendarDayModal shifts={shifts} date={dateIncludeYear} calendayDay={calendayDay} setCalendarDay={setCalendarDay} holiday={holiday} />
             </div>
         </div>
     )
 }
 
-const MoreList = styled.div`
+const List = styled.div`
     width: 100%;
     border-radius: 5px;
     cursor: pointer;
     background-color: white;
+    font-size: 13px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
     &:hover {

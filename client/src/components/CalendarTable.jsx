@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react'
 import CalendarDay from './CalendarDay'
 import useWindowDimensions from '../hook/useWindowDimensions'
 
+import { useUrl } from '../contexts/UrlContexts' 
+
 import dayjs from 'dayjs'
 
 import styled from 'styled-components'
@@ -22,6 +24,11 @@ export default function CalendarTable({ year, month }) {
     const smallMonth = [4, 6, 9, 11]
 
     const [bankHolidays, setBankHolidays] = useState([])
+    const [allShift, setAllShift] = useState()
+
+    const { getUrl } = useUrl()
+
+    const url =  getUrl()
 
     useEffect(() => {
         fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/GB`)
@@ -35,7 +42,20 @@ export default function CalendarTable({ year, month }) {
 
                 setBankHolidays(holidays)
             })
+
+        fetch(`${url}shift/${year}?accountId=1`, {
+            mode: 'cors',
+            method: "GET",
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => setAllShift(data.shifts))
     }, [year])
+
 
     function getMonth(date) {
         if (date.slice(5, 7)[0] === 0) {
@@ -69,26 +89,26 @@ export default function CalendarTable({ year, month }) {
                 ((result == false) &&
                     (<GridItems key={i}>
                         <h3 className="my-2 mx-2">{i}</h3>
-                        <CalendarDay month={month} day={i}/>
+                        <CalendarDay allShift={allShift} year={year} month={month} day={i}/>
                     </GridItems>))
                 || ((result != false) &&
                     (<GridItems key={i}>
                         <div className="d-flex">
                             <h3 className="my-2 mx-2">{i}</h3>
                             {
-                                (result.length > 20 && width >= 1200 &&
-                                    <h3 className="my-2 mx-1">{result.slice(0, 18)} ...</h3>)
+                                (result.length > 14 && width >= 1200 &&
+                                    <h3 className="my-2 mx-1">{result.slice(0, 14)} ...</h3>)
                                 ||
                                 (result.length > 14 && width >= 1100 && width < 1200 &&
-                                    <h3 className="my-2 mx-1">{result.slice(0, 12)} ...</h3>)
+                                    <h3 className="my-2 mx-1">{result.slice(0, 10)} ...</h3>)
                                 ||
                                 (result.length > 8 && width >= 915 && width < 1200 &&
-                                    <h3 className="my-2 mx-1">{result.slice(0, 8)} ...</h3>)
+                                    <h3 className="my-2 mx-1">{result.slice(0, 6)} ...</h3>)
                                 ||
                                 (<h3 className="my-2 mx-1">{result}</h3>)
                             }
                         </div>
-                        <CalendarDay month={month} day={i} holiday={result}/>
+                        <CalendarDay allShift={allShift} year={year} month={month} day={i} holiday={result}/>
                     </GridItems>))
             )
         }

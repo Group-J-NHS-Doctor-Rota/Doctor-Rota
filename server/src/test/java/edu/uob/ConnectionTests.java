@@ -114,6 +114,9 @@ public class ConnectionTests {
             assertTrue(ConnectionTools.accountIdExists(1, c), "There should always be at least one account in the database.");
             assertTrue(ConnectionTools.idExistInTable(1, "id", "accounts", c), "There should always be at least one account in the database.");
             assertFalse(ConnectionTools.accountIdExists(1000000000, c), "We shouldn't have reached 1 billion accounts.");
+            // test account level
+            assertTrue(ConnectionTools.isAdminAccount(1, c));
+            assertFalse(ConnectionTools.isAdminAccount(1000000000, c));
         } catch (SQLException e) {
             fail("Database connection and queries should have worked\n" + e);
         }

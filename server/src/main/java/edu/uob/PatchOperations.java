@@ -71,10 +71,11 @@ public class PatchOperations {
             // we cannot update the status in table 'leaveRequest' and 'accountLeaveRequestRelationships'
             if (!status.equals("1") && !status.equals("2")) {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                        "Invalid request status: " + status);
+                        "Invalid request status value: " + status);
             }
             // Only if account level = 1 (admin account), then try to patch data
             // todo use isAdminAccount()
+//            if (ConnectionTools.)
             String SQL = "SELECT level FROM accounts WHERE id = ?; " +
                     "SELECT type, detailId FROM notifications WHERE id = ?; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
@@ -83,7 +84,7 @@ public class PatchOperations {
                 ResultSet r = s.executeQuery();
                 int detailId = -1;
                 while(r.next()){
-                    int level = r.getInt("level");// todo 俩SQL语句，r里面能同时有俩表的数据吗？
+                    int level = r.getInt("level");// todo
                     if (level != 1) {
                         throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
                                 "Not an admin account (Account level is not 1)");

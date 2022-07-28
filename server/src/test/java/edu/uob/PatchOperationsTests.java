@@ -125,9 +125,9 @@ public class PatchOperationsTests {
 //    @Test
 //    void testPatchNotification() {
 //        // Get random ids to test
-//        int id1 = TestTools.getTestAccountId();
-//        int id2 = TestTools.getTestAccountId();
-//        int id3 = TestTools.getTestAccountId();
+//        int id1 = TestTools.getTestAccountId(); // as account id
+//        int id2 = TestTools.getTestAccountId(); // as leave request id
+//        int id3 = TestTools.getTestAccountId(); // as notification id
 //        String connectionString = ConnectionTools.getConnectionString();
 //        try(Connection c = DriverManager.getConnection(connectionString)) {
 //            // check the test data
@@ -136,7 +136,7 @@ public class PatchOperationsTests {
 //                    id2, "id", "leaveRequests", c));
 //            assertFalse(ConnectionTools.idExistInTable(
 //                    id3, "id", "notifications", c));
-//            // Create new account with id 999999073 (definitely unused)
+//            // Create new account with random test id
 //            String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
 //                    "VALUES (?, 'test073User', 'pwd999999073', '9073', 't_user073@test.com', 15, 15, 48, 0);";
 //            try (PreparedStatement s = c.prepareStatement(SQL)) {
@@ -171,14 +171,28 @@ public class PatchOperationsTests {
 //                assertEquals(id1, r.getInt("accountId"));
 //                assertEquals(1, r.getInt("status"));
 //            }
-//            //Update non-existent account
+//            // check a new record in account leave request relationships
+//            SQL = "SELECT accountId, status FROM accountLeaveRequestRelationships " +
+//                    "WHERE leaveRequestId = ?; ";
+//            try (PreparedStatement s = c.prepareStatement(SQL)) {
+//                s.setInt(1, id2);
+//                ResultSet r = s.executeQuery();
+//                r.next();
+//                assertEquals(id1, r.getInt("accountId"));
+//                assertEquals(1, r.getInt("status"));
+//            }
+//            // Update non-existent account
 //            assertFalse(ConnectionTools.accountIdExists(1000000000, c));
 //            assertThrows(ResponseStatusException.class,
 //                    ()-> PatchOperations.patchNotification(
 //                            id3, 1000000000, "2"));
-//            //Delete account
+//            // Delete account
 //            DeleteOperations.deleteAccount(id1);
 //            assertFalse(ConnectionTools.accountIdExists(id1, c));
+//            assertFalse(ConnectionTools.idExistInTable(
+//                    id2, "id", "leaveRequest", c));
+//            assertFalse(ConnectionTools.idExistInTable(
+//                    id3, "id", "notifications", c));
 //        } catch (SQLException e) {
 //            fail("Database connection and SQL queries should have worked\n" + e);
 //        }

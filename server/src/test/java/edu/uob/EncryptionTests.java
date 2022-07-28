@@ -40,9 +40,17 @@ public class EncryptionTests {
 
     @Test
     void testGetPepper() {
-        String connectionString = ConnectionTools.getEnvOrSysVariable("PEPPER");
+        String pepper = ConnectionTools.getEnvOrSysVariable("PEPPER");
         // Check pepper has been found, so is not empty or null
-        assertNotEquals("", connectionString);
-        assertNotEquals(null, connectionString);
+        assertNotEquals("", pepper, "Pepper shouldn't be empty");
+        assertNotEquals(null, pepper, "Pepper shouldn't be null");
+    }
+
+    @Test
+    void testGetDefaultPassword() {
+        String defaultPassword = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+        // Check default password has been found, so is not empty or null
+        assertNotEquals("", defaultPassword, "Default password shouldn't be empty");
+        assertNotEquals(null, defaultPassword, "Default password shouldn't be null");
     }
 }

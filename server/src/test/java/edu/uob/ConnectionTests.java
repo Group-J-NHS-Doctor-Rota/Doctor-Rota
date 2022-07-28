@@ -16,8 +16,8 @@ public class ConnectionTests {
     void testGetConnectionString() {
         String connectionString = ConnectionTools.getConnectionString();
         // Check connection sting has been found, so is not empty or null
-        assertNotEquals("", connectionString);
-        assertNotEquals(null, connectionString);
+        assertNotEquals("", connectionString, "Connection string shouldn't be empty");
+        assertNotEquals(null, connectionString, "Connection string shouldn't be null");
     }
 
     @Test

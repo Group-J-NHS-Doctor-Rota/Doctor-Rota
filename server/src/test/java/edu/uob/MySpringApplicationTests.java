@@ -55,12 +55,6 @@ public class MySpringApplicationTests {
 		ObjectMapper mapper = new ObjectMapper();
 		// Check rotabuild works without any variables
 		mockMvc.perform(put("/rotabuild")).andExpect(status().isOk());
-		// Check password needs a request parameter and two header variables
-		mockMvc.perform(patch("/password?accountId=1").header("oldPassword", "myPassword")
-				.header("newPassword", "myPassword2")).andExpect(status().isOk());
-		// Check password needs two different values for the header variables
-		mockMvc.perform(patch("/password?accountId=2").header("oldPassword", "myPassword")
-				.header("newPassword", "myPassword")).andExpect(status().isConflict());
 		// Check passwordReset needs two request parameters
 		mockMvc.perform(patch("/passwordReset?username=myUsername&email=test@test.com")).andExpect(status().isOk());
 		// Check logout works without any variables

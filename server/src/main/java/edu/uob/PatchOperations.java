@@ -101,4 +101,41 @@ public class PatchOperations {
         }
     }
 
+    public static ResponseEntity<ObjectNode> patchPassword(String oldPassword, String newPassword, int accountId) {
+        // Check that passwords do not match
+        if(oldPassword.equals(newPassword)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "New password cannot be the same as the old password!\n");
+        }
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Get data for accountId
+            String SQL = "SELECT password FROM accounts WHERE id = ?;";
+            String oldHashedPassword;
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, accountId);
+                ResultSet r = s.executeQuery();
+                r.next();
+                oldHashedPassword = r.getString("password");
+            }
+            // Validate password
+            Encryption encryption = new Encryption();
+            if(!encryption.passwordMatches(oldPassword, oldHashedPassword)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Incorrect password");
+            }
+            // Generate and store new hashed password
+            String newHashedPassword = encryption.hashPassword(newPassword);
+            SQL = "UPDATE accounts SET password = ?, timestamp = now() WHERE id = ?; ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, newHashedPassword);
+                s.setInt(2, accountId);
+                s.executeUpdate();
+            }
+            return IndexController.okResponse("Password updated successfully for accountId: " + accountId);
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+
 }

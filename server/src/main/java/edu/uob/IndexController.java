@@ -144,14 +144,9 @@ public class IndexController {
 
     @PatchMapping(value = "/password", produces = "application/json")
     public ResponseEntity<ObjectNode> patchPassword(@RequestHeader String oldPassword, @RequestHeader String newPassword,
-                                                @RequestParam String accountId) {
+                                                @RequestParam int accountId) {
         //todo check token is valid
-        //todo input full logic
-        if(oldPassword.equals(newPassword)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "New password cannot be the same as the old password!\n");
-        }
-        return okResponse("");
+        return PatchOperations.patchPassword(oldPassword, newPassword, accountId);
     }
 
     @PatchMapping(value = "/passwordReset", produces = "application/json")

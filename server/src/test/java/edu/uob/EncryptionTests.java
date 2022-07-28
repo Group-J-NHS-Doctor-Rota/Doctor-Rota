@@ -41,7 +41,7 @@ public class EncryptionTests {
     @Test
     void testGetPepper() {
         String connectionString = ConnectionTools.getEnvOrSysVariable("PEPPER");
-        // Check connection sting has been found, so is not empty or null
+        // Check pepper has been found, so is not empty or null
         assertNotEquals("", connectionString);
         assertNotEquals(null, connectionString);
     }

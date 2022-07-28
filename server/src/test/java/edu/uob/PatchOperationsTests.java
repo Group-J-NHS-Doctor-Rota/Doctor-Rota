@@ -213,4 +213,32 @@ public class PatchOperationsTests {
         // Delete account
         DeleteOperations.deleteAccount(accountId);
     }
+
+    @Test
+    void testPatchPasswordReset() throws JsonProcessingException {
+        // Create account
+        String username = RandomStringUtils.randomAlphabetic(12);
+        String email = RandomStringUtils.randomAlphabetic(16)+"@"+RandomStringUtils.randomAlphabetic(8)+".com";
+        PostOperations.postAccount(username, email);
+        // Login
+        String password1 = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+        String password2 = password1 + "a";
+        ResponseEntity<ObjectNode> response = GetOperations.getLogin(username, password1);
+        JsonNode rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
+        int accountId = rootNode.get("accountId").asInt();
+        // Patch password with different password
+        PatchOperations.patchPassword(password1, password2, accountId);
+        // Check login again
+        assertThrows(ResponseStatusException.class,
+                ()-> GetOperations.getLogin(username, password1));
+        GetOperations.getLogin(username, password2);
+        // Reset password
+        PatchOperations.patchPasswordReset(username, email);
+        // Check login again
+        assertThrows(ResponseStatusException.class,
+                ()-> GetOperations.getLogin(username, password2));
+        GetOperations.getLogin(username, password1);
+        // Delete account
+        DeleteOperations.deleteAccount(accountId);
+    }
 }

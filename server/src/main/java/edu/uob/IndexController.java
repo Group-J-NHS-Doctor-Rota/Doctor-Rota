@@ -151,8 +151,7 @@ public class IndexController {
 
     @PatchMapping(value = "/passwordReset", produces = "application/json")
     public ResponseEntity<ObjectNode> patchPasswordReset(@RequestParam String username, @RequestParam String email) {
-        //todo input full logic
-        return okResponse("");
+        return PatchOperations.patchPasswordReset(username, email);
     }
 
     @PatchMapping(value = "/logout", produces = "application/json")

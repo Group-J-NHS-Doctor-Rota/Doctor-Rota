@@ -80,11 +80,24 @@ export default function CalendarTable({ year, month }) {
         return false
     }
 
+    function theWeek(){
+        const date = year + "-" + month + "-" + "1"
+
+        return new Date(date).getDay()
+    }
+
     const getContent = number => {
         let content = [];
+        const theWeekResult = theWeek()
+
+        for(let i = 0; i < theWeekResult-1; i++){
+            content.push(
+                <GridItems key={`grid-items-${i}`}/>
+            )
+        }
+
         for (let i = 1; i < number + 1; i++) {
             let result = getHoliday(i)
-
             content.push(
                 ((result == false) &&
                     (<GridItems key={i}>

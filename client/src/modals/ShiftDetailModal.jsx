@@ -4,25 +4,7 @@ import { Modal } from 'react-bootstrap'
 
 import styled from 'styled-components'
 
-export default function ShiftModal({ data, accountId, shift, setShift }) {
-    const [shiftInfo, setShiftInfo] = useState()
-    const today = new Date()
-    const currentYear = today.getFullYear()
-
-    useEffect(() => {
-        accountId != undefined &&
-            fetch(`https://doctor-rota-spring-develop.herokuapp.com/shift/${currentYear}?accountId=1`, {
-                mode: 'cors',
-                method: "GET",
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => setShiftInfo(data.shifts))
-    }, [accountId])
+export default function ShiftModal({ data, shift, setShift }) {
 
     return (
         <>
@@ -84,19 +66,16 @@ export default function ShiftModal({ data, accountId, shift, setShift }) {
                             <div className="d-flex">
                                 <div className="mb-0">
                                     {
-                                        shiftInfo != undefined &&
-                                        (
-                                            data.type == 0 &&
-                                            <RowInfo className="mb-0">Theater Day</RowInfo>
-                                            || data.type == 1 &&
-                                            <RowInfo className="mb-0">Long Day</RowInfo>
-                                            || data.type == 2 &&
-                                            <RowInfo className="mb-0">Night Shift</RowInfo>
-                                            || data.type == 3 &&
-                                            <RowInfo className="mb-0">Trainee off Day</RowInfo>
-                                            || data.type == 9 &&
-                                            <RowInfo className="mb-0">Other</RowInfo>
-                                        )
+                                        data.type == 0 &&
+                                        <RowInfo className="mb-0">Theater Day</RowInfo>
+                                        || data.type == 1 &&
+                                        <RowInfo className="mb-0">Long Day</RowInfo>
+                                        || data.type == 2 &&
+                                        <RowInfo className="mb-0">Night Shift</RowInfo>
+                                        || data.type == 3 &&
+                                        <RowInfo className="mb-0">Trainee off Day</RowInfo>
+                                        || data.type == 9 &&
+                                        <RowInfo className="mb-0">Other</RowInfo>
                                     }
                                 </div>
                             </div>

@@ -122,15 +122,14 @@ public class GetOperations {
                     "WHERE S.date::text LIKE '" + year + "%' " +
                     // If account is admin, get all shifts, else get other their shifts
                     "AND ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR S.accountId = ? );";
+            ObjectNode objectNode = new ObjectMapper().createObjectNode();
+            ArrayNode arrayNode1 = objectNode.putArray("shifts");
             try (PreparedStatement s = c.prepareStatement(SQL)) {
-                ObjectNode objectNode = new ObjectMapper().createObjectNode();
-                ArrayNode arrayNode = objectNode.putArray("shifts");
                 s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
                 s.setInt(2, accountId); // In SQL sentence, OR S.accountId = ?
                 ResultSet r = s.executeQuery();
                 while (r.next()) {
                     ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
-                    // r.getXXX(table's name)
                     objectNodeRow.put("id", r.getInt("id"));
                     objectNodeRow.put("accountId", r.getInt("accountId"));
                     objectNodeRow.put("username", r.getString("username"));
@@ -140,10 +139,38 @@ public class GetOperations {
                     objectNodeRow.put("type", r.getInt("type"));
                     objectNodeRow.put("ruleNotes", r.getString("ruleNotes"));
                     objectNodeRow.put("accountLevel", r.getInt("level"));
-                    arrayNode.add(objectNodeRow);
+                    arrayNode1.add(objectNodeRow);
                 }
-                return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             }
+            // Add in leave request information too
+            SQL = "SELECT R.id, R.accountid, A.username, R.date, R.type, R.length, " +
+                    "R.status, R.note, A.level FROM leaverequests R " +
+                    // Only get request or approved leave request, not rejected
+                    "LEFT JOIN accounts A ON R.accountid = A.id WHERE R.status IN (0, 1) " +
+                    "AND R.date::text LIKE '" + year + "%' " +
+                    // If account is admin, get all leave request, else get other their leave
+                    "AND ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR R.accountId = ? );";
+            ArrayNode arrayNode2 = objectNode.putArray("leave");
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
+                s.setInt(2, accountId); // In SQL sentence, OR S.accountId = ?
+                ResultSet r = s.executeQuery();
+                while (r.next()) {
+                    ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
+                    objectNodeRow.put("id", r.getInt("id"));
+                    objectNodeRow.put("accountId", r.getInt("accountId"));
+                    objectNodeRow.put("username", r.getString("username"));
+                    objectNodeRow.put("date", String.valueOf(r.getDate("date")));
+                    // type: 0: Normal working day, 1: Long Day, 2: Night
+                    objectNodeRow.put("type", r.getInt("type"));
+                    objectNodeRow.put("length", r.getInt("length"));
+                    objectNodeRow.put("status", r.getInt("status"));
+                    objectNodeRow.put("note", r.getString("note"));
+                    objectNodeRow.put("accountLevel", r.getInt("level"));
+                    arrayNode2.add(objectNodeRow);
+                }
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             // Have to catch SQLException exception here
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());

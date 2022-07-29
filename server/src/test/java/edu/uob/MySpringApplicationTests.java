@@ -49,12 +49,13 @@ public class MySpringApplicationTests {
 		mockMvc.perform(get("/test")).andExpect(status().isOk());
 	}
 
-	//TODO remove this test once skeleton requests have been completed
+	//TODO remove this test once rotabuild request have been completed
 	@Test
 	public void testSkeletonRequests() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		// Check rotabuild works without any variables
-		mockMvc.perform(put("/rotabuild")).andExpect(status().isOk());
+		String validToken = ConnectionTools.getValidToken();
+		mockMvc.perform(put("/rotabuild").header("token", validToken)).andExpect(status().isOk());
 	}
 
 }

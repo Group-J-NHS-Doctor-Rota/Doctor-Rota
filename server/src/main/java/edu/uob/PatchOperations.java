@@ -70,13 +70,11 @@ public class PatchOperations {
             // If status is not 1 or not 2,
             // we cannot update the status in table 'leaveRequest' and 'accountLeaveRequestRelationships'
             if (!status.equals("1") && !status.equals("2")) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Invalid request status value: " + status);
             }
             // Only if account level = 1 (admin account), then try to patch data
-            if (ConnectionTools.isAdminAccount(accountId, c)) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Not an admin account");
-            }
+            // todo use validToken
             String SQL = "SELECT type, detailId FROM notifications WHERE id = ?; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, notificationId);

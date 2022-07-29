@@ -196,7 +196,6 @@ public class PatchOperationsTests {
             assertFalse(ConnectionTools.idExistInTable(
                     id3, "id", "notifications", c));
         } catch (SQLException e) {
-            DeleteOperations.deleteAccount(id1); // Delete account when tests are failed
             fail("Database connection and SQL queries should have worked\n" + e);
         }
     }

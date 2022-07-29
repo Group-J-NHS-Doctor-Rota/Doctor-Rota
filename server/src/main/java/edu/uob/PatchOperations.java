@@ -171,7 +171,7 @@ public class PatchOperations {
         // Update token
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            String SQL = "UPDATE tokens SET token = ? WHERE token = ?; ";
+            String SQL = "UPDATE tokens SET token = ?, timestamp = now() WHERE token = ?; ";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setString(1, Encryption.getRandomToken());
                 s.setString(2, token);

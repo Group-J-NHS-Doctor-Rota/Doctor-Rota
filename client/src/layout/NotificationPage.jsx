@@ -3,6 +3,8 @@ import { useUrl } from '../contexts/UrlContexts'
 import Pagination from "../components/Pagination"
 import { useState, useEffect } from "react"
 import LeaveDetailModal from "../modals/LeaveDetailModal"
+import useWindowDimensions from '../hook/useWindowDimensions'
+
 
 const NotificationPage = () => {
     const [totalPage, setTotalPage] = useState(0)
@@ -11,6 +13,8 @@ const NotificationPage = () => {
     const [selected, setSelected] = useState()
     const [leaveDetail, setLeaveDetail] = useState(false);
     const accountId = 1
+
+    const { width } = useWindowDimensions();
 
     const { getUrl } = useUrl()
 
@@ -108,7 +112,15 @@ const NotificationPage = () => {
                 }
                 <LeaveDetailModal notification={selected} leaveDetail={leaveDetail} setLeaveDetail={setLeaveDetail} />
             </PageContainer>
-            <Pagination currentPage={currentPage} totalPage={totalPage} setCurrentPage={setCurrentPage} />
+
+            {
+                width > 700 &&
+                <PaginationRegion>
+                    <Pagination currentPage={currentPage} totalPage={totalPage} setCurrentPage={setCurrentPage} />
+                </PaginationRegion>
+                ||
+                <Pagination currentPage={currentPage} totalPage={totalPage} setCurrentPage={setCurrentPage} />
+            }
         </div>
     )
 }
@@ -197,4 +209,12 @@ const PendingButton = styled.button`
         min-width: 70px;
         font-size: 13px
     }
+`
+
+const PaginationRegion = styled.div`
+    margin: 0 auto;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translate(-50%, -50%);
 `

@@ -23,7 +23,6 @@ export default function AccountPage() {
     const [manage, setManage] = useState(false)
     const [create, setCreate] = useState(false)
 
-
     const { width } = useWindowDimensions();
 
     const { getUrl } = useUrl()
@@ -182,12 +181,19 @@ export default function AccountPage() {
                         }
                     </AccountGrid>
                 }
-
             </PageContainer >
 
             <ManageModal accountId={accountId} manage={manage} setManage={setManage} />
             <CreateUsersModal create={create} setCreate={setCreate} />
-            <Pagination currentPage={currentPage} totalPage={totalPage} setCurrentPage={setCurrentPage} />
+
+            {
+                width > 700 &&
+                <PaginationRegion>
+                    <Pagination currentPage={currentPage} totalPage={totalPage} setCurrentPage={setCurrentPage} />
+                </PaginationRegion>
+                ||
+                <Pagination currentPage={currentPage} totalPage={totalPage} setCurrentPage={setCurrentPage} />
+            }
         </div >
     )
 }
@@ -203,6 +209,10 @@ const SearchRegion = styled.div`
     border-radius: 5px;
     background-color: white;
     box-shadow: 0 0px 8px 0px rgba(0, 0, 0, 0.1), 0 6px 2px 0 rgba(0, 0, 0, 0.08);
+
+    @media (max-width: 575px){
+        max-width: 180px;
+    }
 `
 
 const Input = styled.input`
@@ -214,7 +224,7 @@ const Input = styled.input`
 `
 
 const Button = styled.button`
-    padding: 5px 25px;
+    padding: 5px 15px;
     color: white;
     font-size: 20px;
     font-weight: bold;
@@ -223,8 +233,9 @@ const Button = styled.button`
     border-radius: 5px;
     box-shadow: 0 0px 8px 0px rgba(0, 0, 0, 0.1), 0 6px 2px 0 rgba(0, 0, 0, 0.08);
 
-    @media{
+    @media (max-width: 575px){
         display: block !important;
+        font-size 16px;
     }
 `
 
@@ -264,36 +275,14 @@ const AccountCardV2 = styled.div`
     border-radius: 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     cursor: pointer;
+    background-color: #f5f9fe;
+    
 `
 
-const CloseButton = styled.button`
-    min-width: 100px;
-    font-size: 20px;
-    background-color: white;
-    border-radius: 5px;
-    border: none;
-    color: #035eb8;
-    font-weight: bold;
-    padding: 5px 10px;
-
-    @media (max-width: 575px){
-        font-size: 16px;
-        min-width: 80px;
-    }
-`
-
-const ConfirmButton = styled.button`
-    min-width: 100px;
-    font-size: 20px;
-    background-color: #035eb8;
-    border-radius: 5px;
-    border: none;
-    color: white;
-    font-weight: bold;
-    padding: 5px 10px;
-
-    @media (max-width: 575px){
-        font-size: 16px;
-        min-width: 80px;
-    }
+const PaginationRegion = styled.div`
+    margin: 0 auto;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translate(-50%, -50%);
 `

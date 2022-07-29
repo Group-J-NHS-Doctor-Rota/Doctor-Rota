@@ -24,7 +24,7 @@ CREATE TABLE accounts (
     username varchar NOT NULL,
     --Only store encrypted and never actual password
     password varchar NOT NULL,
-    salt varchar NOT NULL,
+    salt varchar,
     email varchar,
     -- phone is varchar so it copes regardless of format
     phone varchar,
@@ -41,7 +41,6 @@ CREATE TABLE accounts (
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
     UNIQUE (username),
-    UNIQUE (salt),
     FOREIGN KEY (rotaGroupId) REFERENCES rotagroups(id),
     FOREIGN KEY (level) REFERENCES levelTypes(id)
 );

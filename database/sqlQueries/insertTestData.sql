@@ -6,22 +6,22 @@ VALUES
     ('2021-08-04', '2021-11-02', true);
 
 /*accounts data*/
-INSERT INTO accounts (username, password, salt, email, phone, doctorId, annualLeave, studyLeave, workingHours, accountStatus, doctorStatus, level, rotaGroupId, timeWorked, fixedWorking)
+INSERT INTO accounts (username, password, email, phone, doctorId, annualLeave, studyLeave, workingHours, accountStatus, doctorStatus, level, rotaGroupId, timeWorked, fixedWorking)
 VALUES
-    ('John Smith', 'sdafgndfjgn', '123', 'test@test.com', '07777 777 777', '9876', 15, 15, 48, 0, 0, 1, 1, 1, false);
-INSERT INTO accounts (username, password, salt, email, annualLeave, studyLeave, workingHours, level)
+    ('John Smith', 'sdafgndfjgn', 'test@test.com', '07777 777 777', '9876', 15, 15, 48, 0, 0, 1, 1, 1, false);
+INSERT INTO accounts (username, password, email, annualLeave, studyLeave, workingHours, level)
 VALUES
-    ('Jane Smith', 'qwererydf', '456', 'test2@test.com', 15, 15, 48, 0),
-    ('User One', 'gsgfsdgfdsg', '111', 'user1@test.com', 11, 1, 48, 1),
-    ('User Two', 'dfhdfghfg', '222', 'user2@test.com', 12, 15, 48, 0),
-    ('User Three', '45y6ertyeh', '333', 'user3@test.com', 13, 15, 48, 0),
-    ('User Four', '5e6u5hg', '444', 'user4@test.com', 14, 15, 48, 0),
-    ('User Five', '6e5hr', '555', 'user5@test.com', 15, 15, 47, 0),
-    ('User Six', 'dhfgh654hth545', '666', 'user6@test.com', 16, 15, 48, 0),
-    ('User Seven', 'fdghd54yh5', '777', 'user7@test.com', 17, 15, 48, 0),
-    ('User Eight', 'dhw54htdfh', '888', 'user8@test.com', 18, 10, 48, 0),
-    ('User Nine', 'fghkfgk7k', '99999', 'user9@test.com', 19, 15, 48, 0),
-    ('User Ten', 'l78iiyitui', '09876', 'user10@test.com', 20, 15, 48, 0);
+    ('Jane Smith', 'qwererydf', 'test2@test.com', 15, 15, 48, 0),
+    ('User One', 'gsgfsdgfdsg', 'user1@test.com', 11, 1, 48, 1),
+    ('User Two', 'dfhdfghfg', 'user2@test.com', 12, 15, 48, 0),
+    ('User Three', '45y6ertyeh', 'user3@test.com', 13, 15, 48, 0),
+    ('User Four', '5e6u5hg', 'user4@test.com', 14, 15, 48, 0),
+    ('User Five', '6e5hr', 'user5@test.com', 15, 15, 47, 0),
+    ('User Six', 'dhfgh654hth545', 'user6@test.com', 16, 15, 48, 0),
+    ('User Seven', 'fdghd54yh5', 'user7@test.com', 17, 15, 48, 0),
+    ('User Eight', 'dhw54htdfh', 'user8@test.com', 18, 10, 48, 0),
+    ('User Nine', 'fghkfgk7k', 'user9@test.com', 19, 15, 48, 0),
+    ('User Ten', 'l78iiyitui', 'user10@test.com', 20, 15, 48, 0);
 
 /*shifts data*/
 INSERT INTO shifts (accountId, rotaGroupId, rotaTypeId, date, type, ruleNotes)

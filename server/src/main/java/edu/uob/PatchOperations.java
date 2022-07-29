@@ -71,23 +71,18 @@ public class PatchOperations {
             // we cannot update the status in table 'leaveRequest' and 'accountLeaveRequestRelationships'
             if (!status.equals("1") && !status.equals("2")) {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                        "Invalid request status: " + status);
+                        "Invalid request status value: " + status);
             }
             // Only if account level = 1 (admin account), then try to patch data
-            // todo use isAdminAccount()
-            String SQL = "SELECT level FROM accounts WHERE id = ?; " +
-                    "SELECT type, detailId FROM notifications WHERE id = ?; ";
+            if (ConnectionTools.isAdminAccount(accountId, c)) {
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Not an admin account");
+            }
+            String SQL = "SELECT type, detailId FROM notifications WHERE id = ?; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
-                s.setInt(1, accountId);
-                s.setInt(2, notificationId);
+                s.setInt(1, notificationId);
                 ResultSet r = s.executeQuery();
                 int detailId = -1;
                 while(r.next()){
-                    int level = r.getInt("level");// todo 俩SQL语句，r里面能同时有俩表的数据吗？
-                    if (level != 1) {
-                        throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
-                                "Not an admin account (Account level is not 1)");
-                    }
                     int type = r.getInt("type");
                     detailId = r.getInt("detailId");
                     String tableName;
@@ -96,13 +91,8 @@ public class PatchOperations {
                         case 1 -> tableName = ""; // '1' refers to other requests currently
                         default -> tableName = "";
                     }
-                    if (tableName.isEmpty()) {
-                        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong type value: " + type);
-                    } // todo In the try statement, maybe, even if tableName is empty, it could also thr an error
-                    if (!ConnectionTools.idExistInTable(detailId, "id", tableName, c)) {
-                        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "Cannot find an id in table " + tableName);
-                    }// todo In the try statement, maybe, even if detailId is not exist, it could also thr an error
+                    // If the table name is empty, it will throw a new exception in updateVariable().
+                    // So I don't need to check table name here. Same with detailId.
                     // Update status in target table
                     updateVariable(status, "int", "status", tableName, detailId, c);
                     newRelationship(accountId, detailId, Integer.parseInt(status), c);
@@ -125,8 +115,6 @@ public class PatchOperations {
             s.setInt(2, leaveRequestId);
             s.setInt(3, status);
             s.executeUpdate();
-            // todo return a response or not?
-//            return IndexController.okResponse("Account leave request relationships updated successfully for id: " + leaveRequestId);
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }

@@ -1,6 +1,7 @@
 package edu.uob;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -141,5 +142,19 @@ public class ConnectionTests {
         } catch (SQLException e) {
             fail("Database connection and queries should have worked\n" + e);
         }
+    }
+
+    @Test
+    void testValidTokenAuthorised() {
+        // Get tokens
+        String randomToken = Encryption.getRandomToken();
+        String validToken = ConnectionTools.getValidToken();
+        // Test tokens
+        assertThrows(ResponseStatusException.class, ()-> ConnectionTools.validTokenAuthorised(randomToken, 1),
+                "Random token should not have admin access");
+        assertThrows(ResponseStatusException.class, ()-> ConnectionTools.validTokenAuthorised(randomToken, 0),
+                "Random token should not have standard access");
+        ConnectionTools.validTokenAuthorised(validToken, 1);
+        ConnectionTools.validTokenAuthorised(validToken, 0);
     }
 }

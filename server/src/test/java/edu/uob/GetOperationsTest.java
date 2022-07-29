@@ -368,12 +368,6 @@ public class GetOperationsTest {
         }
     }
 
-    //TODO delete this
-    @Test
-    void notATest() throws SQLException {
-        TestTools.deleteAnyTestData();
-    }
-
     @Test
     void testGetLogin() throws JsonProcessingException {
         String username = RandomStringUtils.randomAlphanumeric(20);

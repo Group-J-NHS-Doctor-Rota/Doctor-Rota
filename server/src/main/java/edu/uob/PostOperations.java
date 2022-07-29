@@ -3,7 +3,6 @@ package edu.uob;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.*;
@@ -67,7 +66,6 @@ public class PostOperations {
             // Store information in database
             SQL = "INSERT INTO accounts (username, password, email) " +
                     "VALUES (?, ?, ?); ";
-            int accountId;
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setString(1, username);
                 s.setString(2, hashed_password);
@@ -78,7 +76,7 @@ public class PostOperations {
             SQL = "INSERT INTO tokens (accountid, token) VALUES ((SELECT id FROM accounts WHERE username = ?), ?); ";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setString(1, username);
-                s.setString(2, encryption.getRandomToken());
+                s.setString(2, Encryption.getRandomToken());
                 s.executeUpdate();
             }
             return IndexController.okResponse("Account creation successful for username: " + username);

@@ -13,7 +13,7 @@ public class PutOperations {
                                                             boolean thursday, boolean friday, boolean saturday, boolean sunday) {
 
         String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString);) {
+        try(Connection c = DriverManager.getConnection(connectionString)) {
             if(!ConnectionTools.accountIdExists(accountId, c)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
             }

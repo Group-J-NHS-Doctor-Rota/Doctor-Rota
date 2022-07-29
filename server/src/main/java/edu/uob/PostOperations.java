@@ -64,17 +64,14 @@ public class PostOperations {
             String default_password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
             // Create hashed password
             String hashed_password = encryption.hashPassword(default_password);
-            //Not actually the salt but unique. Currently, this salt is not used (as incorporated above)
-            String salt = hashed_password.substring(0,20);
             // Store information in database
-            SQL = "INSERT INTO accounts (username, password, salt, email) " +
-                    "VALUES (?, ?, ?, ?); ";
+            SQL = "INSERT INTO accounts (username, password, email) " +
+                    "VALUES (?, ?, ?); ";
             int accountId;
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setString(1, username);
                 s.setString(2, hashed_password);
-                s.setString(3, salt);
-                s.setString(4, email);
+                s.setString(3, email);
                 s.executeUpdate();
             }
             // Create and store token

@@ -2,30 +2,23 @@ import React from 'react'
 
 import { Modal } from 'react-bootstrap'
 
-import { useNavigate } from 'react-router-dom';
-
 import '../css/general.css'
 import styled from 'styled-components'
 
-export default function LogoutModal({ logout, setLogout }) {
-    const navigate = useNavigate()
-
+export default function RefreshModal({ refresh, setRefresh }){
     return (
         <>
-            <Modal show={logout}>
+            <Modal show={refresh}>
                 <div className="d-flex justify-content-center mb-4 mt-5">
-                    <LogoutWarning>Do you want to log out?</LogoutWarning>
+                    <Title>Warning</Title>
                 </div>
 
                 <div className="d-flex justify-content-center my-3">
-                    <CloseButton className="m-2" onClick={() => setLogout(false)}>
+                    <CloseButton className="m-2" onClick={() => setRefresh(false)}>
                         Close
                     </CloseButton>
 
-                    <ConfirmButton className="m-2" onClick={() => {
-                        setLogout(false)
-                        navigate('signin')
-                    }}>
+                    <ConfirmButton className="m-2" onClick={() => setRefresh(false)}>
                         Confirm
                     </ConfirmButton>
                 </div>
@@ -34,11 +27,10 @@ export default function LogoutModal({ logout, setLogout }) {
     )
 }
 
-const LogoutWarning = styled.h1`
+const Title = styled.h1`
     font-size: 32px;
     font-weight: bold;
     color: #035eb8;
-    padding: 10px;
 
     @media (max-width: 575px){
         font-size: 24px;

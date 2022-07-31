@@ -5,7 +5,7 @@ import FormRadio from './FormRadio';
 
 import styled from 'styled-components'
 
-export default function FilterCard({ setOpen }){
+export default function FilterCard({ open, setOpen }){
     const [values, setValues] = useLocalStorage('filter', {
         rota_type: "",
         shifts_type: "",
@@ -33,6 +33,11 @@ export default function FilterCard({ setOpen }){
             name: 'rota_type',
             value: 'third_on',
             label: 'Third on'
+        },{
+            id: 'all',
+            name: 'rota_type',
+            value: 'all',
+            label: 'All'
         }
     ]
 
@@ -61,6 +66,11 @@ export default function FilterCard({ setOpen }){
             name: "shifts_type",
             value: "leave",
             label: "On leave"
+        },{
+            id: 'all',
+            name: 'shifts_type',
+            value: 'all',
+            label: 'All'
         }
     ]
 
@@ -70,16 +80,6 @@ export default function FilterCard({ setOpen }){
             name: 'member',
             value: 'individual',
             label: 'Individual'
-        },{
-            id: 'trainees',
-            name: 'member',
-            value: 'trainees',
-            label: 'Trainees'
-        },{
-            id: 'admin',
-            name: 'member',
-            value: 'admin',
-            label: 'Admin view'
         },{
             id: 'all',
             name: 'member',

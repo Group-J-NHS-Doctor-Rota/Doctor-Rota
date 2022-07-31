@@ -7,6 +7,7 @@ import { useUrl } from '../contexts/UrlContexts'
 import LogoutModal from '../modals/LogoutModal'
 import ProfileModal from '../modals/ProfileModal';
 import RequestLeaveModal from '../modals/RequestLeaveModal';
+import RefreshModal from '../modals/RefreshModal';
 
 import styled from 'styled-components'
 
@@ -15,6 +16,9 @@ export default function NavBar() {
     const [profile, setProfile] = useState(false)
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
+    const [refresh, setRefresh] = useState(false)
+
+    // console.log(refresh)
 
     const { getUrl } = useUrl()
 
@@ -96,7 +100,7 @@ export default function NavBar() {
                             {
                                 // check if the user is admin: level = 1 -> admin
                                 // accountDetail.level === 1 &&
-                                (<RefreshButton className="my-2 me-3">Refresh Rota</RefreshButton>)
+                                (<RefreshButton className="my-2 me-3" onClick={() => setRefresh(true)}>Refresh Rota</RefreshButton>)
                             }
 
                             <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: 'white' }} onClick={() => toggleList()}></i>
@@ -173,6 +177,7 @@ export default function NavBar() {
             <LogoutModal logout={logout} setLogout={setLogout} />
             <ProfileModal profile={profile} setProfile={setProfile} />
             <RequestLeaveModal leave={leave} setLeave={setLeave} />
+            <RefreshModal refresh={refresh} setRefresh={setRefresh} />
 
             <Outlet />
         </>

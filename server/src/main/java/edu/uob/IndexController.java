@@ -98,8 +98,6 @@ public class IndexController {
     }
 
     @PatchMapping(value = "/notification/{notificationId}", produces = "application/json")
-    // Optional request parameters can't be primitives and no null value
-    // Better to have them as String and convert later
     public ResponseEntity<ObjectNode> patchNotification(@PathVariable int notificationId,
                                                         @RequestParam int accountId,
                                                         @RequestParam String status,

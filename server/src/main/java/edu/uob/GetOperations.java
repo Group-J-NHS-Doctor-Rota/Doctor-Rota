@@ -75,7 +75,7 @@ public class GetOperations {
     public static ResponseEntity<ObjectNode> getAllAccounts() {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // Get al accounts and store in list
+            // Get all accounts and store in list
             String SQL = "SELECT * FROM accounts ORDER BY id;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();

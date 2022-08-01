@@ -65,40 +65,43 @@ public class PatchOperations {
             if(!ConnectionTools.accountIdExists(accountId, c)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
             }
-            String SQL = "SELECT type, detailId FROM notifications WHERE id = ? ";
+            // If status is not 1 or not 2,
+            // we cannot update the status in table 'leaveRequest' and 'accountLeaveRequestRelationships'
+            if (!status.equals("1") && !status.equals("2")) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Invalid request status value: " + status);
+            }
+            // Only if account level = 1 (admin account), then try to patch data
+            // todo use validToken
+            String SQL = "SELECT type, detailId FROM notifications WHERE id = ?; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, notificationId);
                 ResultSet r = s.executeQuery();
+                int detailId = -1;
                 while(r.next()){
                     int type = r.getInt("type");
-                    int detailId = r.getInt("detailId");
+                    detailId = r.getInt("detailId");
                     String tableName;
                     switch (type) {
                         case 0 -> tableName = "leaveRequests"; //todo not hard code
                         case 1 -> tableName = ""; // '1' refers to other requests currently
                         default -> tableName = "";
                     }
-                    if (tableName.isEmpty()) {
-                        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Wrong type value: " + type);
-                    }
-                    if (!ConnectionTools.idExistInTable(accountId, "accountId", tableName, c) ||
-                            !ConnectionTools.idExistInTable(detailId, "id", tableName, c)) {
-                        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                "Cannot find an id in table " + tableName);
-                    }
+                    // If the table name is empty, it will throw a new exception in updateVariable().
+                    // So I don't need to check table name here. Same with detailId.
                     // Update status in target table
                     updateVariable(status, "int", "status", tableName, detailId, c);
+                    newRelationship(accountId, detailId, Integer.parseInt(status), c);
                 }
-
-
+                return IndexController.okResponse("Notification updated successfully for id: " +
+                        notificationId + "\nRelationship updated successfully for id: " + detailId);
             }
-            return IndexController.okResponse("Notification updated successfully for id: " + notificationId);
             // Have to catch SQLException exception here
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
-
+    
     public static ResponseEntity<ObjectNode> patchPassword(String oldPassword, String newPassword, int accountId) {
         // Check that passwords do not match
         if(oldPassword.equals(newPassword)) {
@@ -183,4 +186,20 @@ public class PatchOperations {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
+    
+    public static void newRelationship(int accountId, int leaveRequestId, int status, Connection c) {
+        String SQL = "INSERT INTO accountLeaveRequestRelationships (accountId, leaveRequestId, status) " +
+                "VALUES (?, ?, ?); ";
+        try(PreparedStatement s = c.prepareStatement(SQL)) {
+            // VALUES(?, ?, ?)
+            s.setInt(1, accountId);
+            s.setInt(2, leaveRequestId);
+            s.setInt(3, status);
+            s.executeUpdate();
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+
+    }
+    
 }

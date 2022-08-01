@@ -146,4 +146,6 @@ public class JuniorDoctor {
 
     public int getSetLongDays(){return (int) this.setLongDays;}
 
+    public Hashtable<LocalDate, Shifts> returnAllShifts(){return shifts;}
+
 }

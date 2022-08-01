@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class Schedule {
-    private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "michael", "steve"};
+    private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "michael", "steve", "paul", "daniel", "sarah", "amy", "ella", "megan", "sheila"};
     private static ArrayList<JuniorDoctor> doctors;
     private static LocalDate startDate;
     private static LocalDate endDate;
@@ -89,7 +89,7 @@ public class Schedule {
     public static ArrayList<JuniorDoctor> addDoctors(){
         ArrayList<JuniorDoctor> doctors = new ArrayList<>();
         for (String doctorsName : names) {
-            JuniorDoctor doctor = new JuniorDoctor(1);
+            JuniorDoctor doctor = new JuniorDoctor(0.6);
             doctor.setName(doctorsName);
             doctors.add(doctor);
             //doctor.setPainWeek();

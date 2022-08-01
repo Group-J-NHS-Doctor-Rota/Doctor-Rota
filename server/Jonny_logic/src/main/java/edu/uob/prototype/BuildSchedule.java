@@ -46,6 +46,7 @@ public class BuildSchedule {
             if(selectWeekends()){
                if (calculateNightShifts()) {
                     if (addLongDayShifts()) {
+                        reduceTheatreShifts();
                         if(addTheatreShifts()) {
                             setOffDays(startDate, endDate, doctors);
                             break;
@@ -304,7 +305,6 @@ public class BuildSchedule {
                 doctor.setShifts(date, Shifts.NAOFF);
                 date = date.plusDays(1);
             }
-            doctor.reduceTheatre(3);
         }
         return true;
     }
@@ -323,7 +323,6 @@ public class BuildSchedule {
                 doctor.setShifts(date, Shifts.DAOFF);
                 date = date.plusDays(1);
             }
-            doctor.reduceTheatre(3);
         }
         return true;
     }
@@ -331,8 +330,6 @@ public class BuildSchedule {
 
     private static boolean calculateNightShifts(){
         int errorCounter = 0;
-        ArrayList<String> maxedOutNightShifts = new ArrayList<>();
-
         LocalDate date = startDate;
 
         while (date.isBefore(endDate) && errorCounter < 500) {
@@ -381,46 +378,21 @@ public class BuildSchedule {
         return errorCounter != 500;
     }
 
-    private static boolean addExtraNights(LocalDate date){
-        int errorCounter = 0;
-        while (date.isBefore(endDate) && errorCounter < 100){
-            int shiftPairing = ThreadLocalRandom.current().nextInt(0, numberOfDoctors);
-            JuniorDoctor doctor = doctors.get(shiftPairing);
-
-            System.out.println(date);
-            if(fwp.containsKey(date)){
-                ArrayList<Shifts> shifts = fwp.get(date);
-                if(shifts.contains(Shifts.NIGHT)) {
-                    date = date.plusDays(1);
-                    continue;
+    private static void reduceTheatreShifts(){
+        for(JuniorDoctor doctor: doctors){
+            Set<LocalDate> setOfKeys = doctor.returnAllShifts().keySet();
+            int counter = 0;
+            for (LocalDate key : setOfKeys) {
+                if(doctor.getShiftType(key).equals(Shifts.NIGHT) ||
+                        doctor.getShiftType(key).equals(Shifts.DAYON)){
+                    counter++;
                 }
             }
-
-            if(date.getDayOfWeek().equals(DayOfWeek.MONDAY)){
-                // add option for 4 nights in a row request
-                if(checkShiftFree(doctor, date, 4) && addNightShifts(doctor, date)) {
-                    date = date.plusDays(1);
-                }
-                else {
-                    errorCounter++;
-                }
-                continue;
+            if(counter > (doctor.getSetLongDays() + doctor.getSetNights())){
+                counter = counter - (doctor.getSetLongDays() + doctor.getSetNights());
+                doctor.reduceTheatre(counter);
             }
-            else if(date.getDayOfWeek().equals(DayOfWeek.WEDNESDAY)){
-                if(checkShiftFree(doctor, date, 4) && addNightShifts(doctor, date)) {
-                    date = date.plusDays(1);
-                    continue;
-                }else {
-                    errorCounter++;
-                    continue;
-                }
-            }
-            else{
-                date = date.plusDays(1);
-            }
-            errorCounter++;
         }
-        return errorCounter != 100;
     }
 
     private static boolean addNightShifts(JuniorDoctor doctor, LocalDate shift){

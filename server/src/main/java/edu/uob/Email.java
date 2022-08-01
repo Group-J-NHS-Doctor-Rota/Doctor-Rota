@@ -1,28 +1,31 @@
 package edu.uob;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 
+import static org.junit.Assert.fail;
+
 public class Email {
-    public Email() {
-        //
+    String username = "";
+    String pwd = "";
+
+    public Email(String name, String password) {
+        username = name;
+        pwd = password;
     }
 
 //    https://www.baeldung.com/spring-email
-    @Bean
+//    @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("my.gmail@gmail.com");
-        mailSender.setPassword("password");
+        mailSender.setUsername(username);
+        mailSender.setPassword(pwd);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
@@ -33,19 +36,19 @@ public class Email {
         return mailSender;
     }
 
-//    @Component
-//    public class EmailServiceImpl implements EmailService {
-//
-//        @Autowired
-//        private JavaMailSender emailSender;
-//
-//        public void sendSimpleMessage(String to, String subject, String text) {
-//            SimpleMailMessage message = new SimpleMailMessage();
-//            message.setFrom("noreply@baeldung.com");
-//            message.setTo(to);
-//            message.setSubject(subject);
-//            message.setText(text);
-//            emailSender.send(message);
-//        }
-//    }
+    public void sendSimpleMessage(String to, String subject, String text) {
+        JavaMailSender sender = getJavaMailSender();
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("noreply@emailtest.com");
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+        try {
+            sender.send(message);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
+    }
+
 }

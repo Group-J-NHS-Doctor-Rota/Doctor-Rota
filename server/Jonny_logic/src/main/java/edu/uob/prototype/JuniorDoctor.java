@@ -14,13 +14,13 @@ public class JuniorDoctor {
     private int theatre;
     private int weekends;
     private boolean painWeek;
-    private final int setLongDays;
-    private final int setNights;
-    private final int setTheatre;
+    private final double setLongDays;
+    private final double setNights;
+    private final double setTheatre;
     private final int setWeekends;
     private LocalDate painWeekStartDate;
 
-    JuniorDoctor(int hours){
+    JuniorDoctor(double hours){
         shifts = new Hashtable<>();
         this.setLongDays = 11 * hours;
         this.setNights = 11 * hours;
@@ -35,9 +35,9 @@ public class JuniorDoctor {
     }
 
     public void resetDoctor(){
-        longDays = setLongDays;
-        nights = setNights;
-        theatre = setTheatre;
+        longDays = (int) setLongDays;
+        nights = (int) setNights;
+        theatre = (int) setTheatre;
         weekends = setWeekends;
         totalOnCall = nights + longDays;
         shifts = new Hashtable<>();
@@ -141,5 +141,9 @@ public class JuniorDoctor {
     public LeaveType getAnnualOrStudyLeaveRequestType(LocalDate date){
         return this.studyOrAnnualLeave.get(date);
     }
+
+    public int getSetNights(){return (int) this.setNights;}
+
+    public int getSetLongDays(){return (int) this.setLongDays;}
 
 }

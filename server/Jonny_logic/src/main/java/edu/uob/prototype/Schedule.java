@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class Schedule {
-    private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "Hugh", "Michael"};
+    private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "michael", "steve"};
     private static ArrayList<JuniorDoctor> doctors;
     private static LocalDate startDate;
     private static LocalDate endDate;
@@ -151,7 +151,7 @@ public class Schedule {
                 else if(doctor.getShiftType(date).equals(Shifts.THEATRE)){
                     hours = hours + 10;
                 }
-                else if(doctor.getShiftType(date).equals(Shifts.AorSL)){
+                else if(doctor.getShiftType(date).equals(Shifts.ANNUAL) || doctor.getShiftType(date).equals(Shifts.STUDY)){
                     hours = hours + 10;
                 }
                 date = date.plusDays(1);
@@ -221,30 +221,23 @@ public class Schedule {
 
     public static void printSchedule(ArrayList<JuniorDoctor> schedule, LocalDate startDate, LocalDate endDate){
 
-        System.out.println("DATE                  |  " + names[0] + "    |  " + names[1] + "    |  " + names[2] + "     |  " + names[3] + "     |  "
-                + names[4] + "     |  " + names[5] + "    |  " + names[6] + "     |  " + names[7] + "    |  ");
+        System.out.print("DATE                  |  ");
+        for(int i=0; i< names.length; i++){
+            System.out.print(names[i]);
+            System.out.print("  |  ");
+        }
+        System.out.println();
+
         LocalDate date = startDate;
         LocalDate endPrint = endDate.plusDays(1);
 
         while (date.isBefore(endDate.plusDays(1))) {
             System.out.print(date.getDayOfWeek() + "-> " + date);
             System.out.print("  |  ");
-            System.out.print(schedule.get(0).getShiftType(date));
-            System.out.print("  |  ");
-            System.out.print(schedule.get(1).getShiftType(date));
-            System.out.print("  |  ");
-            System.out.print(schedule.get(2).getShiftType(date));
-            System.out.print("  |  ");
-            System.out.print(schedule.get(3).getShiftType(date));
-            System.out.print("  |  ");
-            System.out.print(schedule.get(4).getShiftType(date));
-            System.out.print("  |  ");
-            System.out.print(schedule.get(5).getShiftType(date));
-            System.out.print("  |  ");
-            System.out.print(schedule.get(6).getShiftType(date));
-            System.out.print("  |  ");
-            System.out.print(schedule.get(7).getShiftType(date));
-            System.out.print("  |  ");
+            for(int i=0; i< schedule.size(); i++){
+                System.out.print(schedule.get(i).getShiftType(date));
+                System.out.print("  |  ");
+            }
             System.out.println();
             date = date.plusDays(1);
         }

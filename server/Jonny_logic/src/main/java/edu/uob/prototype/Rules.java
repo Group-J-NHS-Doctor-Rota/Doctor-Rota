@@ -37,9 +37,21 @@ public class Rules {
         }
         rulesBroken = 0;
         for(JuniorDoctor doctor : doctors){
-            rulesBroken += fourLongDaysInARow(doctor, start, end);
-            rulesBroken += sevenConsecutiveShifts(doctor, start, end);
-            rulesBroken += threeWeekendsInARow(doctor, start, end);
+            int a = fourLongDaysInARow(doctor, start, end);
+            rulesBroken += a;
+            if(a > 0){
+                System.out.println("Four long days == " + a);
+            }
+            int b = sevenConsecutiveShifts(doctor, start, end);
+            rulesBroken += b;
+            if(b > 0){
+                System.out.println("seven consecutive == " + b);
+            }
+            int c = threeWeekendsInARow(doctor, start, end);
+            rulesBroken += c;
+            if(c > 0){
+                System.out.println("3 weekends == " + c);
+            }
             rulesBroken += checkShiftCount(doctor);
         }
 
@@ -342,7 +354,7 @@ public class Rules {
                     hours = hours + 12.5;
                 } else if (doctor.getShiftType(date).equals(Shifts.THEATRE)) {
                     hours = hours + 10;
-                } else if (doctor.getShiftType(date).equals(Shifts.AorSL)) {
+                } else if (doctor.getShiftType(date).equals(Shifts.ANNUAL) || doctor.getShiftType(date).equals(Shifts.STUDY)) {
                     hours = hours + 10;
                 }
                 date = date.plusDays(1);

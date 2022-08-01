@@ -7,7 +7,10 @@ public enum Shifts {
     DAYOFF,
     DAOFF,
     NAOFF,
-    AorSL,
+    ANNUAL,
+    STUDY,
+    THAL,
+    THSL,
     NOCR,
     THNOCR
     //NAOFF - Night After OFF (requirement that after 2 night shifts, have 2 shifts off & 3 night shifts

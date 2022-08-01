@@ -46,7 +46,6 @@ public class BuildSchedule {
             if(selectWeekends()){
                if (calculateNightShifts()) {
                     if (addLongDayShifts()) {
-                        //reduceTheatreShifts();
                         if(addTheatreShifts()) {
                             setOffDays(startDate, endDate, doctors);
                             break;
@@ -72,8 +71,10 @@ public class BuildSchedule {
                 for (LocalDate date : setOfKeys) {
                     if(doctor.getNotOnCallRequestType(date).equals(NotOnCallRequestType.DAY)) {
                         doctor.setShifts(date, Shifts.NOCR);
+                    }else if(doctor.getNotOnCallRequestType(date).equals(NotOnCallRequestType.HALF)) {
+                        doctor.setShifts(date, Shifts.THNOCR);
+                        doctor.reduceTheatre();
                     }
-                    //add else option for half days
                 }
             }
         }
@@ -85,8 +86,19 @@ public class BuildSchedule {
             if(!leave.isEmpty()){
                 Set<LocalDate> setOfKeys = leave.keySet();
                 for (LocalDate date : setOfKeys) {
-                    doctor.setShifts(date, Shifts.AorSL);
-                    doctor.reduceTheatre();
+                    if(doctor.getAnnualOrStudyLeaveRequestType(date).equals(LeaveType.ANNUAL)) {
+                        doctor.setShifts(date, Shifts.ANNUAL);
+                        doctor.reduceTheatre();
+                    }else if(doctor.getAnnualOrStudyLeaveRequestType(date).equals(LeaveType.STUDY)) {
+                        doctor.setShifts(date, Shifts.STUDY);
+                        doctor.reduceTheatre();
+                    }else if(doctor.getAnnualOrStudyLeaveRequestType(date).equals(LeaveType.STUDYHALF)) {
+                        doctor.setShifts(date, Shifts.THSL);
+                        doctor.reduceTheatre();
+                    }else if(doctor.getAnnualOrStudyLeaveRequestType(date).equals(LeaveType.ANNUALHALF)) {
+                        doctor.setShifts(date, Shifts.THAL);
+                        doctor.reduceTheatre();
+                    }
                 }
             }
         }
@@ -161,7 +173,7 @@ public class BuildSchedule {
         }
         int totalWeekends = numberOfWeekends();
         if(totalWeekends > weekendsCovered){
-            addExtraWeekends(totalWeekends-weekendsCovered, date);
+            addExtraWeekends(totalWeekends-weekendsCovered, date.plusDays(1));
         }
 
         return true;
@@ -292,7 +304,7 @@ public class BuildSchedule {
                 doctor.setShifts(date, Shifts.NAOFF);
                 date = date.plusDays(1);
             }
-            //doctor.reduceTheatre(3);
+            doctor.reduceTheatre(3);
         }
         return true;
     }
@@ -311,28 +323,16 @@ public class BuildSchedule {
                 doctor.setShifts(date, Shifts.DAOFF);
                 date = date.plusDays(1);
             }
-            //doctor.reduceTheatre(3);
+            doctor.reduceTheatre(3);
         }
         return true;
     }
 
-//    private static void reduceTheatreShifts(){
-//        for(JuniorDoctor doctor : doctors){
-//            int nights = doctor.getNights();
-//            while(nights < 0){
-//                doctor.reduceTheatre();
-//                nights++;
-//            }
-//            int days = doctor.getLongDays();
-//            while(days < 0){
-//                doctor.reduceTheatre();
-//                days++;
-//            }
-//        }
-//    }
 
     private static boolean calculateNightShifts(){
         int errorCounter = 0;
+        ArrayList<String> maxedOutNightShifts = new ArrayList<>();
+
         LocalDate date = startDate;
 
         while (date.isBefore(endDate) && errorCounter < 500) {
@@ -379,6 +379,48 @@ public class BuildSchedule {
 
         }
         return errorCounter != 500;
+    }
+
+    private static boolean addExtraNights(LocalDate date){
+        int errorCounter = 0;
+        while (date.isBefore(endDate) && errorCounter < 100){
+            int shiftPairing = ThreadLocalRandom.current().nextInt(0, numberOfDoctors);
+            JuniorDoctor doctor = doctors.get(shiftPairing);
+
+            System.out.println(date);
+            if(fwp.containsKey(date)){
+                ArrayList<Shifts> shifts = fwp.get(date);
+                if(shifts.contains(Shifts.NIGHT)) {
+                    date = date.plusDays(1);
+                    continue;
+                }
+            }
+
+            if(date.getDayOfWeek().equals(DayOfWeek.MONDAY)){
+                // add option for 4 nights in a row request
+                if(checkShiftFree(doctor, date, 4) && addNightShifts(doctor, date)) {
+                    date = date.plusDays(1);
+                }
+                else {
+                    errorCounter++;
+                }
+                continue;
+            }
+            else if(date.getDayOfWeek().equals(DayOfWeek.WEDNESDAY)){
+                if(checkShiftFree(doctor, date, 4) && addNightShifts(doctor, date)) {
+                    date = date.plusDays(1);
+                    continue;
+                }else {
+                    errorCounter++;
+                    continue;
+                }
+            }
+            else{
+                date = date.plusDays(1);
+            }
+            errorCounter++;
+        }
+        return errorCounter != 100;
     }
 
     private static boolean addNightShifts(JuniorDoctor doctor, LocalDate shift){
@@ -436,53 +478,93 @@ public class BuildSchedule {
         return counter;
     }
 
+    private static ArrayList<Integer> indexDoctors(){
+        ArrayList<Integer> index = new ArrayList<>();
+        for(int i=0; i<doctors.size(); i++){
+            index.add(i);
+        }
+        return index;
+    }
+
     private static boolean addLongDayShifts(){
         LocalDate date = startDate;
         int taken = fwpShiftsTake();
-        int difference = (numberOfDays - (numberOfDoctors * 11)) - taken;
+        int remainingShifts = remainingShifts(Shifts.DAYON);
+        int difference = (numberOfDays - remainingShifts) - taken;
         if(difference < 0){
             difference = 0;
         }
         int errorCounter = 0;
 
-        while (date.isBefore(endDate.minusDays(difference)) && errorCounter < 500) {
+        ArrayList<Integer> index = indexDoctors();
 
-            if(fwp.containsKey(date)){
-                ArrayList<Shifts> shiftType = fwp.get(date);
-                if(shiftType.contains(Shifts.DAYON) && date.getDayOfWeek().equals(DayOfWeek.FRIDAY)){
+        while (date.isBefore(endDate.plusDays(1)) && errorCounter < 500) {
+
+            if(index.size() == 0){
+                addExtraDays(date);
+                break;
+            }
+            else {
+
+                if (fwp.containsKey(date)) {
+                    ArrayList<Shifts> shiftType = fwp.get(date);
+                    if (shiftType.contains(Shifts.DAYON) && date.getDayOfWeek().equals(DayOfWeek.FRIDAY)) {
+                        date = date.plusDays(3);
+                        continue;
+                    } else if (shiftType.contains(Shifts.DAYON)) {
+                        date = date.plusDays(1);
+                        continue;
+                    }
+                }
+
+                if (date.getDayOfWeek().equals(DayOfWeek.FRIDAY)) {
                     date = date.plusDays(3);
                     continue;
-                }else if(shiftType.contains(Shifts.DAYON)){
+                }
+                int shiftPairing = ThreadLocalRandom.current().nextInt(0, index.size());
+
+                JuniorDoctor doctor = doctors.get(index.get(shiftPairing));
+
+                if (doctor.getTotalOnCall() <= 0) {
+                    index.remove(shiftPairing);
+                    continue;
+                }
+
+                if (doctor.shiftTaken(date)) {
+                    errorCounter++;
+                } else {
+                    doctor.setShifts(date, Shifts.DAYON);
+                    doctor.reduceLongDays();
+                    doctor.reduceTotalOnCall();
+                    date = date.plusDays(1);
+                }
+            }
+
+        }
+        return  errorCounter != 500;
+    }
+
+    private static int remainingShifts(Shifts shiftType){
+        int remaining = 0;
+        for(JuniorDoctor doctor: doctors){
+            if(shiftType.equals(Shifts.NIGHT)){
+                remaining += doctor.getSetNights();
+            }else{
+                remaining += doctor.getSetLongDays();
+            }
+        }
+        return remaining;
+    }
+
+    private static void addExtraDays(LocalDate date){
+        while(date.isBefore(endDate.plusDays(1))){
+            if(fwp.containsKey(date)){
+                ArrayList<Shifts> shifts = fwp.get(date);
+                if(shifts.contains(Shifts.DAYON)) {
                     date = date.plusDays(1);
                     continue;
                 }
             }
-
-            if(date.getDayOfWeek().equals(DayOfWeek.FRIDAY)){
-                date = date.plusDays(3);
-                continue;
-            }
-            int shiftPairing = ThreadLocalRandom.current().nextInt(0, numberOfDoctors);
-
-            JuniorDoctor doctor = doctors.get(shiftPairing);
-
-            if(doctor.getLongDays() <= 0 || doctor.shiftTaken(date) || doctor.getTotalOnCall() <= 0){
-                errorCounter++;
-            }else {
-                doctor.setShifts(date, Shifts.DAYON);
-                doctor.reduceLongDays();
-                doctor.reduceTotalOnCall();
-                date = date.plusDays(1);
-            }
-
-        }
-        if(errorCounter!=500){addExtraDays(difference, date);}
-        return  errorCounter != 500;
-    }
-
-    private static void addExtraDays(int difference, LocalDate date){
-        int index = 0;
-        while(index<difference){
             int shiftPairing = ThreadLocalRandom.current().nextInt(0, numberOfDoctors);
             JuniorDoctor doctor = doctors.get(shiftPairing);
             if(!doctor.shiftTaken(date)) {
@@ -490,7 +572,6 @@ public class BuildSchedule {
                 doctor.reduceLongDays();
                 doctor.reduceTotalOnCall();
                 date = date.plusDays(1);
-                index++;
             }
         }
     }

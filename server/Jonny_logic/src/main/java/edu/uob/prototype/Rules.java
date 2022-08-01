@@ -37,22 +37,11 @@ public class Rules {
         }
         rulesBroken = 0;
         for(JuniorDoctor doctor : doctors){
-            int a = fourLongDaysInARow(doctor, start, end);
-            rulesBroken += a;
-            if(a > 0){
-                System.out.println("Four long days == " + a);
-            }
-            int b = sevenConsecutiveShifts(doctor, start, end);
-            rulesBroken += b;
-            if(b > 0){
-                System.out.println("seven consecutive == " + b);
-            }
-            int c = threeWeekendsInARow(doctor, start, end);
-            rulesBroken += c;
-            if(c > 0){
-                System.out.println("3 weekends == " + c);
-            }
+            rulesBroken += fourLongDaysInARow(doctor, start, end);
+            rulesBroken += sevenConsecutiveShifts(doctor, start, end);
+            rulesBroken += threeWeekendsInARow(doctor, start, end);
             rulesBroken += checkShiftCount(doctor);
+            rulesBroken += fortyEightHourWeek(doctor);
         }
 
         //rulesBroken += checkShiftHours(doctors);
@@ -99,7 +88,7 @@ public class Rules {
         int errorCounter = 0;
         LocalDate date = startDate;
         int counter = 0;
-        while (!date.isEqual(endDate.plusDays(1))) {
+        while (date.isBefore(endDate.plusDays(1))) {
             if(counter > 4){
                 errorCounter++;
             }
@@ -120,7 +109,7 @@ public class Rules {
         int errorCounter = 0;
         LocalDate date = startDate;
         int counter = 0;
-        while (!date.isEqual(endDate.plusDays(1))) {
+        while (date.isBefore(endDate.plusDays(1))) {
             if(counter == 7){
                 errorCounter += check48Hours(date, doctor);
                 counter = 0;
@@ -156,7 +145,7 @@ public class Rules {
         LocalDate date = startDate;
         int totalWeekends = 0;
         int weekendOnCounter = 0;
-        while (!date.isEqual(endDate.plusDays(1))) {
+        while (date.isBefore(endDate.plusDays(1))) {
             if(date.getDayOfWeek().equals(DayOfWeek.SATURDAY) || date.getDayOfWeek().equals(DayOfWeek.SUNDAY)){
                 if(doctor.onShift(date)){
                     weekendOnCounter++;
@@ -185,7 +174,7 @@ public class Rules {
 
         int errorCounter = 0;
         LocalDate date = startDate;
-        while (!date.isEqual(endDate.plusDays(1))) {
+        while (date.isBefore(endDate.plusDays(1))) {
             if(hours.size() == 7){
                 double total = 0;
                 for (Double hour : hours) {
@@ -233,7 +222,7 @@ public class Rules {
         ArrayList<LocalDate> startDates = new ArrayList<>();
 
         LocalDate date = startDate;
-        while (!date.isEqual(endDate.plusDays(1))) {
+        while (date.isBefore(endDate.plusDays(1))) {
             if(hours.size() == 7){
                 double total = 0;
                 for (Double hour : hours) {
@@ -308,7 +297,7 @@ public class Rules {
         int days = 0;
         int nights = 0;
         LocalDate date = startDate;
-        while(!date.isEqual(endDate.plusDays(1))){
+        while(date.isBefore(endDate.plusDays(1))){
             if(doctor.getShiftType(date).equals(Shifts.DAYON)){
                 days++;
             }
@@ -347,7 +336,7 @@ public class Rules {
         for(JuniorDoctor doctor : doctors) {
             double hours = 0;
             LocalDate date = startDate;
-            while (!date.isEqual(endDate.plusDays(1))) {
+            while (date.isBefore(endDate.plusDays(1))) {
                 if (doctor.getShiftType(date).equals(Shifts.DAYON)) {
                     hours = hours + 12.5;
                 } else if (doctor.getShiftType(date).equals(Shifts.NIGHT)) {
@@ -385,11 +374,37 @@ public class Rules {
     public static int setNumberOfDays(LocalDate startDate, LocalDate endDate){
         LocalDate date = startDate;
         int counter = 0;
-        while (!date.isEqual(endDate)) {
+        while (date.isBefore(endDate.plusDays(1))) {
             date = date.plusDays(1);
             counter++;
         }
         return counter;
+    }
+
+    public static int fortyEightHourWeek(JuniorDoctor doctor){
+        double hours = 0;
+        LocalDate date = startDate;
+        while(!date.isEqual(endDate.plusDays(1))){
+            if(doctor.getShiftType(date).equals(Shifts.DAYON)){
+                hours = hours + 12.5;
+            }
+            else if(doctor.getShiftType(date).equals(Shifts.NIGHT)){
+                hours = hours + 12.5;
+            }
+            else if(doctor.getShiftType(date).equals(Shifts.THEATRE)){
+                hours = hours + 10;
+            }
+            else if(doctor.getShiftType(date).equals(Shifts.ANNUAL) || doctor.getShiftType(date).equals(Shifts.STUDY)){
+                hours = hours + 10;
+            }
+            date = date.plusDays(1);
+        }
+        int weeks = numberOfDays/7;
+        if((hours / weeks) > 48){
+            return 1;
+        }
+        return 0;
+
     }
 
     public int getRulesBroken(){

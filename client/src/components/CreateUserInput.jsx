@@ -30,9 +30,3 @@ const CreateUserInput = (props) => {
 };
 
 export default CreateUserInput;
-
-const Label = styled.label`
-    font-size: 20px;
-    color: #035eb8;
-    font-weight: bold;
-`

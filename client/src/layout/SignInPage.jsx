@@ -6,9 +6,15 @@ import { useNavigate } from 'react-router-dom';
 
 import styled from 'styled-components'
 
+import { useUrl } from '../contexts/UrlContexts'
+
 import '../css/general.css'
 
 export default function SignIn() {
+
+    const { getUrl } = useUrl()
+    const url = getUrl()
+
     const [values, setValues] = useState({
         username: "",
         password: ""
@@ -16,6 +22,7 @@ export default function SignIn() {
 
     const [reset, setReset] = useState(false)
     const [status, setStatus] = useState(false)
+    const [contact, setContact] = useState(false)
 
     const inputs = [
         {
@@ -66,10 +73,15 @@ export default function SignIn() {
         }
     ];
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = e => {
+        e.preventDefault()
 
         reset === false && navigate('/')
+
+        // reset === true &&
+        //     (
+        //         fetch
+        //     )
     };
 
     const onChange = (e) => {
@@ -130,7 +142,12 @@ export default function SignIn() {
                                     </div>
 
                                     <div className="d-flex justify-content-center mb-3">
-                                        <LoginBtn type="submit" onClick={() => setStatus(true)}>Send Link</LoginBtn>
+                                        <LoginBtn type="submit" onClick={() => {
+                                            setStatus(true)
+                                            setTimeout(() => {
+                                                setStatus(false)
+                                            }, 10000)
+                                        }}>Send Link</LoginBtn>
                                     </div>
                                 </div>
                             )
@@ -146,7 +163,13 @@ export default function SignIn() {
 
                         <div>
                             <p>Don't have an account? <Link
-                                onClick={() => navigate('/signup')}
+                                onClick={async () => {
+                                    setContact(true)
+                                    // alert("Please go to admin office or email admin")
+                                    setTimeout(() => {
+                                        setContact(false)
+                                    }, 5000)
+                                }}
                                 style={{ cursor: 'pointer' }}>Contact Admin</Link></p>
                         </div>
                     </form>
@@ -158,10 +181,22 @@ export default function SignIn() {
                 status === true &&
                 (
                     <>
-                        <OnSubmitMessage>
+                        <OnClickMessage>
                             <i className="bi bi-info-square mx-2" />
                             Success! Please follow the instructions in the email.
-                        </OnSubmitMessage>
+                        </OnClickMessage>
+                    </>
+                )
+            }
+
+            {
+                contact === true &&
+                (
+                    <>
+                        <OnClickMessage>
+                            <i className="bi bi-info-square mx-2" />
+                            Please go to admin office or email admin.
+                        </OnClickMessage>
                     </>
                 )
             }
@@ -213,7 +248,7 @@ const Link = styled.a`
     cursor: pointer;
 `
 
-const OnSubmitMessage = styled.div`
+const OnClickMessage = styled.div`
     margin: 20px auto 0 auto;
     max-width: 268px;
     text-align: center;

@@ -1,7 +1,5 @@
 package edu.uob;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -103,7 +101,92 @@ public class PatchOperations {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
+    
+    public static ResponseEntity<ObjectNode> patchPassword(String oldPassword, String newPassword, int accountId) {
+        // Check that passwords do not match
+        if(oldPassword.equals(newPassword)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "New password cannot be the same as the old password!\n");
+        }
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Get data for accountId
+            String SQL = "SELECT password FROM accounts WHERE id = ?;";
+            String oldHashedPassword;
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, accountId);
+                ResultSet r = s.executeQuery();
+                r.next();
+                oldHashedPassword = r.getString("password");
+            }
+            // Validate password
+            Encryption encryption = new Encryption();
+            if(!encryption.passwordMatches(oldPassword, oldHashedPassword)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Incorrect password");
+            }
+            // Generate and store new hashed password
+            String newHashedPassword = encryption.hashPassword(newPassword);
+            SQL = "UPDATE accounts SET password = ?, timestamp = now() WHERE id = ?; ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, newHashedPassword);
+                s.setInt(2, accountId);
+                s.executeUpdate();
+            }
+            return IndexController.okResponse("Password updated successfully for accountId: " + accountId);
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
 
+    public static ResponseEntity<ObjectNode> patchPasswordReset(String username, String email) {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Check account exists for username and password
+            String SQL = "SELECT EXISTS (SELECT id FROM accounts WHERE username = ? AND email = ?);";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, username);
+                s.setString(2, email);
+                ResultSet r = s.executeQuery();
+                r.next();
+                if(!r.getBoolean(1)) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "No account with that username and email combination");
+                }
+            }
+            // Generate and store new hashed password
+            Encryption encryption = new Encryption();
+            String defaultPassword = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+            String hashedPassword = encryption.hashPassword(defaultPassword);
+            SQL = "UPDATE accounts SET password = ?, timestamp = now() WHERE username = ?; ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, hashedPassword);
+                s.setString(2, username);
+                s.executeUpdate();
+            }
+            return IndexController.okResponse("Password reset successfully for username: " + username);
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+
+    public static ResponseEntity<ObjectNode> patchLogout(String token) {
+        // Update token
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            String SQL = "UPDATE tokens SET token = ?, timestamp = now() WHERE token = ?; ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, Encryption.getRandomToken());
+                s.setString(2, token);
+                s.executeUpdate();
+                return IndexController.okResponse("User logged out");
+                // Have to catch SQLException exception here
+            }
+        } catch(SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+    
     public static void newRelationship(int accountId, int leaveRequestId, int status, Connection c) {
         String SQL = "INSERT INTO accountLeaveRequestRelationships (accountId, leaveRequestId, status) " +
                 "VALUES (?, ?, ?); ";
@@ -118,5 +201,5 @@ public class PatchOperations {
         }
 
     }
-
+    
 }

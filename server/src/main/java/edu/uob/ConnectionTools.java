@@ -48,6 +48,25 @@ public class ConnectionTools {
         return idExistInTable(id, "id", "accounts", c);
     }
 
+    // Check that a token is valid for a particular level of access or higher
+    public static boolean validToken(String token, int level) {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Does the token match an account where level is equal or greater than given
+            String SQL = "SELECT EXISTS (SELECT t.token FROM tokens t LEFT JOIN accounts a ON t.accountid = a.id " +
+                    "WHERE a.level >= ? AND t.token = ?);";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, level);
+                s.setString(2, token);
+                ResultSet r = s.executeQuery();
+                r.next();
+                return r.getBoolean(1);
+            }
+        } catch(SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+    
     public static boolean isAdminAccount(int id, Connection c) {
         // Get true or false value for where an id exists in the table
         String SQL = "SELECT level FROM accounts WHERE id = ?; ";
@@ -63,5 +82,28 @@ public class ConnectionTools {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
+    
+    // Checks token and throws exception if not valid
+    public static void validTokenAuthorised(String token, int level) {
+        if(!validToken(token, level)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authorized");
+        }
+    }
 
+    // Get highest level valid token for testing
+    public static String getValidToken() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Newest token first, so token is as fresh as possible
+            String SQL = "SELECT t.token FROM tokens t LEFT JOIN accounts a ON t.accountid = a.id WHERE a.level = 1 " +
+                    " ORDER BY t.timestamp DESC;";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                r.next();
+                return r.getString("token");
+            }
+        } catch(SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
 }

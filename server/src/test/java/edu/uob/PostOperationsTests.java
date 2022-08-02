@@ -1,5 +1,6 @@
 package edu.uob;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -76,6 +77,76 @@ public class PostOperationsTests {
             TestTools.deleteAnyTestData();
             fail("Database connection and SQL queries should have worked\n" + e);
         }
+    }
+
+    @Test
+    void testPostAccount() {
+        // Make new account
+        String username = RandomStringUtils.randomAlphabetic(20);
+        String email = RandomStringUtils.randomAlphabetic(16);
+        int accountId = 0; //Needs to have value and 0 will always cause exception if not overwritten
+        PostOperations.postAccount(username, email);
+        // Try to make new account with same username
+        assertThrows(ResponseStatusException.class, ()-> PostOperations.postAccount(username, email),
+                "Should not be able to create a second account with the same username!");
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Check values
+            String SQL = "SELECT * FROM accounts WHERE username = ?; ";
+            String hashed_password;
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, username);
+                ResultSet r = s.executeQuery();
+                r.next();
+                assertEquals(username, r.getString("username"));
+                assertEquals(email, r.getString("email"));
+                hashed_password = r.getString("password");
+                accountId = r.getInt("id");
+            }
+            SQL = "SELECT EXISTS ( SELECT accountId FROM tokens WHERE accountId = ?); ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, accountId);
+                ResultSet r = s.executeQuery();
+                r.next();
+                assertTrue(r.getBoolean(1));
+            }
+            // Check password
+            Encryption encryption = new Encryption();
+            String default_password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+            assertTrue(encryption.passwordMatches(default_password, hashed_password));
+        } catch (SQLException e) {
+            fail(e.toString());
+        }
+        // Delete account
+        DeleteOperations.deleteAccount(accountId);
+    }
+
+    @Test
+    void testPostAccountWithoutEmail() {
+        // Make new account
+        String username = RandomStringUtils.randomAlphabetic(20);
+        int accountId = 0; //Needs to have value and 0 will always cause exception if not overwritten
+        PostOperations.postAccount(username, null);
+        // Try to make new account with same username
+        assertThrows(ResponseStatusException.class, ()-> PostOperations.postAccount(username, null),
+                "Should not be able to create a second account with the same username!");
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Check values
+            String SQL = "SELECT * FROM accounts WHERE username = ?; ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, username);
+                ResultSet r = s.executeQuery();
+                r.next();
+                assertEquals(username, r.getString("username"));
+                assertNull(r.getString("email"));
+                accountId = r.getInt("id");
+            }
+        } catch (SQLException e) {
+            fail(e.toString());
+        }
+        // Delete account
+        DeleteOperations.deleteAccount(accountId);
     }
 
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
@@ -278,12 +279,16 @@ public class GetOperationsTest {
                 s.setInt(3, id2); s.setInt(4, id2);
                 s.executeUpdate();
             }
+            // Add test data for leave requests
+            PostOperations.postRequestLeave(id1, year+"-09-11", 0, 0, "");
+            PostOperations.postRequestLeave(id2, year+"-09-12", 1, 1, "");
             // Check response:
-            // level 1 account will get all the shift data from table 'shift'
+            // level 1 account will get all the shift data and leave requests for the given year
             ResponseEntity<ObjectNode> response = GetOperations.getShifts(year, id2);
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertTrue(rootNode.get("shifts").size() >= 2);// Might be greater than 2 as data may already be in table
+            assertTrue(rootNode.get("leave").size() >= 2);
             assertTrue(response.getBody().toString().contains(
                     "{\"id\":"+id1+",\"accountId\":"+id1+
                             ",\"username\":\"testuser1\",\"rotaType\":4,\"date\":\"1922-09-01\",\"type\":0,\"ruleNotes\":\"rule\",\"accountLevel\":0}"
@@ -295,7 +300,7 @@ public class GetOperationsTest {
             // Check each shift has required fields
             int numberOfShifts = rootNode.get("shifts").size();
             for(int i = 0; i < numberOfShifts; i++) {
-                JsonNode notification = rootNode.get("shifts").get(0);
+                JsonNode notification = rootNode.get("shifts").get(i);
                 assertTrue(notification.has("id"));
                 assertTrue(notification.has("accountId"));
                 assertTrue(notification.has("username"));
@@ -304,20 +309,54 @@ public class GetOperationsTest {
                 assertTrue(notification.has("type"));
                 assertTrue(notification.has("ruleNotes"));
                 assertTrue(notification.has("accountLevel"));
+            }// Check each leave request has required fields
+            int numberOfLeaves = rootNode.get("shifts").size();
+            for(int i = 0; i < numberOfLeaves; i++) {
+                JsonNode notification = rootNode.get("leave").get(i);
+                assertTrue(notification.has("id"));
+                assertTrue(notification.has("accountId"));
+                assertTrue(notification.has("username"));
+                assertTrue(notification.has("date"));
+                assertTrue(notification.has("type"));
+                assertTrue(notification.has("length"));
+                assertTrue(notification.has("status"));
+                assertTrue(notification.has("note"));
+                assertTrue(notification.has("accountLevel"));
             }
-            // Check response expecting one shift (level 0 account)
+
+            // Check response expecting one shift and one leave request (level 0 account)
             response = GetOperations.getShifts(year, id1);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertEquals(1, rootNode.get("shifts").size());
-            assertTrue(response.getBody().toString().contains(
-                    "{\"id\":"+id1+",\"accountId\":"+id1+
-                            ",\"username\":\"testuser1\",\"rotaType\":4,\"date\":\"1922-09-01\",\"type\":0,\"ruleNotes\":\"rule\",\"accountLevel\":0}"
-            ));
-            // Check response expecting no shifts (no account)
+            assertEquals(1, rootNode.get("leave").size());
+            // Check values in the shift
+            JsonNode shift = rootNode.get("shifts").get(0);
+            assertEquals(id1, shift.get("id").asInt());
+            assertEquals(id1, shift.get("accountId").asInt());
+            assertEquals("testuser1", shift.get("username").asText());
+            assertEquals(4, shift.get("rotaType").asInt());
+            assertEquals("1922-09-01", shift.get("date").asText());
+            assertEquals(0, shift.get("type").asInt());
+            assertTrue(shift.has("ruleNotes"));
+            assertEquals(0, shift.get("accountLevel").asInt());
+            // Check the values in the leave
+            JsonNode leave = rootNode.get("leave").get(0);
+            assertTrue(leave.has("id"));
+            assertEquals(id1, leave.get("accountId").asInt());
+            assertEquals("testuser1", leave.get("username").asText());
+            assertEquals("1922-09-11", leave.get("date").asText());
+            assertEquals(0, leave.get("type").asInt());
+            assertEquals(0, leave.get("length").asInt());
+            assertEquals(0, leave.get("status").asInt());
+            assertTrue(leave.has("note"));
+            assertEquals(0, leave.get("accountLevel").asInt());
+
+            // Check response expecting no shifts and no leave (no account)
             response = GetOperations.getShifts(year, id3);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertEquals(0, rootNode.get("shifts").size());
-            assertTrue(response.getBody().toString().contains("{\"shifts\":[]}"));
+            assertEquals(0, rootNode.get("leave").size());
+            assertTrue(response.getBody().toString().contains("{\"shifts\":[],\"leave\":[]}"));
             // Delete all test data
             DeleteOperations.deleteAccount(id1);
             DeleteOperations.deleteAccount(id2);
@@ -327,5 +366,33 @@ public class GetOperationsTest {
         } catch (Exception e) {
             fail("Database connection and SQL queries should have worked\n" + e);
         }
+    }
+
+    @Test
+    void testGetLogin() throws JsonProcessingException {
+        String username = RandomStringUtils.randomAlphanumeric(20);
+        String password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+        // Create account
+        PostOperations.postAccount(username);
+        // Try wrong username
+        assertThrows(ResponseStatusException.class, ()-> GetOperations.getLogin(username+"a", password),
+                "Should not allow login for incorrect username");
+        // Try wrong password
+        assertThrows(ResponseStatusException.class, ()-> GetOperations.getLogin(username, password+"a"),
+                "Should not allow login for incorrect username");
+        // Try both wrong
+        assertThrows(ResponseStatusException.class, ()-> GetOperations.getLogin(username+"a", password+"a"),
+                "Should not allow login for incorrect username");
+        // Try correct combination
+        ResponseEntity<ObjectNode> response = GetOperations.getLogin(username, password);
+        // Validate return data
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
+        assertTrue(rootNode.has("token"));
+        assertTrue(rootNode.has("accountId"));
+        int accountId = rootNode.get("accountId").asInt();
+        assertTrue(rootNode.has("level"));
+        // Delete account
+        DeleteOperations.deleteAccount(accountId);
     }
 }

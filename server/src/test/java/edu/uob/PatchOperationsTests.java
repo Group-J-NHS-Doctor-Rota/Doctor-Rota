@@ -1,6 +1,12 @@
 package edu.uob;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -198,5 +204,80 @@ public class PatchOperationsTests {
         } catch (SQLException e) {
             fail("Database connection and SQL queries should have worked\n" + e);
         }
+    }
+
+    @Test
+    void testPatchPassword() throws JsonProcessingException {
+        // Create account
+        String username = RandomStringUtils.randomAlphabetic(12);
+        PostOperations.postAccount(username);
+        // Login
+        String password1 = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+        String password2 = password1 + "a";
+        ResponseEntity<ObjectNode> response = GetOperations.getLogin(username, password1);
+        JsonNode rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
+        int accountId = rootNode.get("accountId").asInt();
+        // Patch password with same password
+        assertThrows(ResponseStatusException.class,
+                ()-> PatchOperations.patchPassword(password1, password1, accountId));
+        // Patch password with different password
+        PatchOperations.patchPassword(password1, password2, accountId);
+        // Check login again
+        assertThrows(ResponseStatusException.class,
+                ()-> GetOperations.getLogin(username, password1));
+        GetOperations.getLogin(username, password2);
+        // Delete account
+        DeleteOperations.deleteAccount(accountId);
+    }
+
+    @Test
+    void testPatchPasswordReset() throws JsonProcessingException {
+        // Create account
+        String username = RandomStringUtils.randomAlphabetic(12);
+        String email = RandomStringUtils.randomAlphabetic(16)+"@"+RandomStringUtils.randomAlphabetic(8)+".com";
+        PostOperations.postAccount(username, email);
+        // Login
+        String password1 = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+        String password2 = password1 + "a";
+        ResponseEntity<ObjectNode> response = GetOperations.getLogin(username, password1);
+        JsonNode rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
+        int accountId = rootNode.get("accountId").asInt();
+        // Patch password with different password
+        PatchOperations.patchPassword(password1, password2, accountId);
+        // Check login again
+        assertThrows(ResponseStatusException.class,
+                ()-> GetOperations.getLogin(username, password1));
+        GetOperations.getLogin(username, password2);
+        // Reset password
+        PatchOperations.patchPasswordReset(username, email);
+        // Check login again
+        assertThrows(ResponseStatusException.class,
+                ()-> GetOperations.getLogin(username, password2));
+        GetOperations.getLogin(username, password1);
+        // Delete account
+        DeleteOperations.deleteAccount(accountId);
+    }
+
+    @Test
+    void testPatchLogout() throws JsonProcessingException {
+        // Create account
+        String username = RandomStringUtils.randomAlphabetic(12);
+        PostOperations.postAccount(username);
+        // Login
+        String password1 = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+        ResponseEntity<ObjectNode> response = GetOperations.getLogin(username, password1);
+        JsonNode rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
+        int accountId = rootNode.get("accountId").asInt();
+        String token1 = rootNode.get("token").asText();
+        // Logout
+        PatchOperations.patchLogout(token1);
+        // Login
+        response = GetOperations.getLogin(username, password1);
+        rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
+        String token2 = rootNode.get("token").asText();
+        // Compare tokens
+        assertNotEquals(token1, token2, "Token should have changed after logout");
+        // Delete account
+        DeleteOperations.deleteAccount(accountId);
     }
 }

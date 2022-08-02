@@ -1,6 +1,7 @@
 package edu.uob;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,8 +17,8 @@ public class ConnectionTests {
     void testGetConnectionString() {
         String connectionString = ConnectionTools.getConnectionString();
         // Check connection sting has been found, so is not empty or null
-        assertNotEquals("", connectionString);
-        assertNotEquals(null, connectionString);
+        assertNotEquals("", connectionString, "Connection string shouldn't be empty");
+        assertNotEquals(null, connectionString, "Connection string shouldn't be null");
     }
 
     @Test
@@ -120,5 +121,43 @@ public class ConnectionTests {
         } catch (SQLException e) {
             fail("Database connection and queries should have worked\n" + e);
         }
+    }
+
+    @Test
+    void testValidToken() {
+        // Test random token
+        String randomToken = Encryption.getRandomToken();
+        assertFalse(ConnectionTools.validToken(randomToken, 0));
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Get actual token-level pairs
+            String SQL = "SELECT t.token, a.level FROM tokens t LEFT JOIN accounts a ON t.accountid = a.id; ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                // Test tokens
+                while(r.next()) {
+                    // Each token is valid for levels lower or equal to the account level
+                    for(int testLevel = 0; testLevel <= r.getInt("level"); testLevel++) {
+                        assertTrue(ConnectionTools.validToken(r.getString("token"), testLevel));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            fail("Database connection and queries should have worked\n" + e);
+        }
+    }
+
+    @Test
+    void testValidTokenAuthorised() {
+        // Get tokens
+        String randomToken = Encryption.getRandomToken();
+        String validToken = ConnectionTools.getValidToken();
+        // Test tokens
+        assertThrows(ResponseStatusException.class, ()-> ConnectionTools.validTokenAuthorised(randomToken, 1),
+                "Random token should not have admin access");
+        assertThrows(ResponseStatusException.class, ()-> ConnectionTools.validTokenAuthorised(randomToken, 0),
+                "Random token should not have standard access");
+        ConnectionTools.validTokenAuthorised(validToken, 1);
+        ConnectionTools.validTokenAuthorised(validToken, 0);
     }
 }

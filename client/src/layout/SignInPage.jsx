@@ -14,6 +14,9 @@ export default function SignIn() {
         password: ""
     });
 
+    const [reset, setReset] = useState(false)
+    const [status, setStatus] = useState(false)
+
     const inputs = [
         {
             id: 1,
@@ -39,10 +42,34 @@ export default function SignIn() {
         }
     ];
 
+    const resetInputs = [
+        {
+            id: 1,
+            name: "username",
+            type: "text",
+            placeholder: "Username",
+            errorMessage:
+                "If you forget the username, please contact admin!",
+            label: "Username",
+            pattern: "^[A-Za-z0-9]{3,16}$",
+            required: true,
+        },
+        {
+            id: 2,
+            name: "email",
+            type: "email",
+            placeholder: "Email",
+            errorMessage:
+                "Invalid email!",
+            label: "Email",
+            required: true,
+        }
+    ];
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        navigate('/')
+        reset === false && navigate('/')
     };
 
     const onChange = (e) => {
@@ -52,43 +79,95 @@ export default function SignIn() {
     const navigate = useNavigate()
 
     return (
-        <LoginCard>
-            <Container>
-                <div className="d-flex justify-content-between">
-                    <Title>Login</Title>
-                    <img src="https://www.nbt.nhs.uk/themes/custom/nbt/logo.png"
-                        alt="logo" width="120px" />
-                </div>
-                <form id="signin_form" action="#" method="post" onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        {/* <Title className="mb-5">Login</Title> */}
+        <>
+            <LoginCard>
+                <Container>
+                    <div className="d-flex justify-content-between">
 
-                        {inputs.map((input) => (
-                            <FormInput
-                                key={input.id}
-                                {...input}
-                                value={values[input.name]}
-                                onChange={onChange}
-                            />
-                        ))}
+                        {reset === false &&
+                            (<div><Title>Login</Title></div>)
+                            ||
+                            reset === true &&
+                            (<div><Title>Reset</Title></div>)
+                        }
+                        <img src="https://www.nbt.nhs.uk/themes/custom/nbt/logo.png"
+                            alt="logo" width="120px" />
                     </div>
 
-                    <div className="d-flex justify-content-center mb-3">
-                        <LoginBtn type="submit">LOGIN</LoginBtn>
-                    </div>
-                    <div className="d-flex justify-content-center mb-3"
-                        onClick={() => navigate('/reset-password')}>
-                        <Link href="#">Forgot your password?</Link>
-                    </div>
+                    <form id="signin_form" action="#" method="post" onSubmit={handleSubmit}>
+                        {reset === false &&
+                            (<div>
+                                <div className="mb-4">
 
-                    <div>
-                        <p>Don't have an account? <Link
-                            onClick={() => navigate('/signup')}
-                            style={{ cursor: 'pointer' }}>Contact Admin</Link></p>
-                    </div>
-                </form>
-            </Container>
-        </LoginCard >
+                                    {inputs.map((input) => (
+                                        <FormInput
+                                            key={input.id}
+                                            {...input}
+                                            value={values[input.name]}
+                                            onChange={onChange}
+                                        />
+                                    ))}
+                                </div>
+
+                                <div className="d-flex justify-content-center mb-3">
+                                    <LoginBtn type="submit">LOGIN</LoginBtn>
+                                </div>
+                            </div>)
+                            ||
+                            reset === true &&
+                            (
+                                <div>
+                                    <div className="mb-4">
+
+                                        {resetInputs.map((input) => (
+                                            <FormInput
+                                                key={input.id}
+                                                {...input}
+                                                value={values[input.name]}
+                                                onChange={onChange}
+                                            />
+                                        ))}
+                                    </div>
+
+                                    <div className="d-flex justify-content-center mb-3">
+                                        <LoginBtn type="submit" onClick={() => setStatus(true)}>Send Link</LoginBtn>
+                                    </div>
+                                </div>
+                            )
+                        }
+                        <div className="d-flex justify-content-center mb-3"
+                            onClick={() => setReset(!reset)}>
+                            {reset === false &&
+                                (<Link>Forgot your password?</Link>)
+                                ||
+                                (<Link>Login</Link>)
+                            }
+                        </div>
+
+                        <div>
+                            <p>Don't have an account? <Link
+                                onClick={() => navigate('/signup')}
+                                style={{ cursor: 'pointer' }}>Contact Admin</Link></p>
+                        </div>
+                    </form>
+
+                </Container>
+            </LoginCard >
+
+            {
+                status === true &&
+                (
+                    <>
+                        <OnSubmitMessage>
+                            <i className="bi bi-info-square mx-2" />
+                            Success! Please follow the instructions in the email.
+                        </OnSubmitMessage>
+                    </>
+                )
+            }
+
+
+        </>
     )
 }
 
@@ -131,5 +210,15 @@ const LoginBtn = styled.button`
 const Link = styled.a`
     text-decoration: none;
     color: #035eb8;
+    cursor: pointer;
 `
 
+const OnSubmitMessage = styled.div`
+    margin: 20px auto 0 auto;
+    max-width: 268px;
+    text-align: center;
+    color: #035eb8;
+    border: 1px solid rgba(3, 94, 184, 1);
+    background-color: rgba(3, 94, 184, 0.3);
+    border-radius: 4px;
+`

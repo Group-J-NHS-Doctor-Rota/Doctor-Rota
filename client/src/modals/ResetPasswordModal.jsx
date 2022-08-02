@@ -45,10 +45,38 @@ const ResetPasswordModal = ({ reset, setReset }) => {
         },
     ];
 
+    const passwordMatches = true //temporary variable
+    const accountId = 3 // temporary variable
+
     const handleSubmit = e => {
         e.preventDefault();
 
-        navigate('/')
+        if (passwordMatches) {
+            try {
+                if (url != undefined) {
+                    fetch(`${url}password?accountId=${accountId}`, {
+                        mode: 'cors',
+                        method: 'PATCH',
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            "Access-Control-Allow-Credentials": true
+                        }
+                    })
+                        .then(response => {
+                            console.log(response)
+                            console.log(response.status)
+                        })
+                }
+
+                setReset(false)
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            setReset(true)
+        }
     };
 
     const handleCancel = e => {
@@ -75,7 +103,7 @@ const ResetPasswordModal = ({ reset, setReset }) => {
                             <CloseButton type="button" className="m-2" onClick={handleCancel}>
                                 Close
                             </CloseButton>
-                            <ConfirmButton type="sunbit" className="m-2">
+                            <ConfirmButton type="sunbit" className="m-2" onClick={handleSubmit}>
                                 Reset
                             </ConfirmButton>
                         </div>

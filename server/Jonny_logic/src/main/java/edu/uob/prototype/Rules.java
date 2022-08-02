@@ -42,9 +42,22 @@ public class Rules {
             rulesBroken += threeWeekendsInARow(doctor, start, end);
             rulesBroken += checkShiftCount(doctor);
             rulesBroken += fortyEightHourWeek(doctor);
+//            if(fourLongDaysInARow(doctor, start, end) > 0 ){
+//                System.out.println("four long days failed");
+//            }
+//            if(sevenConsecutiveShifts(doctor, start, end) > 0 ){
+//                System.out.println("7 consec failed");
+//            }
+//            if(threeWeekendsInARow(doctor, start, end) > 0 ){
+//                System.out.println("three weekends failed");
+//            }
+//            if(checkShiftCount(doctor) > 0 ){
+//                System.out.println("shift count failed");
+//            }
+//            if(fourLongDaysInARow(doctor, start, end) > 0 ){
+//                System.out.println("48 failed");
+//            }
         }
-
-        //rulesBroken += checkShiftHours(doctors);
 
 
         if(rulesBroken == 0){
@@ -291,84 +304,22 @@ public class Rules {
 
     private static int checkShiftCount(JuniorDoctor doctor){
         //change calculate to add together all doctors hours - either 1, 0.6 or 0.8
-        int taken = fwpShiftsCovered();
-        int required = ((numberOfDays*2) - taken)/numberOfDoctors;
-        int errorCounter = 0;
-        int days = 0;
-        int nights = 0;
+        int required = doctor.getSetLongDays()+doctor.getSetNights();
+        int counter = 0;
         LocalDate date = startDate;
         while(date.isBefore(endDate.plusDays(1))){
             if(doctor.getShiftType(date).equals(Shifts.DAYON)){
-                days++;
+                counter++;
             }
             else if(doctor.getShiftType(date).equals(Shifts.NIGHT)){
-                nights++;
+                counter++;
             }
             date = date.plusDays(1);
         }
-        if((days + nights) < required){
-            errorCounter++;
-            //rulesBroken++;
+        if(counter < required){
+            return 1;
         }
-        return errorCounter;
-    }
-
-    private static int fwpShiftsCovered() {
-        int total = 0;
-        Set<LocalDate> setOfKeys = fwp.keySet();
-
-        for (LocalDate date : setOfKeys) {
-            ArrayList<Shifts> type = fwp.get(date);
-            if (type.contains(Shifts.DAYON)) {
-                total++;
-            } else if (type.contains(Shifts.NIGHT)) {
-
-                total++;
-            }
-        }
-
-        return total;
-    }
-
-    private static int checkShiftHours(ArrayList<JuniorDoctor> doctors){
-        int errorCounter = 0;
-        ArrayList<Double> doctorsHours = new ArrayList<>();
-        for(JuniorDoctor doctor : doctors) {
-            double hours = 0;
-            LocalDate date = startDate;
-            while (date.isBefore(endDate.plusDays(1))) {
-                if (doctor.getShiftType(date).equals(Shifts.DAYON)) {
-                    hours = hours + 12.5;
-                } else if (doctor.getShiftType(date).equals(Shifts.NIGHT)) {
-                    hours = hours + 12.5;
-                } else if (doctor.getShiftType(date).equals(Shifts.THEATRE)) {
-                    hours = hours + 10;
-                } else if (doctor.getShiftType(date).equals(Shifts.ANNUAL) || doctor.getShiftType(date).equals(Shifts.STUDY)) {
-                    hours = hours + 10;
-                }
-                date = date.plusDays(1);
-            }
-            doctorsHours.add(hours);
-        }
-
-        for(int i=0; i<doctors.size(); i++){
-            for(int j=0; j< doctors.size(); j++){
-                double a = doctorsHours.get(i);
-                double b = doctorsHours.get(j);
-                if(a>b){
-                    a = a-b;
-                    if(a > 10){
-                        errorCounter++;
-                    }
-                }else{
-                    b = b-a;
-                    if( b > 10){
-                        errorCounter++;
-                    }
-                }
-            }
-        }
-        return errorCounter;
+        return 0;
     }
 
     public static int setNumberOfDays(LocalDate startDate, LocalDate endDate){

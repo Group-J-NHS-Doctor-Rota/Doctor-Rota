@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class Schedule {
-    private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "michael", "steve", "paul", "daniel", "sarah", "amy", "ella", "megan", "sheila"};
+    private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "Will"};
+    private final static double[] hours = {1,1,1,1,1,1,1};
     private static ArrayList<JuniorDoctor> doctors;
     private static LocalDate startDate;
     private static LocalDate endDate;
@@ -20,7 +21,7 @@ public class Schedule {
         long startTime = System.nanoTime();
 
         doctors = new ArrayList<>();
-        doctors = addDoctors();
+        doctors = addDoctors(names, hours);
 
         Hashtable<LocalDate, ArrayList<Shifts>> fixedWorkingPattern = new Hashtable<>();
 
@@ -86,11 +87,11 @@ public class Schedule {
         doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 26), LeaveType.ANNUAL);
     }
 
-    public static ArrayList<JuniorDoctor> addDoctors(){
+    public static ArrayList<JuniorDoctor> addDoctors(String[] names, double[] hours){
         ArrayList<JuniorDoctor> doctors = new ArrayList<>();
-        for (String doctorsName : names) {
-            JuniorDoctor doctor = new JuniorDoctor(0.6);
-            doctor.setName(doctorsName);
+        for (int i=0; i<names.length; i++) {
+            JuniorDoctor doctor = new JuniorDoctor(hours[i]);
+            doctor.setName(names[i]);
             doctors.add(doctor);
             //doctor.setPainWeek();
         }

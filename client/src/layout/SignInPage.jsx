@@ -20,6 +20,11 @@ export default function SignIn() {
         password: ""
     });
 
+    const [information, setInformation] = useState({
+        username: "",
+        email: ""
+    });
+
     const [reset, setReset] = useState(false)
     const [status, setStatus] = useState(false)
     const [contact, setContact] = useState(false)
@@ -78,14 +83,40 @@ export default function SignIn() {
 
         reset === false && navigate('/')
 
-        // reset === true &&
-        //     (
-        //         fetch
-        //     )
+        if (reset === true) {
+
+            if (information !== undefined) {
+                try {
+                    if (url !== undefined) {
+                        fetch(`${url}passwordreset?username=${information.username}&email=${information.email}`, {
+                            mode: 'cors',
+                            method: 'PATCH',
+                            headers: {
+                                'Access-Control-Allow-Origin': '*',
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                "Access-Control-Allow-Credentials": true
+                            }
+                        })
+                            .then(response => {
+                                console.log(response)
+                                console.log(response.status)
+                            })
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        }
+
     };
 
-    const onChange = (e) => {
+    const onLoginChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
+    };
+
+    const onResetChange = (e) => {
+        setInformation({ ...information, [e.target.name]: e.target.value });
     };
 
     const navigate = useNavigate()
@@ -107,7 +138,9 @@ export default function SignIn() {
                     </div>
 
                     <form id="signin_form" action="#" method="post" onSubmit={handleSubmit}>
-                        {reset === false &&
+                        {
+                            //login form
+                            reset === false &&
                             (<div>
                                 <div className="mb-4">
 
@@ -116,7 +149,7 @@ export default function SignIn() {
                                             key={input.id}
                                             {...input}
                                             value={values[input.name]}
-                                            onChange={onChange}
+                                            onChange={onLoginChange}
                                         />
                                     ))}
                                 </div>
@@ -125,7 +158,13 @@ export default function SignIn() {
                                     <LoginBtn type="submit">LOGIN</LoginBtn>
                                 </div>
                             </div>)
+
+
+
                             ||
+
+
+                            // reset form
                             reset === true &&
                             (
                                 <div>
@@ -135,19 +174,20 @@ export default function SignIn() {
                                             <FormInput
                                                 key={input.id}
                                                 {...input}
-                                                value={values[input.name]}
-                                                onChange={onChange}
+                                                value={information[input.name]}
+                                                onChange={onResetChange}
                                             />
                                         ))}
                                     </div>
 
                                     <div className="d-flex justify-content-center mb-3">
-                                        <LoginBtn type="submit" onClick={() => {
-                                            setStatus(true)
-                                            setTimeout(() => {
-                                                setStatus(false)
-                                            }, 10000)
-                                        }}>Send Link</LoginBtn>
+                                        <LoginBtn type="submit"
+                                            onClick={async () => {
+                                                setStatus(true)
+                                                setTimeout(() => {
+                                                    setStatus(false)
+                                                }, 10000)
+                                            }}>Send Link</LoginBtn>
                                     </div>
                                 </div>
                             )

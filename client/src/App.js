@@ -30,7 +30,7 @@ const App = () => {
               <Route path="notification" element={<NotificationPage />} />
             </Route>
             <Route path="signin" element={<SignInPage />} />
-            <Route path="signup" element={<SignUpPage />} />
+            {/* <Route path="signup" element={<SignUpPage />} /> */}
         </Routes>
       </Router>
       </UrlProvider>

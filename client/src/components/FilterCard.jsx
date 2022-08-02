@@ -42,10 +42,10 @@ export default function FilterCard({ open, setOpen }){
     ]
 
     const typesShift = [
-        {   id: "normal",
+        {   id: "theatre",
             name: "shifts_type",
-            value: "normal",
-            label: "Normal day"
+            value: "theatre",
+            label: "Theatre day"
         },{
             id: 'night',
             name: 'shifts_type',
@@ -61,11 +61,6 @@ export default function FilterCard({ open, setOpen }){
             name: "shifts_type",
             value: "off day",
             label: "Trainee off day"
-        },{
-            id: "leave",
-            name: "shifts_type",
-            value: "leave",
-            label: "On leave"
         },{
             id: 'all',
             name: 'shifts_type',

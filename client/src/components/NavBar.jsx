@@ -100,7 +100,7 @@ export default function NavBar() {
                             {
                                 // check if the user is admin: level = 1 -> admin
                                 // accountDetail.level === 1 &&
-                                (<RefreshButton className="my-2 me-3" onClick={() => setRefresh(true)}>Refresh Rota</RefreshButton>)
+                                (<RefreshButton className="my-2 me-4" onClick={() => setRefresh(true)}>Refresh Rota</RefreshButton>)
                             }
 
                             <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: 'white' }} onClick={() => toggleList()}></i>

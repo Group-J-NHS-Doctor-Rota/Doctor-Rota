@@ -21,7 +21,7 @@ export default function SignIn() {
             type: "text",
             placeholder: "Username",
             errorMessage:
-                "Username should be 3-16 characters and shouldn't include any special character!",
+                "Incorrect username format",
             label: "Username",
             pattern: "^[A-Za-z0-9]{3,16}$",
             required: true,
@@ -32,7 +32,7 @@ export default function SignIn() {
             type: "password",
             placeholder: "Password",
             errorMessage:
-                "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
+                "Incorrect password format",
             label: "Password",
             pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
             required: true,
@@ -83,7 +83,6 @@ export default function SignIn() {
 
                     <div>
                         <p>Don't have an account? <Link
-                            onClick={() => navigate('/signup')}
                             style={{ cursor: 'pointer' }}>Contact Admin</Link></p>
                     </div>
                 </form>

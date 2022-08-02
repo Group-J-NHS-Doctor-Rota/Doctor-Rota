@@ -15,7 +15,7 @@ export default function Homgepage() {
     const [open, setOpen] = useState(false)
     
     const handleClickOutside = event => {
-        if(filterRef.current && !filterRef.current.contains(event.target) && event.target.id != "icon_filter" ){
+        if(filterRef.current && !filterRef.current.contains(event.target) && event.target.id != "icon_filter"){
             setOpen(false)
         }else{
             setOpen(true)

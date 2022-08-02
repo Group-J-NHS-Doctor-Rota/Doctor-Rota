@@ -1,5 +1,6 @@
 package edu.uob;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
@@ -8,11 +9,11 @@ import java.sql.*;
 
 public class PutOperations {
 
-    public static ResponseEntity<String> putWorkingDays(int accountId, boolean monday, boolean tuesday, boolean wednesday,
-                                                     boolean thursday, boolean friday, boolean saturday, boolean sunday) {
+    public static ResponseEntity<ObjectNode> putWorkingDays(int accountId, boolean monday, boolean tuesday, boolean wednesday,
+                                                            boolean thursday, boolean friday, boolean saturday, boolean sunday) {
 
         String connectionString = ConnectionTools.getConnectionString();
-        try(Connection c = DriverManager.getConnection(connectionString);) {
+        try(Connection c = DriverManager.getConnection(connectionString)) {
             if(!ConnectionTools.accountIdExists(accountId, c)) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
             }
@@ -32,7 +33,7 @@ public class PutOperations {
                 s.setBoolean(8, saturday);
                 s.setBoolean(9, sunday);
                 s.executeUpdate();
-                return ResponseEntity.status(HttpStatus.OK).body("");
+                return IndexController.okResponse("Working days put successfully for accountId: " + accountId);
             }
             // Have to catch SQLException exception here
         } catch (SQLException e) {
@@ -40,7 +41,7 @@ public class PutOperations {
         }
     }
 
-    public static ResponseEntity<String> putFixedShift(int accountId, Date date, int shiftType) {
+    public static ResponseEntity<ObjectNode> putFixedShift(int accountId, Date date, int shiftType) {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Only if account id exists, then try to insert data
@@ -49,16 +50,17 @@ public class PutOperations {
                         "Account with id "+accountId+" does not exist");
             }
             // Delete old data, if any, then insert new data
-            String SQL = "DELETE FROM fixedRotaShifts WHERE accountId = ?;" +
-                    "INSERT INTO fixedRotaShifts (accountId, date, shiftType) VALUES (?, ?, ?);";
+            String SQL = "DELETE FROM fixedRotaShifts WHERE accountId = ? AND date = ?; " +
+                    "INSERT INTO fixedRotaShifts (accountId, date, shiftType) VALUES (?, ?, ?); ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, accountId);
-                s.setInt(2, accountId);
-                s.setDate(3, date);
+                s.setDate(2, date);
+                s.setInt(3, accountId);
+                s.setDate(4, date);
 //              shiftType: 0: 'Normal Working Day', 1: 'Long Day', 2: 'Night'
-                s.setInt(4, shiftType);
+                s.setInt(5, shiftType);
                 s.executeUpdate();
-                return ResponseEntity.status(HttpStatus.OK).body("");
+                return IndexController.okResponse("Fixed shift put successfully for accountId: " + accountId);
             }
         } catch (SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());

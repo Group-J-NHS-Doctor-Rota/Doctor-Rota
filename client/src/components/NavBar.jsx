@@ -2,27 +2,29 @@ import React, { useState, useEffect } from 'react'
 
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import { useUrl } from '../contexts/UrlContexts' 
+import { useUrl } from '../contexts/UrlContexts'
 
 import LogoutModal from '../modals/LogoutModal'
 import ProfileModal from '../modals/ProfileModal';
 import RequestLeaveModal from '../modals/RequestLeaveModal';
 
 import styled from 'styled-components'
+import ResetPasswordModal from '../modals/ResetPasswordModal';
 
 export default function NavBar() {
     const [open, setOpen] = useState(false)
     const [profile, setProfile] = useState(false)
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
+    const [reset, setReset] = useState(false)
 
     const { getUrl } = useUrl()
 
-    const url =  getUrl()
+    const url = getUrl()
 
-    useEffect(() => {        
+    useEffect(() => {
         const closeList = e => {
-            if(e.target.id != "icon_list"){
+            if (e.target.id != "icon_list") {
                 setOpen(false)
             }
         }
@@ -36,7 +38,7 @@ export default function NavBar() {
 
     useEffect(() => {
         if (accountId != undefined) {
-            if(url != undefined){
+            if (url != undefined) {
                 fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
                     mode: 'cors',
                     method: "GET",
@@ -46,10 +48,10 @@ export default function NavBar() {
                         'Accept': 'application/json'
                     }
                 })
-                .then(response => response.json())
-                .then(data => {
-                    setAccountDetail(data)
-                })
+                    .then(response => response.json())
+                    .then(data => {
+                        setAccountDetail(data)
+                    })
             }
         }
     }, [accountId])
@@ -67,6 +69,10 @@ export default function NavBar() {
 
         if (type === "logout") {
             setLogout(true)
+        }
+
+        if (type === "reset") {
+            setReset(true)
         }
     }
 
@@ -156,6 +162,16 @@ export default function NavBar() {
                                 </div>
                             </NavBarItem>
 
+                            <NavBarItem className="d-flex my-2" onClick={() => toggleList("reset")}>
+                                <div className="d-flex align-middle mx-2">
+                                    <i className="bi bi-gear-wide-connected" style={{ fontSize: '30px' }}></i>
+                                </div>
+
+                                <div className="d-flex align-items-center">
+                                    <p className="mb-0">Reset Password</p>
+                                </div>
+                            </NavBarItem>
+
                             <NavBarItem className="d-flex my-2" onClick={() => toggleList("logout")}>
                                 <div className="d-flex align-middle mx-2">
                                     <i className="bi bi-box-arrow-in-right" style={{ fontSize: '30px' }}></i>
@@ -173,6 +189,7 @@ export default function NavBar() {
             <LogoutModal logout={logout} setLogout={setLogout} />
             <ProfileModal profile={profile} setProfile={setProfile} />
             <RequestLeaveModal leave={leave} setLeave={setLeave} />
+            <ResetPasswordModal reset={reset} setReset={setReset} />
 
             <Outlet />
         </>

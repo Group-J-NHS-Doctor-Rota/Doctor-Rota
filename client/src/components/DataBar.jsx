@@ -10,6 +10,8 @@ export default function DataBar() {
         studyLeave: 0
     })
 
+    const auth = JSON.parse(localStorage.getItem('auth'))
+
     const { getUrl } = useUrl()
 
     const url =  getUrl()
@@ -25,6 +27,7 @@ export default function DataBar() {
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
+                    'token': auth.token
                 }
             })
             .then(response => response.json())

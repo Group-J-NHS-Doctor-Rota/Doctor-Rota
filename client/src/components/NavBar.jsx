@@ -12,13 +12,13 @@ import RefreshModal from '../modals/RefreshModal';
 import styled from 'styled-components'
 
 export default function NavBar() {
+    const auth = JSON.parse(localStorage.getItem('auth'))
+
     const [open, setOpen] = useState(false)
     const [profile, setProfile] = useState(false)
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
     const [refresh, setRefresh] = useState(false)
-
-    // console.log(refresh)
 
     const { getUrl } = useUrl()
 
@@ -41,13 +41,14 @@ export default function NavBar() {
     useEffect(() => {
         if (accountId != undefined) {
             if(url != undefined){
-                fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+                fetch(`${url}account/${accountId}`, {
                     mode: 'cors',
                     method: "GET",
                     headers: {
                         'Access-Control-Allow-Origin': '*',
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'token': auth.token
                     }
                 })
                 .then(response => response.json())

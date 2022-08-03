@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 
 import FormInput from '../components/FormInput';
 
+import { useAuth } from '../contexts/AuthContext'
+
 import { useNavigate } from 'react-router-dom';
 
 import styled from 'styled-components'
@@ -9,6 +11,8 @@ import styled from 'styled-components'
 import '../css/general.css'
 
 export default function SignIn() {
+    const { login } = useAuth() 
+
     const [values, setValues] = useState({
         username: "",
         password: ""
@@ -23,7 +27,7 @@ export default function SignIn() {
             errorMessage:
                 "Incorrect username format",
             label: "Username",
-            pattern: "^[A-Za-z0-9]{3,16}$",
+            pattern: "[a-zA-Z \./']+",
             required: true,
         },
         {
@@ -41,6 +45,8 @@ export default function SignIn() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        login(values.username, values.password)
 
         navigate('/')
     };

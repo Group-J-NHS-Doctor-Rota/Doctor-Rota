@@ -15,6 +15,8 @@ import styled from 'styled-components'
 export default function CalendarTable({ year, month }) {
     const { width } = useWindowDimensions();
 
+    const auth = JSON.parse(localStorage.getItem('auth'))
+
     let isLeapYear = require('dayjs/plugin/isLeapYear')
     dayjs.extend(isLeapYear)
 
@@ -49,7 +51,8 @@ export default function CalendarTable({ year, month }) {
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'token': auth.token
             }
         })
         .then(response => response.json())
@@ -90,10 +93,12 @@ export default function CalendarTable({ year, month }) {
         let content = [];
         const theWeekResult = theWeek()
 
-        for(let i = 0; i < theWeekResult-1; i++){
-            content.push(
-                <GridItems key={`grid-items-${i}`}/>
-            )
+        if(width > 915){
+            for(let i = 0; i < theWeekResult-1; i++){
+                content.push(
+                    <GridItems key={`grid-items-${i}`}/>
+                )
+            }
         }
 
         for (let i = 1; i < number + 1; i++) {

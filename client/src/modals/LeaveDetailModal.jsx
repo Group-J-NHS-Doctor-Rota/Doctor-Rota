@@ -7,6 +7,8 @@ import { useUrl } from '../contexts/UrlContexts'
 const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
     const [accountInfo, setAccountInfo] = useState()
 
+    const auth = JSON.parse(localStorage.getItem('auth'))
+
     const { getUrl } = useUrl()
 
     const url =  getUrl()
@@ -20,7 +22,8 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'token': auth.token
                 }
             })
             .then(response => response.json())

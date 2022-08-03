@@ -7,6 +7,8 @@ import useWindowDimensions from '../hook/useWindowDimensions'
 
 
 const NotificationPage = () => {
+    const auth = JSON.parse(localStorage.getItem('auth'))
+
     const [totalPage, setTotalPage] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
     const [notifications, setNotifications] = useState()
@@ -31,6 +33,7 @@ const NotificationPage = () => {
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
+                    'token': auth.token
                 }
             })
                 .then(response => response.json())

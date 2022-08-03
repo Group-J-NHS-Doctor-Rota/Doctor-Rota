@@ -7,6 +7,7 @@ import { Modal } from 'react-bootstrap'
 import styled from 'styled-components'
 
 export default function ProfileModal({ profile, setProfile }) {
+    const auth = JSON.parse(localStorage.getItem('auth'))
     const { getUrl } = useUrl()
 
     const url =  getUrl()
@@ -34,7 +35,8 @@ export default function ProfileModal({ profile, setProfile }) {
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'token': auth.token
                 }
             })
             .then(response => response.json())

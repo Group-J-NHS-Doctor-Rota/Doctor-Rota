@@ -29,6 +29,22 @@ public class ConnectionTools {
         return variable;
     }
 
+    // Get any variable from .env file or system
+    public static String getEnvOrSysVariable(String variableName) {
+        String variable = "";
+        // First try and get the variable from .env file
+        try {
+            variable = Dotenv.configure().load().get(variableName);
+        } catch (Exception ignored) {
+            //Likely no .env file
+        }
+        // If not variable available, get from the system instead
+        if(variable == null || variable.equals("")) {
+            variable = System.getenv(variableName);
+        }
+        return variable;
+    }
+
     public static boolean idExistInTable(int id, String columnName, String tableName, Connection c) {
         // Get true or false value for where an id exists in the table
         String SQL = "SELECT EXISTS (SELECT " + columnName + " FROM " + tableName + " WHERE " + columnName + " = ?);";

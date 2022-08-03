@@ -97,11 +97,17 @@ export default function AccountPage() {
                         </div>
                         <div className="d-flex justify-content-between">
                             <div>WTE</div>
-                            <div>1.0</div>
+                            <div>{account.timeWorked}</div>
                         </div>
                         <div className="d-flex justify-content-between">
                             <div>Status</div>
-                            <div>employed</div>
+                            {
+                                account.doctorStatus == 1 &&
+                                <div>employed</div>
+                                ||
+                                account.doctorStatus == 0 &&
+                                <div>not employed</div>
+                            }
                         </div>
                     </AccountCardV2>
                 )
@@ -126,7 +132,8 @@ export default function AccountPage() {
                     headers: {
                         'Access-Control-Allow-Origin': '*',
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'token': auth.token
                     }
                 })
                 .then(response => response.json())

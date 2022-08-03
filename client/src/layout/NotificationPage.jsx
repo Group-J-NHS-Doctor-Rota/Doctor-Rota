@@ -14,7 +14,6 @@ const NotificationPage = () => {
     const [notifications, setNotifications] = useState()
     const [selected, setSelected] = useState()
     const [leaveDetail, setLeaveDetail] = useState(false);
-    const accountId = 1
 
     const { width } = useWindowDimensions();
 
@@ -24,7 +23,7 @@ const NotificationPage = () => {
 
     useEffect(() => {
         if(url != undefined){
-            const newUrl = `${url}notification?accountId=${accountId}`
+            const newUrl = `${url}notification?accountId=${auth.id}`
 
             fetch(newUrl, {
                 mode: 'cors',

@@ -45,7 +45,7 @@ export default function CalendarTable({ year, month }) {
                 setBankHolidays(holidays)
             })
 
-        fetch(`${url}shift/${year}?accountId=1`, {
+        fetch(`${url}shift/${year}?accountId=${auth.id}`, {
             mode: 'cors',
             method: "GET",
             headers: {

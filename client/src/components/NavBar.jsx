@@ -36,12 +36,11 @@ export default function NavBar() {
     }, [open])
 
     const [accountDetail, setAccountDetail] = useState()
-    const accountId = 1
 
     useEffect(() => {
-        if (accountId != undefined) {
+        if (auth.id != undefined) {
             if(url != undefined){
-                fetch(`${url}account/${accountId}`, {
+                fetch(`${url}account/${auth.id}`, {
                     mode: 'cors',
                     method: "GET",
                     headers: {
@@ -57,7 +56,7 @@ export default function NavBar() {
                 })
             }
         }
-    }, [accountId])
+    }, [auth.id])
 
     function toggleList(type) {
         setOpen(!open)
@@ -99,8 +98,7 @@ export default function NavBar() {
                         <div className="d-flex justify-content-end me-2">
 
                             {
-                                // check if the user is admin: level = 1 -> admin
-                                // accountDetail.level === 1 &&
+                                auth.level == 1 &&
                                 (<RefreshButton className="my-2 me-4" onClick={() => setRefresh(true)}>Refresh Rota</RefreshButton>)
                             }
 
@@ -128,17 +126,18 @@ export default function NavBar() {
                                 </div>
                             </NavBarItem>
 
+                            {
+                                auth.level == 1 &&
+                                <NavBarItem className="d-flex my-2" onClick={() => redirectPage('account')}>
+                                    <div className="d-flex align-middle mx-2">
+                                        <i className="bi bi-people-fill" style={{ fontSize: '30px' }}></i>
+                                    </div>
 
-                            <NavBarItem className="d-flex my-2" onClick={() => redirectPage('account')}>
-                                <div className="d-flex align-middle mx-2">
-                                    <i className="bi bi-people-fill" style={{ fontSize: '30px' }}></i>
-                                </div>
-
-                                <div className="d-flex align-items-center">
-                                    <p className="mb-0">Manage Accounts</p>
-                                </div>
-                            </NavBarItem>
-
+                                    <div className="d-flex align-items-center">
+                                        <p className="mb-0">Manage Accounts</p>
+                                    </div>
+                                </NavBarItem>
+                            }
 
                             <NavBarItem className="d-flex my-2" onClick={() => toggleList("leave")}>
                                 <div className="d-flex align-middle mx-2">

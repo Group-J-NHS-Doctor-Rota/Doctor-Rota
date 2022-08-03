@@ -140,15 +140,12 @@ CREATE TABLE accountRotaTypes (
     id SERIAL NOT NULL,
     accountId int NOT NULL,
     rotaTypeId int NOT NULL,
-    rotaGroupId int NOT NULL,
     startDate date NOT NULL,
     endDate date NOT NULL,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
-    UNIQUE (accountId, rotaTypeId, rotaGroupId),
     FOREIGN KEY (accountId) REFERENCES accounts(id),
-    FOREIGN KEY (rotaTypeId) REFERENCES rotaTypes(id),
-    FOREIGN KEY (rotaGroupId) REFERENCES rotaGroups(id)
+    FOREIGN KEY (rotaTypeId) REFERENCES rotaTypes(id)
 );
 
 /*Details on fixed rota shifts, for any accounts that have them*/

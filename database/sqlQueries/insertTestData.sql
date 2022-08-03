@@ -62,9 +62,9 @@ VALUES
     (1, 2, 1);
 
 /*accountRotaTypes data*/
-INSERT INTO accountRotaTypes (accountId, rotaTypeId, rotaGroupId, startDate, endDate)
+INSERT INTO accountRotaTypes (accountId, rotaTypeId, startDate, endDate)
 VALUES
-    (1, 2, 1, '2021-08-04', '2021-11-02');
+    (1, 1, '2021-08-04', '2021-11-02');
 
 /*fixedRotaShifts data*/
 INSERT INTO fixedRotaShifts (accountId, date, shiftType)

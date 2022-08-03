@@ -138,7 +138,7 @@ public class IndexController {
 
     @GetMapping(value = "/login", produces = "application/json")
     public ResponseEntity<ObjectNode> getLogin(@RequestHeader String password, @RequestParam String username) {
-        return GetOperations.getLogin(password, username);
+        return GetOperations.getLogin(username, password);
     }
 
     @PostMapping(value = "/account", produces = "application/json")

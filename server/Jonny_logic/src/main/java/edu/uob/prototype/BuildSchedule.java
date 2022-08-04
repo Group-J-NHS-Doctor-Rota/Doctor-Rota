@@ -428,6 +428,7 @@ public class BuildSchedule {
     }
 
     private static void reduceTheatreShifts(){
+        double hours = 0;
         for(JuniorDoctor doctor: doctors){
             Set<LocalDate> setOfKeys = doctor.returnAllShifts().keySet();
             int counter = 0;
@@ -439,7 +440,15 @@ public class BuildSchedule {
             }
             if(counter > (doctor.getSetLongDays() + doctor.getSetNights())){
                 counter = counter - (doctor.getSetLongDays() + doctor.getSetNights());
-                doctor.reduceTheatre(counter);
+                hours = 12.5 * counter;
+                int reduction = (int) Math.round(hours/10);
+                doctor.reduceTheatre(reduction);
+            }
+            else if(counter < (doctor.getSetLongDays() + doctor.getSetNights())){
+                counter = (doctor.getSetLongDays() + doctor.getSetNights()) - counter;
+                hours = 12.5 * counter;
+                int increase = (int) Math.round(hours/10);
+                doctor.increaseTheatre(increase);
             }
         }
     }

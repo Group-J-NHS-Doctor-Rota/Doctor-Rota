@@ -99,6 +99,8 @@ public class JuniorDoctor {
         this.theatre = theatre-value;
     }
 
+    public void increaseTheatre(int value){this.theatre = theatre + value;}
+
     public String getName() {
         return name;
     }
@@ -150,5 +152,9 @@ public class JuniorDoctor {
     public int getSetLongDays(){return (int) this.setLongDays;}
 
     public Hashtable<LocalDate, Shifts> returnAllShifts(){return shifts;}
+
+    public void setAllShifts(Hashtable<LocalDate, Shifts> inputValues){
+        this.shifts = inputValues;
+    }
 
 }

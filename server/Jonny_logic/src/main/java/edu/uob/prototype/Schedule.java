@@ -3,15 +3,19 @@ package edu.uob.prototype;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 
 public class Schedule {
-    private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "Will", "Adam"};
-    private final static double[] hours = {1,1,1,1,1,1,1,1};
+//    private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "Will", "Adam"};
+//    private final static double[] hours = {1,1,1,1,1,1,1,1};
     private static LocalDate startDate;
     private static LocalDate endDate;
 
     public static void main(String[] args) {
+
+        String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "tim"};
+        double[] hours = {1,1,1,1,1,1,1};
 
         startDate = LocalDate.of(2021, 8, 4);
         endDate = LocalDate.of(2021, 11, 2);
@@ -26,15 +30,28 @@ public class Schedule {
         ArrayList<String> rulesBrokenDescription = new ArrayList<>();
 
 
+        ArrayList<JuniorDoctor> doctorsLeastErrors =new ArrayList<>();
+        int lowestRulesBroken = 0;
+
 
         int rulesBroken;
         int counter = 0;
         do {
             BuildSchedule iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors, fixedWorkingPattern);
             rulesBroken = iteration.getRulesCount();
-            rulesBrokenDescription = iteration.getDescriptions();
+            if(counter == 0){
+                doctorsLeastErrors = copyDoctors(doctors, names, hours);
+                lowestRulesBroken = rulesBroken;
+                rulesBrokenDescription = iteration.getDescriptions();
+            }else{
+                if(rulesBroken < lowestRulesBroken){
+                    doctorsLeastErrors = copyDoctors(doctors, names, hours);
+                    lowestRulesBroken = rulesBroken;
+                    rulesBrokenDescription = iteration.getDescriptions();
+                }
+            }
             counter++;
-        } while (rulesBroken > 0);
+        } while (rulesBroken > 0 && counter < 5000);
 
 
 //        long endTime = System.nanoTime();
@@ -43,14 +60,31 @@ public class Schedule {
 //        System.out.println(elapsedTimeInSecond);
 
 
-        printSchedule(doctors, startDate, endDate);
-        System.out.println(rulesBrokenDescription);
+        printSchedule(doctorsLeastErrors, startDate, endDate, names);
+        System.out.println(lowestRulesBroken);
+        for(String des : rulesBrokenDescription){
+            System.out.println(des);
+        }
         checkNights(doctors);
         checkDays(doctors);
         printLeftovers(doctors);
         addShifts(doctors);
 
 
+    }
+
+    public static ArrayList<JuniorDoctor> copyDoctors(ArrayList<JuniorDoctor> doctors, String[] names, double[] hours){
+        ArrayList<JuniorDoctor> newDoctors = new ArrayList<>();
+        int counter = 0;
+        for(JuniorDoctor doc : doctors){
+            Hashtable<LocalDate, Shifts> shifts = doc.returnAllShifts();
+            JuniorDoctor a = new JuniorDoctor(hours[counter]);
+            a.resetDoctor();
+            a.setAllShifts(shifts);
+            newDoctors.add(a);
+            counter++;
+        }
+        return newDoctors;
     }
 
 
@@ -187,7 +221,7 @@ public class Schedule {
     }
 
 
-    public static void printSchedule(ArrayList<JuniorDoctor> schedule, LocalDate startDate, LocalDate endDate){
+    public static void printSchedule(ArrayList<JuniorDoctor> schedule, LocalDate startDate, LocalDate endDate, String[] names){
 
         System.out.print("DATE                  |  ");
         for(int i=0; i< names.length; i++){

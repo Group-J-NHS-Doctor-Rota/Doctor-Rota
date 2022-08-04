@@ -79,6 +79,7 @@ public class Rules {
             }
         }
         rulesBroken += requiredNormalShiftsPerDay(doctors);
+        //System.out.println(description);
     }
 
     public static int painWeek(JuniorDoctor doctor){

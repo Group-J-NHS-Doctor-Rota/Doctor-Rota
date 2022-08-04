@@ -215,9 +215,10 @@ public class PartTime {
                     assertEquals(12, (totalDays + totalNights));
                 }
             }else{
-                assertTrue(weekendCount <= 3);
+                assertFalse(weekendCount > 3);
                 if ((totalDays + totalNights) > 22) {
-                    int count = (totalDays + totalNights) - 22;
+                    double hoursOver = (totalDays + totalNights) * 12.5;
+                    int count = (int) Math.round(hoursOver / 10);
                     assertEquals((32 - count), theatreCount);
                 } else {
                     assertEquals(22, (totalDays + totalNights));

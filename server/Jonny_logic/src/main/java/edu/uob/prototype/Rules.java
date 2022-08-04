@@ -78,6 +78,7 @@ public class Rules {
                 rulesBroken += painWeek(doctor);
             }
         }
+        rulesBroken += requiredNormalShiftsPerDay(doctors);
     }
 
     public static int painWeek(JuniorDoctor doctor){
@@ -372,6 +373,30 @@ public class Rules {
         }
         return 0;
 
+    }
+
+    public static int requiredNormalShiftsPerDay(ArrayList<JuniorDoctor> doctors){
+        LocalDate date = startDate;
+        int errorCounter = 0;
+        while(date.isBefore(endDate.plusDays(1))){
+            if(date.getDayOfWeek().equals(DayOfWeek.SATURDAY)
+                    || date.getDayOfWeek().equals(DayOfWeek.SUNDAY)){
+                date = date.plusDays(1);
+                continue;
+            }
+            int counter = 0;
+            for(JuniorDoctor doctor : doctors){
+                if(doctor.getShiftType(date).equals(Shifts.THEATRE)){
+                    counter++;
+                }
+            }
+            if(counter < 2){
+                description.add("not enough normal shifts on day -> " +date);
+                errorCounter++;
+            }
+            date = date.plusDays(1);
+        }
+        return errorCounter;
     }
 
     public int getRulesBroken(){

@@ -38,12 +38,14 @@ const NotificationPage = () => {
                 .then(response => response.json())
                 .then(data => {
                     const totalNumber = data.leaveRequests.length
-                    setTotalPage(Math.ceil(totalNumber / 6))
+                    setTotalPage(Math.ceil(totalNumber / 5))
                     setNotifications(data.leaveRequests)
                 })
         }
 
     }, [])
+
+    console.log(notifications)
 
     function handleClick(notification) {
         setSelected(notification)
@@ -53,12 +55,21 @@ const NotificationPage = () => {
     const getContent = () => {
         let content = [];
 
-        notifications.map((notification) => {
+        notifications
+        // .filter(notification => notification.accountId != auth.id && notification.status != 0)
+        .filter(notification => (currentPage) * 5 >= notification.id && notification.id > (currentPage - 1) * 5)
+            .map((notification) => {
             content.push(
                 <AlertMessage key={notification.id} className="mt-3">
                     <div className="d-flex">
                         <SenderTag className="px-4">
+                        {
+                            notification.accountId != auth.id &&
                             <p className="mb-0">Admin</p>
+                            ||
+                            notification.accountId == auth.id &&
+                            <p className="mb-0">individual</p>
+                        }
                         </SenderTag>
                     </div>
                     <MessageInfo className="d-flex px-4 col-12 justify-content-between" onClick={() => handleClick(notification)}>
@@ -81,13 +92,13 @@ const NotificationPage = () => {
 
                         <div className="py-3">
                             {
-                                notification.accountId == 1 && notification.status == 1 &&
+                                notification.accountId == auth.id && notification.status == 1 &&
                                 <ApprovalButton disabled>Approved</ApprovalButton>
-                                || notification.accountId == 1 && notification.status == 2 &&
+                                || notification.accountId == auth.id && notification.status == 2 &&
                                 <DenialButton disabled>Rejected</DenialButton>
-                                || notification.accountId == 1 && notification.status == 0 &&
+                                || notification.accountId == auth.id && notification.status == 0 &&
                                 <PendingButton disabled>Pending</PendingButton>
-                                || notification.accountId != 1 && notification.status == 0 &&
+                                || notification.accountId != auth.id && notification.status == 0 &&
                                 <div className="d-flex">
                                     <DenialButton className="me-1 px-2">
                                         Reject

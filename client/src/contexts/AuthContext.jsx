@@ -21,11 +21,9 @@ export function AuthProvider({ children }) {
 
     const url =  getUrl()
 
-    function login(username, password){
+    async function login(username, password){
         try{
             if(url != undefined){
-                console.log(username)
-                console.log(password)
                 fetch(`${url}login?username=${username}`, {
                     mode: 'cors',
                     method: "GET",
@@ -39,11 +37,13 @@ export function AuthProvider({ children }) {
                 })
                 .then(response => response.json())
                 .then(data => {
+
                     setValues({
                         id: data.accountId,
                         token: data.token,
                         level: data.level
                     })
+                    
                 })
             }
         }catch(error){

@@ -43,12 +43,15 @@ export default function SignIn() {
         }
     ];
 
-    const handleSubmit = (e) => {
+    function handleSubmit(e){
         e.preventDefault();
 
         login(values.username, values.password)
+        // can try again
 
-        navigate('/')
+        setTimeout(() => {
+            navigate('/')
+        }, 1000);
     };
 
     const onChange = (e) => {
@@ -87,7 +90,7 @@ export default function SignIn() {
                         <Link href="#">Forgot your password?</Link>
                     </div>
 
-                    <div>
+                    <div className="mb-2">
                         <p>Don't have an account? <Link
                             style={{ cursor: 'pointer' }}>Contact Admin</Link></p>
                     </div>
@@ -100,8 +103,7 @@ export default function SignIn() {
 const LoginCard = styled.div`
     margin: 90px auto 0 auto;
     max-width: 468px;
-    min-height: 525px;
-    padding: 0 0 25px 0;
+    min-height: 500px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 5px;
     background-color: #f5f9fe;
@@ -110,7 +112,7 @@ const LoginCard = styled.div`
 const Container = styled.div`
     margin: 0 auto;
     width: 70%;
-    padding-top: 50px;
+    padding-top: 70px;
 `
 
 const Title = styled.h1`

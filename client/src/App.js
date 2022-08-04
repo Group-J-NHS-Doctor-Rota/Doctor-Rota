@@ -6,8 +6,11 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import {
   BrowserRouter as Router,
   Routes,
-  Route
+  Route,
+  Navigate
 } from 'react-router-dom';
+
+import PrivateRouter from './auth/PrivateRoute';
 
 import { UrlProvider } from './contexts/UrlContexts';
 import { AuthProvider } from './contexts/AuthContext';
@@ -26,12 +29,15 @@ const App = () => {
         <AuthProvider>
           <Router>
             <Routes>
-                <Route path="/" element={<NavBar />}>
-                  <Route index path="/" element={<Homepage />} />
-                  <Route path="account" element={<AccountPage />} />
-                  <Route path="notification" element={<NotificationPage />} />
+                <Route element={<PrivateRouter/>}>
+                  <Route path="/" element={<NavBar />}>
+                    <Route index path="/" element={<Homepage />} />
+                    <Route path="account" element={<AccountPage />} />
+                    <Route path="notification" element={<NotificationPage />} />
+                  </Route>
                 </Route>
                 <Route path="signin" element={<SignInPage />} />
+
                 {/* <Route path="signup" element={<SignUpPage />} /> */}
             </Routes>
           </Router>

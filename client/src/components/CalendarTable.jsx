@@ -59,7 +59,6 @@ export default function CalendarTable({ year, month }) {
         .then(data => setAllShift(data.shifts))
     }, [year])
 
-
     function getMonth(date) {
         if (date.slice(5, 7)[0] === 0) {
             return date.slice(6, 7)

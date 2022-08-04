@@ -56,7 +56,7 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                         "Access-Control-Allow-Credentials": true
                     },
                     body: JSON.stringify({
-                        annualLeave: 16
+                        annualLeave: 16,
                     }),
                 })
                 .then(response => response)

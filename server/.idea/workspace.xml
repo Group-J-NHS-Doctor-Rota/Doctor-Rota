@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6c23b3f2-927c-40df-9af6-d60fedf7b6a5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Jonny_logic/src/main/java/edu/uob/prototype/BuildSchedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/Jonny_logic/src/main/java/edu/uob/prototype/BuildSchedule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Jonny_logic/src/main/java/edu/uob/prototype/Rules.java" beforeDir="false" afterPath="$PROJECT_DIR$/Jonny_logic/src/main/java/edu/uob/prototype/Rules.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Jonny_logic/src/main/java/edu/uob/prototype/Schedule.java" beforeDir="false" afterPath="$PROJECT_DIR$/Jonny_logic/src/main/java/edu/uob/prototype/Schedule.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2CrjdvFHNnGeyQ3x8jAhyGp87nA" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6c23b3f2-927c-40df-9af6-d60fedf7b6a5" name="Changes" comment="" />
+      <created>1659567689358</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1659567689358</updated>
+    </task>
+    <servers />
+  </component>
+</project>

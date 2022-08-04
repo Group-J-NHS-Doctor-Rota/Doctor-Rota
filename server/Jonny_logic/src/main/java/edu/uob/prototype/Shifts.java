@@ -13,10 +13,11 @@ public enum Shifts {
     THSL,
     NOCR,
     THNOCR
-    //NAOFF - Night After OFF (requirement that after 2 night shifts, have 2 shifts off & 3 night shifts
-    //means 3 days off)
-    //AorSl - annual or study leave
+    //NAOFF - Night After OFF - for when time is required off after consecutive day shifts
+    //DAOFF - day after off - for when time is required off after consecutive day shifts
+    //THAL - half day theatre and annual leave
+    //THSL - half day theatre and study leave
     //NOCR not on call request
     //THNOCR - theatre / not on call request - used for half day requests
-    //DAOFF - day after off - for when time is required off after consecutive day shifts
+
 }

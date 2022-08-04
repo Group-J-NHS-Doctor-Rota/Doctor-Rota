@@ -1,6 +1,9 @@
 package edu.uob.prototype;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.Hashtable;
 
 public class JuniorDoctor {

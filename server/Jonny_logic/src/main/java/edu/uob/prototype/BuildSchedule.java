@@ -13,6 +13,7 @@ public class BuildSchedule {
     private static int numberOfDoctors;
     private static int numberOfDays;
     private static int rulesBroken;
+    private static ArrayList<String> descriptions;
     private static ArrayList<JuniorDoctor> doctors;
     private static Hashtable<LocalDate, ArrayList<Shifts>> fwp;
 
@@ -29,12 +30,15 @@ public class BuildSchedule {
         addShifts();
         Rules rulesBrokenCount = new Rules(doctors, startDate, endDate, fwp);
         rulesBroken = rulesBrokenCount.getRulesBroken();
+        descriptions = rulesBrokenCount.getRulesBrokenDescriptions();
 
     }
 
     public int getRulesCount(){
         return rulesBroken;
     }
+
+    public ArrayList<String> getDescriptions(){return descriptions;}
 
     private static void addShifts(){
 
@@ -162,6 +166,7 @@ public class BuildSchedule {
                         }
                     }
                 }else {
+                    //check can work weekends
                     if (addWeekends(date, Shifts.NIGHT) && addWeekends(date, Shifts.DAYON)) {
                         date = date.plusDays(1);
                         counter++;
@@ -274,6 +279,7 @@ public class BuildSchedule {
                         }
                     }
                 }else {
+                    //check can work weekends
                     while (true) {
                         if (addExtraWeekendsNights(date)) {
                             break;
@@ -369,11 +375,10 @@ public class BuildSchedule {
             else if(date.getDayOfWeek().equals(DayOfWeek.WEDNESDAY)){
                 if(checkShiftFree(doctor, date, 4) && addNightShifts(doctor, date)) {
                     date = date.plusDays(1);
-                    continue;
                 }else {
                     errorCounter++;
-                    continue;
                 }
+                continue;
             }
             else{
                 date = date.plusDays(1);
@@ -391,7 +396,6 @@ public class BuildSchedule {
             int shiftPairing = ThreadLocalRandom.current().nextInt(0, numberOfDoctors);
             JuniorDoctor doctor = doctors.get(shiftPairing);
 
-            System.out.println(date);
             if(fwp.containsKey(date)){
                 ArrayList<Shifts> shifts = fwp.get(date);
                 if(shifts.contains(Shifts.NIGHT)) {
@@ -555,17 +559,7 @@ public class BuildSchedule {
         return  errorCounter != 500;
     }
 
-    private static int remainingShifts(Shifts shiftType){
-        int remaining = 0;
-        for(JuniorDoctor doctor: doctors){
-            if(shiftType.equals(Shifts.NIGHT)){
-                remaining += doctor.getSetNights();
-            }else{
-                remaining += doctor.getSetLongDays();
-            }
-        }
-        return remaining;
-    }
+
 
     private static void addExtraDays(LocalDate date){
         while(date.isBefore(endDate.plusDays(1))){

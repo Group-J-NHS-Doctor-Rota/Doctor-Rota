@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class Schedule {
-    private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "Will"};
-    private final static double[] hours = {1,1,1,1,1,1,1};
-    private static ArrayList<JuniorDoctor> doctors;
+    private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "Will", "Adam"};
+    private final static double[] hours = {1,1,1,1,1,1,1,1};
     private static LocalDate startDate;
     private static LocalDate endDate;
 
@@ -20,27 +19,32 @@ public class Schedule {
 
         long startTime = System.nanoTime();
 
-        doctors = new ArrayList<>();
-        doctors = addDoctors(names, hours);
+        ArrayList<JuniorDoctor> doctors = addDoctors(names, hours);
 
         Hashtable<LocalDate, ArrayList<Shifts>> fixedWorkingPattern = new Hashtable<>();
+
+        ArrayList<String> rulesBrokenDescription = new ArrayList<>();
+
+
 
         int rulesBroken;
         int counter = 0;
         do {
             BuildSchedule iteration = new BuildSchedule(startDate, endDate, numberOfDays, doctors, fixedWorkingPattern);
             rulesBroken = iteration.getRulesCount();
+            rulesBrokenDescription = iteration.getDescriptions();
             counter++;
         } while (rulesBroken > 0);
 
 
-        long endTime = System.nanoTime();
-        long totalTime = endTime - startTime;
-        double elapsedTimeInSecond = (double) totalTime / 1_000_000_000;
-        System.out.println(elapsedTimeInSecond);
+//        long endTime = System.nanoTime();
+//        long totalTime = endTime - startTime;
+//        double elapsedTimeInSecond = (double) totalTime / 1_000_000_000;
+//        System.out.println(elapsedTimeInSecond);
 
 
         printSchedule(doctors, startDate, endDate);
+        System.out.println(rulesBrokenDescription);
         checkNights(doctors);
         checkDays(doctors);
         printLeftovers(doctors);
@@ -49,43 +53,6 @@ public class Schedule {
 
     }
 
-    public static void addLeave(){
-        doctors.get(0).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 16), LeaveType.STUDY);
-        doctors.get(0).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 17), LeaveType.STUDY);
-
-
-
-        doctors.get(1).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 22), LeaveType.ANNUAL);
-        doctors.get(1).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 23), LeaveType.ANNUAL);
-        doctors.get(1).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 24), LeaveType.ANNUAL);
-
-
-
-        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 27), LeaveType.ANNUAL);
-        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 28), LeaveType.ANNUAL);
-        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 29), LeaveType.ANNUAL);
-        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 30), LeaveType.ANNUAL);
-        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 1), LeaveType.ANNUAL);
-
-        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 14), LeaveType.STUDY);
-
-        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 27), LeaveType.ANNUAL);
-        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 28), LeaveType.ANNUAL);
-        doctors.get(2).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 29), LeaveType.ANNUAL);
-
-        doctors.get(5).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 16), LeaveType.ANNUAL);
-        doctors.get(5).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 17), LeaveType.ANNUAL);
-        doctors.get(5).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 19), LeaveType.ANNUAL);
-        doctors.get(5).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 20), LeaveType.ANNUAL);
-
-        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 16), LeaveType.ANNUAL);
-        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 17), LeaveType.ANNUAL);
-        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 19), LeaveType.ANNUAL);
-        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 8, 20), LeaveType.ANNUAL);
-        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 18), LeaveType.ANNUAL);
-        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 25), LeaveType.ANNUAL);
-        doctors.get(7).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 26), LeaveType.ANNUAL);
-    }
 
     public static ArrayList<JuniorDoctor> addDoctors(String[] names, double[] hours){
         ArrayList<JuniorDoctor> doctors = new ArrayList<>();

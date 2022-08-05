@@ -37,15 +37,28 @@ const NotificationPage = () => {
             })
                 .then(response => response.json())
                 .then(data => {
-                    const totalNumber = data.leaveRequests.length
+                    const tempArray = []
+                    let number = 1
+                    for(let i = 0; i < data.leaveRequests.length; i++){
+                        if(
+                            data.leaveRequests[i].accountId == auth.id && data.leaveRequests[i].status == 1 ||
+                            data.leaveRequests[i].accountId == auth.id && data.leaveRequests[i].status == 2 ||
+                            data.leaveRequests[i].accountId == auth.id && data.leaveRequests[i].status == 0 ||
+                            data.leaveRequests[i].accountId != auth.id && data.leaveRequests[i].status == 0
+                        ){
+                            data.leaveRequests[i].number = number
+                            tempArray.push(data.leaveRequests[i])
+                            number++
+                        }
+                    }
+                    
+                    const totalNumber = tempArray.length
                     setTotalPage(Math.ceil(totalNumber / 5))
-                    setNotifications(data.leaveRequests)
+                    setNotifications(tempArray)
                 })
         }
 
     }, [])
-
-    console.log(notifications)
 
     function handleClick(notification) {
         setSelected(notification)
@@ -55,64 +68,65 @@ const NotificationPage = () => {
     const getContent = () => {
         let content = [];
 
-        notifications
-        // .filter(notification => notification.accountId != auth.id && notification.status != 0)
-        .filter(notification => (currentPage) * 5 >= notification.id && notification.id > (currentPage - 1) * 5)
+        if(notifications != undefined){
+            notifications
+            .filter(notification => (currentPage) * 5 >= notification.number && notification.number > (currentPage - 1) * 5)
             .map((notification) => {
-            content.push(
-                <AlertMessage key={notification.id} className="mt-3">
-                    <div className="d-flex">
-                        <SenderTag className="px-4">
-                        {
-                            notification.accountId != auth.id &&
-                            <p className="mb-0">Admin</p>
-                            ||
-                            notification.accountId == auth.id &&
-                            <p className="mb-0">individual</p>
-                        }
-                        </SenderTag>
-                    </div>
-                    <MessageInfo className="d-flex px-4 col-12 justify-content-between" onClick={() => handleClick(notification)}>
-                        <div className="py-3">
-                            <p className="mb-0">{notification.date}</p>
-                        </div>
-
-                        <div className="py-3">
+                content.push(
+                    <AlertMessage key={notification.id} className="mt-3">
+                        <div className="d-flex">
+                            <SenderTag className="px-4">
                             {
-                                notification.type == 0 &&
-                                <p className="mb-0">Annual Leave</p>
-                                || notification.type == 1 &&
-                                <p className="mb-0">Study Leave</p>
-                                || notification.type == 2 &&
-                                <p className="mb-0">NOC Request</p>
-                                || notification.type == 9 &&
-                                <p className="mb-0">Other</p>
+                                notification.accountId != auth.id &&
+                                <p className="mb-0">Admin</p>
+                                ||
+                                notification.accountId == auth.id &&
+                                <p className="mb-0">individual</p>
                             }
+                            </SenderTag>
                         </div>
-
-                        <div className="py-3">
-                            {
-                                notification.accountId == auth.id && notification.status == 1 &&
-                                <ApprovalButton disabled>Approved</ApprovalButton>
-                                || notification.accountId == auth.id && notification.status == 2 &&
-                                <DenialButton disabled>Rejected</DenialButton>
-                                || notification.accountId == auth.id && notification.status == 0 &&
-                                <PendingButton disabled>Pending</PendingButton>
-                                || notification.accountId != auth.id && notification.status == 0 &&
-                                <div className="d-flex">
-                                    <DenialButton className="me-1 px-2">
-                                        Reject
-                                    </DenialButton>
-                                    <ApprovalButton className="ms-1 px-2">
-                                        Approve
-                                    </ApprovalButton>
-                                </div>
-                            }
-                        </div>
-                    </MessageInfo >
-                </AlertMessage >
-            )
-        })
+                        <MessageInfo className="d-flex px-4 col-12 justify-content-between" onClick={() => handleClick(notification)}>
+                            <div className="py-3">
+                                <p className="mb-0">{notification.date}</p>
+                            </div>
+    
+                            <div className="py-3">
+                                {
+                                    notification.type == 0 &&
+                                    <p className="mb-0">Annual Leave</p>
+                                    || notification.type == 1 &&
+                                    <p className="mb-0">Study Leave</p>
+                                    || notification.type == 2 &&
+                                    <p className="mb-0">NOC Request</p>
+                                    || notification.type == 9 &&
+                                    <p className="mb-0">Other</p>
+                                }
+                            </div>
+    
+                            <div className="py-3">
+                                {
+                                    notification.accountId == auth.id && notification.status == 1 &&
+                                    <ApprovalButton disabled>Approved</ApprovalButton>
+                                    || notification.accountId == auth.id && notification.status == 2 &&
+                                    <DenialButton disabled>Rejected</DenialButton>
+                                    || notification.accountId == auth.id && notification.status == 0 &&
+                                    <PendingButton disabled>Pending</PendingButton>
+                                    || notification.accountId != auth.id && notification.status == 0 &&
+                                    <div className="d-flex">
+                                        <DenialButton className="me-1 px-2">
+                                            Reject
+                                        </DenialButton>
+                                        <ApprovalButton className="ms-1 px-2">
+                                            Approve
+                                        </ApprovalButton>
+                                    </div>
+                                }
+                            </div>
+                        </MessageInfo >
+                    </AlertMessage >
+                )
+            })
+        }
         return content;
     }
 

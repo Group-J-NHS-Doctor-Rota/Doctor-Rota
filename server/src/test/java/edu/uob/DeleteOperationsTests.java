@@ -28,7 +28,7 @@ public class DeleteOperationsTests {
             PostOperations.postRequestLeave(id1, "2022-07-12", 0, 0, "");
             SQL = "INSERT INTO shifts (accountId, rotaGroupId, rotaTypeId, date, type, ruleNotes) VALUES ("+id1+", 1, 1, '2022-07-11', 0, ''); " +
                     "INSERT INTO accountLeaveRequestRelationships (accountId, leaveRequestId, status) VALUES ("+id1+", 1, 1); " +
-                    "INSERT INTO accountRotaTypes (accountId, rotaTypeId, rotaGroupId, startDate, endDate) VALUES ("+id1+", 2, 1, '2022-07-01', '2022-08-01'); " +
+                    "INSERT INTO accountRotaTypes (accountId, rotaTypeId, startDate, endDate) VALUES ("+id1+", 2, '2022-07-01', '2022-08-01'); " +
                     "INSERT INTO tokens (accountId, token) VALUES ("+id1+", 'sdgdsfgtu348090j9jgkdslfg');";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.executeUpdate();

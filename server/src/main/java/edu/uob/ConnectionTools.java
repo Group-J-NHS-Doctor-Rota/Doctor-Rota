@@ -67,22 +67,6 @@ public class ConnectionTools {
         }
     }
     
-    public static boolean isAdminAccount(int id, Connection c) {
-        // Get true or false value for where an id exists in the table
-        String SQL = "SELECT level FROM accounts WHERE id = ?; ";
-        try (PreparedStatement s = c.prepareStatement(SQL)) {
-            s.setInt(1, id);
-            ResultSet r = s.executeQuery();
-            int level = -1;
-            while(r.next()) {
-                level = r.getInt("level");
-            }
-            return level == 1;
-        } catch (SQLException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
-        }
-    }
-    
     // Checks token and throws exception if not valid
     public static void validTokenAuthorised(String token, int level) {
         if(!validToken(token, level)) {

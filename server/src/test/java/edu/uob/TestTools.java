@@ -1,5 +1,7 @@
 package edu.uob;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -34,6 +36,11 @@ public class TestTools {
                 s.executeUpdate();
             }
         }
+    }
+
+    public static String getRandomUsername() {
+        int length = ThreadLocalRandom.current().nextInt(2, 41);
+        return RandomStringUtils.randomAlphanumeric(length);
     }
 
 }

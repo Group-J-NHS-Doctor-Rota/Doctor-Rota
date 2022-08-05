@@ -477,3 +477,9 @@ VALUES
 INSERT INTO accountLeaveRequestRelationships (accountid, leaverequestid, status)
 VALUES
     (1, 2, 1);
+
+--Resolve any possible primary key issues
+--https://stackoverflow.com/questions/4448340/postgresql-duplicate-key-violates-unique-constraint
+SELECT setval(pg_get_serial_sequence('leaveRequests', 'id'), (SELECT MAX(id) FROM leaveRequests)+1);
+SELECT setval(pg_get_serial_sequence('rotaGroups', 'id'), (SELECT MAX(id) FROM rotaGroups)+1);
+SELECT setval(pg_get_serial_sequence('accounts', 'id'), (SELECT MAX(id) FROM accounts)+1);

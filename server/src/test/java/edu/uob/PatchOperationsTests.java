@@ -21,16 +21,18 @@ public class PatchOperationsTests {
 
     @Test
     void testUpdateVariable() {
-        // Get random account id to test
+        // Get random account id and username to test
         int id1 = TestTools.getTestAccountId();
+        String username1 = TestTools.getRandomUsername();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Create new account with id 998999999 (definitely unused), with some data
             assertFalse(ConnectionTools.accountIdExists(id1, c));
-            String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
-                    "VALUES (?, 'Test Person', 'sdfdfsgghndfh', '987', 'person@test.com', 15, 15, 48, 0); ";
+            String SQL = "INSERT INTO accounts (id, username, password, email) " +
+                    "VALUES (?, ?, 'sdfdfsgghndfh', 'person@test.com'); ";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
+                s.setString(2, username1);
                 s.executeUpdate();
             }
             // Change some data (3 bits)
@@ -57,16 +59,18 @@ public class PatchOperationsTests {
 
     @Test
     void testPatchAccount() {
-        // Get random account id to test
+        // Get random account id and username to test
         int id1 = TestTools.getTestAccountId();
         String connectionString = ConnectionTools.getConnectionString();
+        String username1 = TestTools.getRandomUsername();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Create new account with id 919999999 (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
-            String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
-                    "VALUES (?, 'Test T. Test', 'sdfdsh', '0987', 'ttt@test.com', 15, 15, 48, 0);";
+            String SQL = "INSERT INTO accounts (id, username, password, email) " +
+                    "VALUES (?, ?, 'sdfdsh', 'ttt@test.com');";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
+                s.setString(2, username1);
                 s.executeUpdate();
             }
             //Update details
@@ -130,10 +134,11 @@ public class PatchOperationsTests {
 
     @Test
     void testPatchNotification() {
-        // Get random ids to test
+        // Get random ids and username to test
         int id1 = TestTools.getTestAccountId(); // as account id
         int id2 = TestTools.getTestAccountId(); // as leave request id
         int id3 = TestTools.getTestAccountId(); // as notification id
+        String username1 = TestTools.getRandomUsername();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // check the test data
@@ -143,10 +148,11 @@ public class PatchOperationsTests {
             assertFalse(ConnectionTools.idExistInTable(
                     id3, "id", "notifications", c));
             // Create new account with random test id
-            String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
-                    "VALUES (?, 'test073User', 'pwd999999073', '9073', 't_user073@test.com', 15, 15, 48, 0);";
+            String SQL = "INSERT INTO accounts (id, username, password, email) " +
+                    "VALUES (?, ?, 'pwd999999073', 't_user073@test.com');";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
+                s.setString(2, username1);
                 s.executeUpdate();
             }
             // Add test data for leave requests and notifications
@@ -209,7 +215,7 @@ public class PatchOperationsTests {
     @Test
     void testPatchPassword() throws JsonProcessingException {
         // Create account
-        String username = RandomStringUtils.randomAlphabetic(12);
+        String username = TestTools.getRandomUsername();
         PostOperations.postAccount(username);
         // Login
         String password1 = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
@@ -233,7 +239,7 @@ public class PatchOperationsTests {
     @Test
     void testPatchPasswordReset() throws JsonProcessingException {
         // Create account
-        String username = RandomStringUtils.randomAlphabetic(12);
+        String username = TestTools.getRandomUsername();
         String email = RandomStringUtils.randomAlphabetic(16)+"@"+RandomStringUtils.randomAlphabetic(8)+".com";
         PostOperations.postAccount(username, email);
         // Login
@@ -261,7 +267,7 @@ public class PatchOperationsTests {
     @Test
     void testPatchLogout() throws JsonProcessingException {
         // Create account
-        String username = RandomStringUtils.randomAlphabetic(12);
+        String username = TestTools.getRandomUsername();
         PostOperations.postAccount(username);
         // Login
         String password1 = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");

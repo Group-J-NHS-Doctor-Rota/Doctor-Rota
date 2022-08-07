@@ -1,12 +1,22 @@
 import React, { useState } from 'react'
 
+import { useUrl } from '../contexts/UrlContexts' 
+import { useNavigate } from 'react-router-dom';
+
 import { Modal, Form } from 'react-bootstrap'
 
 import '../css/general.css'
 import styled from 'styled-components'
 
 export default function RequestLeaveModal({ leave, setLeave }) {
-    const toDay = new Date().toISOString().substring(0, 10);
+    const navigate = useNavigate();
+    // need to fix
+
+    // const toDay = new Date().toISOString().substring(0, 10);
+    const auth = JSON.parse(localStorage.getItem('auth'))
+    const { getUrl } = useUrl()
+
+    const url =  getUrl()
 
     const [errorMsg, setErrorMsg] = useState({
         type_leave_required: false,
@@ -23,10 +33,10 @@ export default function RequestLeaveModal({ leave, setLeave }) {
     const [values, setValues] = useState({
         type_leave: "",
         type_day: "single",
-        single_half_full: "full",
+        single_half_full: "0",
         single_day: "",
-        multiple_start_half_full: "full",
-        multiple_end_half_full: "full",
+        multiple_start_half_full: "0",
+        multiple_end_half_full: "0",
         multiple_start_day: "",
         multiple_end_day: "",
         comments: ""
@@ -70,6 +80,16 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                 setErrorMsg({... errorMsg, ["multiple_start_day_invalid"]: true})
             }else{
                 setErrorMsg({... errorMsg, ["multiple_start_day_invalid"]: false})
+
+
+                if(values.multiple_end_day != "" && e.target.value != ""){
+
+                    if(!isValidDate(e.target.value, values.multiple_end_day)){
+                        setErrorMsg({... errorMsg, ["multiple_start_end_invalid"]: true})
+                    }else{
+                        setErrorMsg({... errorMsg, ["multiple_start_end_invalid"]: false})
+                    }
+                }
             }
         }
         
@@ -87,7 +107,7 @@ export default function RequestLeaveModal({ leave, setLeave }) {
 
                 if(values.multiple_start_day != "" && e.target.value != ""){
 
-                    if(!isValidDate(values.multiple_start_day, values.multiple_end_day)){
+                    if(!isValidDate(values.multiple_start_day, e.target.value)){
                         setErrorMsg({... errorMsg, ["multiple_start_end_invalid"]: true})
                     }else{
                         setErrorMsg({... errorMsg, ["multiple_start_end_invalid"]: false})
@@ -107,6 +127,9 @@ export default function RequestLeaveModal({ leave, setLeave }) {
         const num1 = parseInt(date1.replaceAll("-", ""))
         const num2 = parseInt(date2.replaceAll("-", ""))
         const result = num2 - num1
+        console.log("steven")
+        console.log(date1)
+        console.log(date2)
         
         return result > 0 ? true : false
     }
@@ -135,6 +158,14 @@ export default function RequestLeaveModal({ leave, setLeave }) {
         return `${year}-${stringMonth}-${stringDate}`
     }
 
+    function isSameDate(date1, date2){
+        const num1 = parseInt(date1.replaceAll("-", ""))
+        const num2 = parseInt(date2.replaceAll("-", ""))
+        const result = num2 - num1
+        
+        return result == 0 ? true : false
+    }
+
     function handleCancel(){
         setErrorMsg({
             type_leave_required: false,
@@ -149,12 +180,13 @@ export default function RequestLeaveModal({ leave, setLeave }) {
         setValues({
             type_leave: "",
             type_day: "single",
-            single_half_full: "full",
+            single_half_full: "0",
             single_day: "",
-            multiple_start_half_full: "full",
-            multiple_end_half_full: "full",
+            multiple_start_half_full: "0",
+            multiple_end_half_full: "0",
             multiple_start_day: "",
-            multiple_end_day: ""
+            multiple_end_day: "",
+            comments: ""
         })
         setLeave(false)
     }
@@ -171,6 +203,10 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                 if(!isValidDate(today, values.single_day)){
                     setErrorMsg({... errorMsg, ["single_day_invalid"]: true})
                     setLeave(true)
+                }else{
+                    setErrorMsg({... errorMsg, ["single_day_invalid"]: false})
+
+                    handleSendForm()
                 }
             }
         }else if(values.type_day == "multiple"){
@@ -204,9 +240,116 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                 setLeave(true)
                             }else{
                                 setErrorMsg({... errorMsg, ["multiple_start_end_invalid"]: false})
+
+                                handleSendForm()
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    function handleSendForm(){
+        if(url != undefined){
+            if(values.type_day == "single"){
+                try{
+                    fetch(`${url}request/leave?accountId=${auth.id}&date=${values.single_day}&type=${values.type_leave}&length=${values.single_half_full}&note=${values.comments}`, {
+                        mode: 'cors',
+                        method: "POST",
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'token': auth.token
+                        }
+                    })
+                    setLeave(false)
+                    navigate('/notification')
+                }catch(error){
+                    console.log(error)
+                }
+            }
+    
+            if(values.type_day == "multiple"){
+                const end_day = values.multiple_end_day
+                let start_day = values.multiple_start_day
+
+                try{
+                    fetch(`${url}request/leave?accountId=${auth.id}&date=${start_day}&type=${values.type_leave}&length=${values.multiple_start_half_full}&note=${values.comments}`, {
+                        mode: 'cors',
+                        method: "POST",
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'token': auth.token
+                        }
+                    })
+                }catch(error){
+                    console.log(error)
+                }
+
+                while(!isSameDate(start_day, end_day)){
+                    let result = new Date(start_day)
+                    result.setDate(result.getDate() + 1)
+
+                    const date = result.getDate()
+                    const month = result.getMonth() + 1
+                    const year = result.getFullYear()
+                    
+                    let stringDate = ""
+                    let stringMonth = ""
+                    
+                    if(date < 10){
+                        stringDate = "0" + date.toString()
+                    }else{
+                        stringDate = date.toString()
+                    }
+            
+                    if(month < 10){
+                        stringMonth = "0" + month.toString()
+                    }else{
+                        stringMonth = month.toString()
+                    }
+
+                    start_day = `${year}-${stringMonth}-${stringDate}`
+
+                    if(isSameDate(start_day, end_day)){
+                        try{
+                            fetch(`${url}request/leave?accountId=${auth.id}&date=${start_day}&type=${values.type_leave}&length=${values.multiple_end_half_full}&note=${values.comments}`, {
+                                mode: 'cors',
+                                method: "POST",
+                                headers: {
+                                    'Access-Control-Allow-Origin': '*',
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'token': auth.token
+                                }
+                            })
+                            setLeave(false)
+                            navigate('/notification')
+                            // navigation
+                        }catch(error){
+                            console.log(error)
+                        }
+                    }else{
+                        try{
+                            fetch(`${url}request/leave?accountId=${auth.id}&date=${start_day}&type=${values.type_leave}&length=0&note=${values.comments}`, {
+                                mode: 'cors',
+                                method: "POST",
+                                headers: {
+                                    'Access-Control-Allow-Origin': '*',
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'token': auth.token
+                                }
+                            })
+                        }catch(error){
+                            console.log(error)
+                        }
+                    }
+
                 }
             }
         }
@@ -250,16 +393,16 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                             <ColumnName className="mb-2">Type of Leave</ColumnName>
                             <Form.Select name="type_leave" aria-label="Default select example" className='drop-down' onChange={(e) => setValue(e)}>
                                 <option default>---please select---</option>
-                                <option value="Annual Leave">Annual Leave</option>
-                                <option value="Study Leave">Study Leave</option>
+                                <option value="0">Annual Leave</option>
+                                <option value="1">Study Leave</option>
 
-                                <option value="Not On Call">Not On Call</option>
-                                <option value="Others">Others(specify below)</option>
+                                <option value="2">Not On Call</option>
+                                <option value="9">Others(specify below)</option>
                             </Form.Select>
 
                             {
                                 errorMsg.type_leave_required &&
-                                <ErrorMessage className="mb-0">You haven't select one of options</ErrorMessage>
+                                <ErrorMessage className="mb-0">this field cannot be empty</ErrorMessage>
                             }
                         </div>
 
@@ -285,46 +428,46 @@ export default function RequestLeaveModal({ leave, setLeave }) {
 
                                     <div className="d-flex">
                                         {
-                                            values.single_half_full == "am" && 
+                                            values.single_half_full == "1" && 
                                             <Form.Select 
                                                 id="single_half_full" 
                                                 name="single_half_full" 
                                                 className="p-2 me-1" 
                                                 style={{ width: '30%' }} 
                                                 onChange={(e) => setValue(e)}
-                                                defaultValue="am"
+                                                defaultValue="1"
                                             >
-                                                <option value="full">Full</option>  
-                                                <option value="am">a.m.</option>
-                                                <option value="pm">p.m.</option>
+                                                <option value="0">Full</option>  
+                                                <option value="1">a.m.</option>
+                                                <option value="2">p.m.</option>
                                             </Form.Select>
                                             ||
-                                            values.single_half_full == "pm" && 
+                                            values.single_half_full == "2" && 
                                             <Form.Select 
                                                 id="single_half_full" 
                                                 name="single_half_full" 
                                                 className="p-2 me-1" 
                                                 style={{ width: '30%' }} 
                                                 onChange={(e) => setValue(e)}
-                                                defaultValue="pm"
+                                                defaultValue="2"
                                             >
-                                                <option value="full">Full</option>  
-                                                <option value="am">a.m.</option>
-                                                <option value="pm">p.m.</option>
+                                                <option value="0">Full</option>  
+                                                <option value="1">a.m.</option>
+                                                <option value="2">p.m.</option>
                                             </Form.Select>
                                             ||
-                                            values.single_half_full == "full" && 
+                                            values.single_half_full == "0" && 
                                             <Form.Select 
                                                 id="single_half_full" 
                                                 name="single_half_full" 
                                                 className="p-2 me-1" 
                                                 style={{ width: '30%' }} 
                                                 onChange={(e) => setValue(e)}
-                                                defaultValue="full"
+                                                defaultValue="0"
                                             >
-                                                <option value="full">Full</option>  
-                                                <option value="am">a.m.</option>
-                                                <option value="pm">p.m.</option>
+                                                <option value="0">Full</option>  
+                                                <option value="1">a.m.</option>
+                                                <option value="2">p.m.</option>
                                             </Form.Select>
                                         }
                                         
@@ -332,17 +475,17 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                             values.single_day != "" &&
                                             <Form.Control type='date' name="single_day" value={values.single_day} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)} />
                                             ||
-                                            <Form.Control type='date' name="single_day" value={toDay} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)} />
+                                            <Form.Control type='date' name="single_day" value="0" className="w-100 p-2 ms-1" onChange={(e) => setValue(e)} />
                                         }
 
                                     </div>
                                     {
                                         errorMsg.single_day_required &&
-                                        <ErrorMessage className="mb-0">You haven't select one of date</ErrorMessage>
+                                        <ErrorMessage className="mb-0">this field cannot be empty</ErrorMessage>
                                     }
                                     {
                                         errorMsg.single_day_invalid &&
-                                        <ErrorMessage className="mb-0">Wrong date</ErrorMessage>
+                                        <ErrorMessage className="mb-0">start day cannot be earlier than today</ErrorMessage>
                                     }
                                 </div>))
                             ||
@@ -352,46 +495,46 @@ export default function RequestLeaveModal({ leave, setLeave }) {
 
                                     <div className="d-flex">
                                         {
-                                            values.multiple_start_half_full == "am" &&
+                                            values.multiple_start_half_full == "1" &&
                                             <Form.Select 
                                                 id="multiple_start_half_full" 
                                                 name="multiple_start_half_full" 
                                                 className="p-2 me-1" 
                                                 style={{ width: '30%' }} 
                                                 onChange={(e) => setValue(e)}
-                                                defaultValue="am"
+                                                defaultValue="1"
                                             >
-                                                <option value="full">Full</option>
-                                                <option value="am">a.m.</option>
-                                                <option value="pm">p.m.</option>
+                                                <option value="0">Full</option>
+                                                <option value="1">a.m.</option>
+                                                <option value="2">p.m.</option>
                                             </Form.Select>
                                             ||
-                                            values.multiple_start_half_full == "pm" &&
+                                            values.multiple_start_half_full == "2" &&
                                             <Form.Select 
                                                 id="multiple_start_half_full" 
                                                 name="multiple_start_half_full" 
                                                 className="p-2 me-1" 
                                                 style={{ width: '30%' }} 
                                                 onChange={(e) => setValue(e)}
-                                                defaultValue="pm"
+                                                defaultValue="2"
                                             >
-                                                <option value="full" >Full</option>
-                                                <option value="am">a.m.</option>
-                                                <option value="pm">p.m.</option>
+                                                <option value="0" >Full</option>
+                                                <option value="1">a.m.</option>
+                                                <option value="2">p.m.</option>
                                             </Form.Select>
                                             ||
-                                            values.multiple_start_half_full == "full" &&
+                                            values.multiple_start_half_full == "0" &&
                                             <Form.Select 
                                                 id="multiple_start_half_full" 
                                                 name="multiple_start_half_full" 
                                                 className="p-2 me-1" 
                                                 style={{ width: '30%' }} 
                                                 onChange={(e) => setValue(e)}
-                                                defaultValue="full"
+                                                defaultValue="0"
                                             >
-                                                <option value="full">Full</option>
-                                                <option value="am">a.m.</option>
-                                                <option value="pm">p.m.</option>
+                                                <option value="0">Full</option>
+                                                <option value="1">a.m.</option>
+                                                <option value="2">p.m.</option>
                                             </Form.Select>
                                         }
 
@@ -399,17 +542,17 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                             values.multiple_start_day != "" &&
                                             <Form.Control type='date' name="multiple_start_day" value={values.multiple_start_day} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
                                             ||
-                                            <Form.Control type='date' name="multiple_start_day" value={toDay} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
+                                            <Form.Control type='date' name="multiple_start_day" value="0" className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
                                         }
                                     </div>
 
                                         {
                                             errorMsg.multiple_start_day_required &&
-                                            <ErrorMessage className="mb-0">You haven't select one of date</ErrorMessage>
+                                            <ErrorMessage className="mb-0">this field cannot be empty</ErrorMessage>
                                         }
                                         {
                                             errorMsg.multiple_start_day_invalid &&
-                                            <ErrorMessage className="mb-0">Wrong date</ErrorMessage>
+                                            <ErrorMessage className="mb-0">start day cannot be earlier than today</ErrorMessage>
                                         }
 
                                     <ColumnName className="my-2">End Date</ColumnName>
@@ -417,46 +560,46 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                     <div className="d-flex">
 
                                         {
-                                            values.multiple_end_half_full == "am" &&
+                                            values.multiple_end_half_full == "1" &&
                                             <Form.Select 
                                                 id="multiple_end_half_full" 
                                                 name="multiple_end_half_full" 
                                                 className="p-2 me-1" 
                                                 style={{ width: '30%' }} 
                                                 onChange={(e) => setValue(e)}
-                                                defaultValue="am"
+                                                defaultValue="1"
                                             >
-                                                <option value="full">Full</option>
-                                                <option value="am">a.m.</option>
-                                                <option value="pm">p.m.</option>
+                                                <option value="0">Full</option>
+                                                <option value="1">a.m.</option>
+                                                <option value="2">p.m.</option>
                                             </Form.Select>
                                             ||
-                                            values.multiple_end_half_full == "pm" &&
+                                            values.multiple_end_half_full == "2" &&
                                             <Form.Select 
                                                 id="multiple_end_half_full" 
                                                 name="multiple_end_half_full" 
                                                 className="p-2 me-1" 
                                                 style={{ width: '30%' }} 
                                                 onChange={(e) => setValue(e)}
-                                                defaultValue="pm"
+                                                defaultValue="2"
                                             >
-                                                <option value="full">Full</option>
-                                                <option value="am">a.m.</option>
-                                                <option value="pm">p.m.</option>
+                                                <option value="0">Full</option>
+                                                <option value="1">a.m.</option>
+                                                <option value="2">p.m.</option>
                                             </Form.Select>
                                             ||
-                                            values.multiple_end_half_full == "full" &&
+                                            values.multiple_end_half_full == "0" &&
                                             <Form.Select 
                                                 id="multiple_end_half_full" 
                                                 name="multiple_end_half_full" 
                                                 className="p-2 me-1" 
                                                 style={{ width: '30%' }} 
                                                 onChange={(e) => setValue(e)}
-                                                defaultValue="full"
+                                                defaultValue="0"
                                             >
-                                                <option value="full">Full</option>
-                                                <option value="am">a.m.</option>
-                                                <option value="pm">p.m.</option>
+                                                <option value="0">Full</option>
+                                                <option value="1">a.m.</option>
+                                                <option value="2">p.m.</option>
                                             </Form.Select>
                                         }
                                         
@@ -464,21 +607,21 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                             values.multiple_end_day != "" &&
                                             <Form.Control type='date' name="multiple_end_day" value={values.multiple_end_day} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
                                             ||
-                                            <Form.Control type='date' name="multiple_end_day" value={toDay} className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
+                                            <Form.Control type='date' name="multiple_end_day" value="0" className="w-100 p-2 ms-1" onChange={(e) => setValue(e)}/>
                                         }
 
                                     </div>
                                     {
                                         errorMsg.multiple_end_day_required &&
-                                        <ErrorMessage className="mb-0">You haven't select one of date</ErrorMessage>
+                                        <ErrorMessage className="mb-0">this field cannot be empty</ErrorMessage>
                                     }
                                     {
                                         errorMsg.multiple_end_day_invalid &&
-                                        <ErrorMessage className="mb-0">Wrong date</ErrorMessage>
+                                        <ErrorMessage className="mb-0">end day cannot be earlier than today</ErrorMessage>
                                     }
                                     {
                                         errorMsg.multiple_start_end_invalid &&
-                                        <ErrorMessage className="mb-0">Wrong date</ErrorMessage>
+                                        <ErrorMessage className="mb-0">end day cannot be earlier than start day</ErrorMessage>
                                     }
                                 </div>))
                         }

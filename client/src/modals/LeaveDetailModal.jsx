@@ -15,7 +15,7 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
 
     useEffect(() => {
         if(url != undefined){
-            notification !== undefined &&
+            notification !== undefined && notification.accountId != undefined &&
             fetch(`${url}account/${notification.accountId}`, {
                 mode: 'cors',
                 method: "GET",
@@ -31,15 +31,73 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
         }
     }, [notification])
 
+    function handleButton(e){
+        const wording = e.target.innerHTML
+        console.log(e.target.innerHTML)
+        console.log(notification)
+
+        if(url != undefined){
+            try{
+                if(wording == "Approve"){
+                    fetch(`${url}notification/${notification.id}?accountId=3&status=1`, {
+                        mode: 'cors',
+                        method: "PATCH",
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'token': auth.token
+                        }
+                    })
+                }
+                if(wording == "Reject"){
+                    fetch(`${url}notification/${notification.id}?accountId=3&status=0`, {
+                        mode: 'cors',
+                        method: "PATCH",
+                        headers: {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'token': auth.token
+                        }
+                    })
+                }
+            }catch(error){
+                console.log(error)
+            }
+        }
+    }
+
     return (
         <>
             <Modal show={leaveDetail}>
                 <ModalContainer>
-                    <ModalTitle className="my-5">Request Detail</ModalTitle>
+                    <ModalTitle className="mt-5 mb-3">Request Detail</ModalTitle>
+
+                    <div className="d-flex justify-content-end">
+                        {
+                            notification.accountId == auth.id && notification.status == 1 &&
+                            <ApprovalButton disabled>Approved</ApprovalButton>
+                            || notification.accountId == auth.id && notification.status == 2 &&
+                            <DenialButton disabled>Rejected</DenialButton>
+                            || notification.accountId == auth.id && notification.status == 0 &&
+                            <PendingButton disabled>Pending</PendingButton>
+                            || notification.accountId != auth.id && notification.status == 0 &&
+                            <div className="d-flex">
+                                <DenialButton onClick={(e) => handleButton(e)} className="me-1 px-2">
+                                    Reject
+                                </DenialButton>
+                                <ApprovalButton onClick={(e) => handleButton(e)} className="ms-1 px-2">
+                                    Approve
+                                </ApprovalButton>
+                            </div>
+                        }
+                    </div>
+
                     <div className="d-block">
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
-                                <i className="bi bi-person-fill" style={{ fontSize: '30px' }}></i>
+                                <i className="bi bi-person-fill" style={{ color: '#035eb8', fontSize: '30px' }}></i>
                             </div>
 
                             <div className="d-flex">
@@ -54,7 +112,7 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
 
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
-                                <i className="bi bi-calendar3" style={{ fontSize: '30px' }}></i>
+                                <i className="bi bi-calendar3" style={{ color: '#035eb8', fontSize: '30px' }}></i>
                             </div>
 
                             <div className="d-flex">
@@ -69,7 +127,7 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
 
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
-                                <i className="bi bi-clipboard2-minus-fill" style={{ fontSize: '30px' }}></i>
+                                <i className="bi bi-clipboard2-minus-fill" style={{ color: '#035eb8', fontSize: '30px' }}></i>
                             </div>
 
                             <div className="d-flex">
@@ -93,7 +151,7 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
 
                         <div className="d-flex align-items-center my-3">
                             <div className="d-flex me-3">
-                                <i className="bi bi-chat-dots-fill" style={{ fontSize: '30px' }}></i>
+                                <i className="bi bi-chat-dots-fill" style={{ color: '#035eb8', fontSize: '30px' }}></i>
                             </div>
 
                             <div className="d-flex">
@@ -157,4 +215,43 @@ const RowInfo = styled.p`
     font-size: 18px;
     color: #035eb8;
     margin-bottom: 0px;
+`
+
+const ApprovalButton = styled.button`
+    background-color: #d9f5eebd;
+    min-width: 85px;
+    color: #168082;
+    border: none;
+    border-radius: 4px;
+
+    @media (max-width: 575px){
+        min-width: 70px;
+        font-size: 13px
+    }
+`
+
+const PendingButton = styled.button`
+    background-color: #E7E7E7;
+    min-width: 85px;
+    color: black;
+    border: none;
+    border-radius: 4px;
+
+    @media (max-width: 575px){
+        min-width: 70px;
+        font-size: 13px
+    }
+`
+
+const DenialButton = styled.button`
+    background-color: #FFE2E2;
+    min-width: 85px;
+    color: #B01C2E;
+    border: none;
+    border-radius: 4px;
+
+    @media (max-width: 575px){
+        min-width: 70px;
+        font-size: 13px
+    }
 `

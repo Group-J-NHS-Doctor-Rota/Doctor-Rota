@@ -112,14 +112,15 @@ const NotificationPage = () => {
                                     || notification.accountId == auth.id && notification.status == 0 &&
                                     <PendingButton disabled>Pending</PendingButton>
                                     || notification.accountId != auth.id && notification.status == 0 &&
-                                    <div className="d-flex">
-                                        <DenialButton className="me-1 px-2">
-                                            Reject
-                                        </DenialButton>
-                                        <ApprovalButton className="ms-1 px-2">
-                                            Approve
-                                        </ApprovalButton>
-                                    </div>
+                                    <PendingButton disabled>Pending</PendingButton>
+                                    // <div className="d-flex">
+                                    //     <DenialButton className="me-1 px-2">
+                                    //         Reject
+                                    //     </DenialButton>
+                                    //     <ApprovalButton className="ms-1 px-2">
+                                    //         Approve
+                                    //     </ApprovalButton>
+                                    // </div>
                                 }
                             </div>
                         </MessageInfo >
@@ -213,7 +214,7 @@ const DenialButton = styled.button`
 `
 
 const ApprovalButton = styled.button`
-    background-color: #EDFCF9;
+    background-color: #d9f5eebd;
     min-width: 85px;
     color: #168082;
     border: none;

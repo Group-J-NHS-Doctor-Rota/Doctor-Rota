@@ -6,7 +6,7 @@ const FormRadio = (props) => {
     return (
         <div className="d-flex align-items-center my-1">
             {
-                values[name] === value &&
+                values[name] == value &&
                 <input type="radio" id={id} name={name} value={value} onClick={(e) => handleClick(e)} defaultChecked/>
                 ||
                 <input type="radio" id={id} name={name} value={value} onClick={(e) => handleClick(e)}/>

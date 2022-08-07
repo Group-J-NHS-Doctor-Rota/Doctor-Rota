@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import useLocalStorage from '../hook/useLocalStorage'
 import FormRadio from './FormRadio';
@@ -6,37 +6,39 @@ import FormRadio from './FormRadio';
 import styled from 'styled-components'
 
 export default function FilterCard({ open, setOpen }){
+    const auth = JSON.parse(localStorage.getItem('auth'))
+    
     const [values, setValues] = useLocalStorage('filter', {
-        rota_type: "",
-        shifts_type: "",
-        member: ""
+        rota_type: "10",
+        shifts_type: "10",
+        member: "10"
     });
 
     const rotaTypes = [
         {
             id: 'first_on',
             name: 'rota_type',
-            value: 'first_on',
+            value: "1",
             label: 'First on'
         },{
             id: 'obstetric',
             name: 'rota_type',
-            value: 'obstetric',
+            value: "2",
             label: 'Obstetric'
         },{
             id: 'second_on',
             name: 'rota_type',
-            value: 'second_on',
+            value: "3",
             label: 'Second on'
         },{
             id: 'third_on',
             name: 'rota_type',
-            value: 'third_on',
+            value: "4",
             label: 'Third on'
         },{
             id: 'all',
             name: 'rota_type',
-            value: 'all',
+            value: "10",
             label: 'All'
         }
     ]
@@ -44,27 +46,27 @@ export default function FilterCard({ open, setOpen }){
     const typesShift = [
         {   id: "theatre",
             name: "shifts_type",
-            value: "theatre",
+            value: "0",
             label: "Theatre day"
         },{
             id: 'night',
             name: 'shifts_type',
-            value: 'night',
+            value: "2",
             label: 'Night shifts'
         },{
             id: "long",
             name: "shifts_type",
-            value: "long",
+            value: "1",
             label: "Long day"
         },{
             id: "off day",
             name: "shifts_type",
-            value: "off day",
+            value: "3",
             label: "Trainee off day"
         },{
             id: 'all',
             name: 'shifts_type',
-            value: 'all',
+            value: "10",
             label: 'All'
         }
     ]
@@ -73,12 +75,12 @@ export default function FilterCard({ open, setOpen }){
         {
             id: 'individual',
             name: 'member',
-            value: 'individual',
+            value: "0",
             label: 'Individual'
         },{
             id: 'all',
             name: 'member',
-            value: 'all',
+            value: "10",
             label: 'All'
         }
     ]
@@ -118,23 +120,28 @@ export default function FilterCard({ open, setOpen }){
                             ))
                         }
                     </div>
-
-                    <FilterTitle className="my-1">Members</FilterTitle>
-                    <div className="d-block">
-                        {
-                            members.map((member)=>(
-                                <FormRadio 
-                                    key={member.id}
-                                    {...member}
-                                    values={values}
-                                    handleClick={handleClick}
-                                />
-                            ))
-                        }
-                    </div>
+                    
+                    {
+                        auth.level == 1 &&
+                        <div>
+                            <FilterTitle className="my-1">Members</FilterTitle>
+                            <div className="d-block">
+                                {
+                                    members.map((member)=>(
+                                        <FormRadio 
+                                            key={member.id}
+                                            {...member}
+                                            values={values}
+                                            handleClick={handleClick}
+                                        />
+                                    ))
+                                }
+                            </div>
+                        </div>
+                    }
 
                     <div className="d-flex justify-content-center mt-3">
-                        <Button type="submit" onClick={() => setOpen(false)}>Submit</Button>
+                        <Button type="button" onClick={() => setOpen(false)}>Close</Button>
                     </div>
                 </form>
             </FilterRegion>

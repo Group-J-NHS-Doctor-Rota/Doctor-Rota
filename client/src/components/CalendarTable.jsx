@@ -11,6 +11,7 @@ import styled from 'styled-components'
 
 // https://date.nager.at/swagger/index.html
 // https://day.js.org/docs/en/plugin/dev-helper
+// https://www.youtube.com/watch?v=YmpWOTT2qdw
 
 export default function CalendarTable({ year, month }) {
     const { width } = useWindowDimensions();
@@ -31,6 +32,7 @@ export default function CalendarTable({ year, month }) {
     const { getUrl } = useUrl()
 
     const url =  getUrl()
+
 
     useEffect(() => {
         fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/GB`)
@@ -58,6 +60,7 @@ export default function CalendarTable({ year, month }) {
         .then(response => response.json())
         .then(data => setAllShift(data.shifts))
     }, [year])
+
 
     function getMonth(date) {
         if (date.slice(5, 7)[0] === 0) {
@@ -103,6 +106,7 @@ export default function CalendarTable({ year, month }) {
         for (let i = 1; i < number + 1; i++) {
             let result = getHoliday(i)
             content.push(
+                allShift != undefined &&
                 ((result == false) &&
                     (<GridItems key={i}>
                         <h3 className="my-2 mx-2">{i}</h3>

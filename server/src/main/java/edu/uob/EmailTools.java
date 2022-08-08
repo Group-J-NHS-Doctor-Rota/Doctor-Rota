@@ -5,21 +5,16 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
-import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class EmailTools {
-    String username;
+    String emailFrom;
     String pwd;
 
-    public EmailTools(String name, String password) {
-        username = name;
-        pwd = password;
+    public EmailTools() {
+        emailFrom = ConnectionTools.getEnvOrSysVariable("EMAIL_FROM");
+        pwd = ConnectionTools.getEnvOrSysVariable("EMAIL_PASSWORD");
     }
 
     public JavaMailSender getJavaMailSender() {
@@ -31,7 +26,7 @@ public class EmailTools {
 //        mailSender.setHost("smtp-mail.outlook.com");
 //        mailSender.setPort(587);
 
-        mailSender.setUsername(username);
+        mailSender.setUsername(emailFrom);
         mailSender.setPassword(pwd);
 
         Properties props = mailSender.getJavaMailProperties();
@@ -63,24 +58,24 @@ public class EmailTools {
         };
         mailSender.send(mailMessage);
 
-    // use host
-//        String host = "xxx.xxx.8.11";  // use real ip address to replace the fake ip here
-//        Properties properties = System.getProperties();
-//        properties.setProperty("mail.smtp.host", host);
-//        Session session = Session.getDefaultInstance(properties);
-//
-//        try{
-//            MimeMessage message = new MimeMessage(session);
-//            message.setFrom(new InternetAddress("no <no-reply@test.com>"));
-//            message.addRecipient(Message.RecipientType.TO,
-//                    new InternetAddress(to));
-//            message.setSubject("test test");
-//            message.setText("test");
-//            Transport.send(message);
-//        }catch (MessagingException e) {
-//            throw new MessagingException(e.toString());
-//        }
+    }
 
+    public String passwordResetMsg(String pwd) {
+        //todo modify the message content
+        //todo invalid html format
+        String message = "<p><h2>Reset your password</h2></p>"
+                + "<p>Hello,</p>"
+                + "<p>You have requested to reset your password.</p>"
+                + "<p>Please use this temporary password to login:</p>"
+                + "<p><h3>" + pwd + "</h3></p>"
+                + "<p>When you login successfully, please change your password to your own one.</p>"
+                + "<p>If you do not want to reset your password, ignore this email.</p>";
+        return message;
+    }
+
+    public String accountCreateMsg(String username) {
+        String message = "";
+        return message;
     }
 
 }

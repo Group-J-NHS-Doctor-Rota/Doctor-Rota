@@ -8,11 +8,12 @@ public class EmailTests {
 
     @Test
     void testEmailTools() throws MessagingException {
-        String from = ConnectionTools.getEnvOrSysVariable("EMAIL_FROM");
-        String emailPassword = ConnectionTools.getEnvOrSysVariable("EMAIL_PASSWORD");
+        //todo delete
+//        String from = ConnectionTools.getEnvOrSysVariable("EMAIL_FROM");
+//        String emailPassword = ConnectionTools.getEnvOrSysVariable("EMAIL_PASSWORD");
         String to = ConnectionTools.getEnvOrSysVariable("EMAIL_TO");
         // Gmail:
-        EmailTools email = new EmailTools(from, emailPassword);
+        EmailTools email = new EmailTools();
         email.sendSimpleMessage(to, "email function test", "test test");
     }
 }

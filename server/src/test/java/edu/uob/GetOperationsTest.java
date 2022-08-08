@@ -44,8 +44,8 @@ public class GetOperationsTest {
             assertTrue(ConnectionTools.accountIdExists(id2, c));
 
             // Add test data for leave requests and notifications
-            SQL = "INSERT INTO leaveRequests (id, accountId, date, type, note, status) " +
-                    "VALUES (?, ?, '2021-09-07', 0, '', 0), (?, ?, '2021-09-08', 1, 'Comment here', 1); " +
+            SQL = "INSERT INTO leaveRequests (id, accountId, date, type, note, status, length) " +
+                    "VALUES (?, ?, '2021-09-07', 0, '', 0, 0), (?, ?, '2021-09-08', 1, 'Comment here', 1, 1); " +
                     "INSERT INTO notifications (type, detailId) " +
                     "VALUES (0, ?), (0, ?);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
@@ -60,10 +60,8 @@ public class GetOperationsTest {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertTrue(rootNode.get("leaveRequests").size() >= 2); // Might be greater than 2 as data may already be in table
-            assertTrue(response.getBody().toString().contains("leaveRequestId\":"+id1+",\"accountId\":"+id1+
-                    ",\"date\":\"2021-09-07\",\"type\":0,\"note\":\"\",\"status\":0}"));
-            assertTrue(response.getBody().toString().contains("leaveRequestId\":"+id2+",\"accountId\":"+id2+
-                    ",\"date\":\"2021-09-08\",\"type\":1,\"note\":\"Comment here\",\"status\":1}"));
+            assertTrue(response.getBody().toString().contains("leaveRequestId\":"+id1));
+            assertTrue(response.getBody().toString().contains("leaveRequestId\":"+id2));
             // Check each notification has required fields
             int numberOfNotifications = rootNode.get("leaveRequests").size();
             for(int i = 0; i < numberOfNotifications; i++) {
@@ -75,13 +73,27 @@ public class GetOperationsTest {
                 assertTrue(notification.has("type"));
                 assertTrue(notification.has("note"));
                 assertTrue(notification.has("status"));
+                if(notification.get("leaveRequestId").asInt() == id2) {
+                    assertEquals(id1, notification.get("accountId").asInt());
+                    assertEquals("2021-09-08", notification.get("date").asText());
+                    assertEquals(1, notification.get("type").asInt());
+                    assertEquals("", notification.get("note").asText());
+                    assertEquals(1, notification.get("status").asInt());
+                    assertEquals(1, notification.get("length").asInt());
+                }
             }
             // Check response expecting one notification
             response = GetOperations.getNotifications(id1);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertEquals(1, rootNode.get("leaveRequests").size());
-            assertTrue(response.getBody().toString().contains("leaveRequestId\":"+id1+",\"accountId\":"+id1+
-                    ",\"date\":\"2021-09-07\",\"type\":0,\"note\":\"\",\"status\":0}"));
+            JsonNode leaveRequest = rootNode.get("leaveRequests").get(0);
+            assertEquals(id1, leaveRequest.get("leaveRequestId").asInt());
+            assertEquals(id1, leaveRequest.get("accountId").asInt());
+            assertEquals("2021-09-07", leaveRequest.get("date").asText());
+            assertEquals(0, leaveRequest.get("type").asInt());
+            assertEquals("", leaveRequest.get("note").asText());
+            assertEquals(0, leaveRequest.get("status").asInt());
+            assertEquals(0, leaveRequest.get("length").asInt());
             // Check response expecting no notifications (no account)
             response = GetOperations.getNotifications(1000000000);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));

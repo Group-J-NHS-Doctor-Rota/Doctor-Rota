@@ -16,7 +16,7 @@ public class GetOperations {
 
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            String SQL = "SELECT N.id, L.id AS leaveRequestId, L.accountId, L.date, L.type, L.note, L.status " +
+            String SQL = "SELECT N.id, L.id AS leaveRequestId, L.accountId, L.date, L.type, L.note, L.status, L.length " +
                     "FROM notifications N " +
                     "LEFT JOIN leaveRequests L on N.detailId = L.id " +
                     "WHERE N.type = 0 " +
@@ -39,6 +39,7 @@ public class GetOperations {
                     objectNodeRow.put("type", r.getInt("type"));
                     objectNodeRow.put("note", r.getString("note"));
                     objectNodeRow.put("status", r.getInt("status"));
+                    objectNodeRow.put("length", r.getInt("length"));
                     arrayNode.add(objectNodeRow);
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);

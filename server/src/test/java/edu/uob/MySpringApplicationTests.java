@@ -59,7 +59,7 @@ public class MySpringApplicationTests {
 		// Other random values to use
 		String accountId = TestTools.getTestAccountId()+"";
 		String notificationId = TestTools.getTestAccountId()+"";
-		String username = RandomStringUtils.randomAlphabetic(12);
+		String username = TestTools.getRandomUsername();
 		String password1 = RandomStringUtils.randomAlphanumeric(12);
 		String password2 = RandomStringUtils.randomAlphanumeric(12);
 		// Test put working days

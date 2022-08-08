@@ -12,16 +12,18 @@ public class PostOperationsTests {
 
     @Test
     void testPostLeaveRequest() throws SQLException {
-        // Get random id to test
+        // Get random id and username to test
         int id1 = TestTools.getTestAccountId();
+        String username1 = TestTools.getRandomUsername();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Create new account with id (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
-            String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
-                    "VALUES (?, 'Testy Tim', 'dfjghkjhk', 's6w7ju', 'tim@test.com', 15, 15, 48, 0);";
+            String SQL = "INSERT INTO accounts (id, username, password, email) " +
+                    "VALUES (?, ?, 'dfjghkjhk', 'tim@test.com');";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
+                s.setString(2, username1);
                 s.executeUpdate();
             }
             // Check account creation
@@ -82,7 +84,7 @@ public class PostOperationsTests {
     @Test
     void testPostAccount() {
         // Make new account
-        String username = RandomStringUtils.randomAlphabetic(20);
+        String username = TestTools.getRandomUsername();
         String email = RandomStringUtils.randomAlphabetic(16);
         int accountId = 0; //Needs to have value and 0 will always cause exception if not overwritten
         PostOperations.postAccount(username, email);
@@ -124,7 +126,7 @@ public class PostOperationsTests {
     @Test
     void testPostAccountWithoutEmail() {
         // Make new account
-        String username = RandomStringUtils.randomAlphabetic(20);
+        String username = TestTools.getRandomUsername();
         int accountId = 0; //Needs to have value and 0 will always cause exception if not overwritten
         PostOperations.postAccount(username, null);
         // Try to make new account with same username

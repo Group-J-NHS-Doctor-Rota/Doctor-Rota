@@ -11,16 +11,18 @@ public class PutOperationsTests {
 
     @Test
     void testPutWorkingDays() {
-        // Get random id to test
+        // Get random id and username to test
         int id1 = TestTools.getTestAccountId();
+        String username1 = TestTools.getRandomUsername();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Create new account with id (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
-            String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
-                    "VALUES (?, 'Test McTester', 'ndsjkfgndsfpgn', '98765', 'mctester@test.com', 15, 15, 48, 0);";
+            String SQL = "INSERT INTO accounts (id, username, password, email) " +
+                    "VALUES (?, ?, 'ndsjkfgndsfpgn', 'mctester@test.com');";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
+                s.setString(2, username1);
                 s.executeUpdate();
             }
             // Check account creation
@@ -76,17 +78,19 @@ public class PutOperationsTests {
 
     @Test
     public void testPutFixedShift() {
-        // Get random id to test
+        // Get random id and username to test
         int id1 = TestTools.getTestAccountId();
+        String username1 = TestTools.getRandomUsername();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             Date date1 = Date.valueOf("1922-07-18");
             // Create new account with id (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
-            String SQL = "INSERT INTO accounts (id, username, password, salt, email, annualLeave, studyLeave, workingHours, level) " +
-                    "VALUES (?, '070 Test User', 'pwd999999070', '9070', 'test_user070@test.com', 15, 15, 48, 0);";
+            String SQL = "INSERT INTO accounts (id, username, password, email) " +
+                    "VALUES (?, ?, 'pwd999999070', 'test_user070@test.com');";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
+                s.setString(2, username1);
                 s.executeUpdate();
             }
             // Check account creation

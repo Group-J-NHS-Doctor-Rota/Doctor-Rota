@@ -163,7 +163,9 @@ public class PatchOperations {
                 s.setString(1, hashedPassword);
                 s.setString(2, username);
                 s.executeUpdate();
-                // email users:
+            }
+            // email users:
+            if (email != null && !email.isBlank()) {
                 EmailTools emailTools = new EmailTools();
                 String msg = emailTools.passwordResetMsg(hashedPassword);
                 emailTools.sendSimpleMessage(email, "reset", msg);

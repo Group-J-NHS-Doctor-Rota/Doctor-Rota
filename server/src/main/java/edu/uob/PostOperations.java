@@ -79,7 +79,9 @@ public class PostOperations {
                 s.setString(1, username);
                 s.setString(2, Encryption.getRandomToken());
                 s.executeUpdate();
-                // email users:
+            }
+            // email users:
+            if (email != null && !email.isBlank()) {
                 EmailTools emailTools = new EmailTools();
                 String msg = emailTools.accountCreateMsg(username);
                 emailTools.sendSimpleMessage(email, "create new account", msg);

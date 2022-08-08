@@ -89,4 +89,43 @@ public class PostOperations {
     public static ResponseEntity<ObjectNode> postAccount(String username) {
         return postAccount(username, null);
     }
+
+    public static ResponseEntity<ObjectNode> postRotaGroup(String startDate, String endDate) {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Do the dates already exist
+            String SQL = "SELECT EXISTS (SELECT id FROM rotagroups WHERE startdate = cast(? AS date) AND enddate = cast(? AS date)); ";
+            boolean datesExist;
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, startDate);
+                s.setString(2, endDate);
+                ResultSet r = s.executeQuery();
+                r.next();
+                datesExist = r.getBoolean(1);
+            }
+            // Yes, set only to true
+            if(datesExist) {
+                SQL = "UPDATE rotagroups SET status = false WHERE 1=1; " +
+                        "UPDATE rotagroups SET status = true WHERE startdate = cast(? AS date) AND enddate = cast(? AS date);";
+                try(PreparedStatement s = c.prepareStatement(SQL)) {
+                    s.setString(1, startDate);
+                    s.setString(2, endDate);
+                    s.executeUpdate();
+                }
+                // No, create new as only true
+            } else {
+                SQL = "UPDATE rotagroups SET status = false WHERE 1=1; " +
+                        "INSERT INTO rotaGroups (startdate, enddate, status) VALUES (?, ?, TRUE);";
+                try(PreparedStatement s = c.prepareStatement(SQL)) {
+                    s.setString(1, startDate);
+                    s.setString(2, endDate);
+                    s.executeUpdate();
+                }
+            }
+            return IndexController.okResponse("Rota group created successfully");
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
 }

@@ -166,4 +166,11 @@ public class IndexController {
         return PatchOperations.patchLogout(token);
     }
 
+    @PostMapping(value = "/rotagroup", produces = "application/json")
+    public ResponseEntity<ObjectNode> postRotaGroup(@RequestHeader String token, @RequestParam String startDate,
+                                                    @RequestParam String endDate) {
+        ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
+        return PostOperations.postRotaGroup(startDate, endDate);
+    }
+
 }

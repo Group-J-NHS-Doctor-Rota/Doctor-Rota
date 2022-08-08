@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
 
     const url =  getUrl()
 
-    async function login(username, password){
+    function login(username, password){
         try{
             if(url != undefined){
                 fetch(`${url}login?username=${username}`, {
@@ -37,13 +37,13 @@ export function AuthProvider({ children }) {
                 })
                 .then(response => response.json())
                 .then(data => {
-
-                    setValues({
-                        id: data.accountId,
-                        token: data.token,
-                        level: data.level
-                    })
-                    
+                    if(data.status == undefined){
+                        setValues({
+                            id: data.accountId,
+                            token: data.token,
+                            level: data.level
+                        })
+                    }
                 })
             }
         }catch(error){

@@ -40,7 +40,6 @@ export default function ProfileModal({ profile, setProfile }) {
             })
             .then(response => response.json())
             .then(result => {
-                console.log(result)
                 setInformation(result)
                 setInitial({
                     email: result.email,
@@ -95,7 +94,6 @@ export default function ProfileModal({ profile, setProfile }) {
                             'token': auth.token
                         }
                     })
-                    .then(response => console.log(response))
                 }
 
                 setProfile(false)

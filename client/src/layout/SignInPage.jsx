@@ -18,16 +18,15 @@ export default function SignIn() {
         password: ""
     });
 
+    const [error, setError] = useState(false)
+
     const inputs = [
         {
             id: 1,
             name: "username",
             type: "text",
             placeholder: "Username",
-            errorMessage:
-                "Incorrect username format",
             label: "Username",
-            pattern: "[a-zA-Z \./']+",
             required: true,
         },
         {
@@ -35,23 +34,29 @@ export default function SignIn() {
             name: "password",
             type: "password",
             placeholder: "Password",
-            errorMessage:
-                "Incorrect password format",
             label: "Password",
-            pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
             required: true,
         }
     ];
+    // errorMessage: "Incorrect username format",
+    // pattern: "[a-zA-Z \./']+",
+    // pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
+    // errorMessage: "Incorrect password format",
 
-    function handleSubmit(e){
+    async function handleSubmit(e){
         e.preventDefault();
 
         login(values.username, values.password)
-        // can try again
-
+        
         setTimeout(() => {
-            navigate('/')
-        }, 1000);
+            const auth = JSON.parse(localStorage.getItem('auth'))
+
+            if(auth){
+                navigate('/')
+            }else{
+                setError(true)
+            }
+        }, 600);
     };
 
     const onChange = (e) => {
@@ -69,7 +74,7 @@ export default function SignIn() {
                         alt="logo" width="120px" />
                 </div>
                 <form id="signin_form" action="#" method="post" onSubmit={handleSubmit}>
-                    <div className="mb-4">
+                    <div>
                         {/* <Title className="mb-5">Login</Title> */}
 
                         {inputs.map((input) => (
@@ -82,7 +87,12 @@ export default function SignIn() {
                         ))}
                     </div>
 
-                    <div className="d-flex justify-content-center mb-3">
+                    {
+                        error &&
+                        <ErrorMessage>account is not match with password</ErrorMessage>
+                    }
+
+                    <div className="d-flex justify-content-center mt-3">
                         <LoginBtn type="submit">LOGIN</LoginBtn>
                     </div>
                     <div className="d-flex justify-content-center mb-3"
@@ -140,3 +150,9 @@ const Link = styled.a`
     color: #035eb8;
 `
 
+const ErrorMessage = styled.p`
+    font-size: 12px;
+    padding: 3px;
+    color: red;
+    // display: none;
+`

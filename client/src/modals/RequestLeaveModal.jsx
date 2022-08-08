@@ -127,9 +127,6 @@ export default function RequestLeaveModal({ leave, setLeave }) {
         const num1 = parseInt(date1.replaceAll("-", ""))
         const num2 = parseInt(date2.replaceAll("-", ""))
         const result = num2 - num1
-        console.log("steven")
-        console.log(date1)
-        console.log(date2)
         
         return result > 0 ? true : false
     }

@@ -6,15 +6,16 @@ import { useUrl } from '../contexts/UrlContexts'
 
 const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
     const [accountInfo, setAccountInfo] = useState()
-
+    
     const auth = JSON.parse(localStorage.getItem('auth'))
-
+    
     const { getUrl } = useUrl()
-
+    
     const url =  getUrl()
-
+    
+    
     useEffect(() => {
-        if(url != undefined){
+        if(url != undefined && notification != undefined){
             notification !== undefined && notification.accountId != undefined &&
             fetch(`${url}account/${notification.accountId}`, {
                 mode: 'cors',
@@ -32,14 +33,12 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
     }, [notification])
 
     function handleButton(e){
-        const wording = e.target.innerHTML
-        console.log(e.target.innerHTML)
-        console.log(notification)
+        const wording = e.target.innerHTML        
 
         if(url != undefined){
             try{
                 if(wording == "Approve"){
-                    fetch(`${url}notification/${notification.id}?accountId=3&status=1`, {
+                    fetch(`${url}notification/${notification.id}?accountId=${notification.accountId}&status=1`, {
                         mode: 'cors',
                         method: "PATCH",
                         headers: {
@@ -51,7 +50,7 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
                     })
                 }
                 if(wording == "Reject"){
-                    fetch(`${url}notification/${notification.id}?accountId=3&status=0`, {
+                    fetch(`${url}notification/${notification.id}?accountId=${notification.accountId}&status=0`, {
                         mode: 'cors',
                         method: "PATCH",
                         headers: {
@@ -62,8 +61,11 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
                         }
                     })
                 }
+
+                setLeaveDetail(false)
             }catch(error){
                 console.log(error)
+                setLeaveDetail(true)
             }
         }
     }
@@ -73,26 +75,29 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
             <Modal show={leaveDetail}>
                 <ModalContainer>
                     <ModalTitle className="mt-5 mb-3">Request Detail</ModalTitle>
-
-                    <div className="d-flex justify-content-end">
-                        {
-                            notification.accountId == auth.id && notification.status == 1 &&
-                            <ApprovalButton disabled>Approved</ApprovalButton>
-                            || notification.accountId == auth.id && notification.status == 2 &&
-                            <DenialButton disabled>Rejected</DenialButton>
-                            || notification.accountId == auth.id && notification.status == 0 &&
-                            <PendingButton disabled>Pending</PendingButton>
-                            || notification.accountId != auth.id && notification.status == 0 &&
-                            <div className="d-flex">
-                                <DenialButton onClick={(e) => handleButton(e)} className="me-1 px-2">
-                                    Reject
-                                </DenialButton>
-                                <ApprovalButton onClick={(e) => handleButton(e)} className="ms-1 px-2">
-                                    Approve
-                                </ApprovalButton>
-                            </div>
-                        }
-                    </div>
+                    
+                    {
+                        notification != undefined &&
+                        <div className="d-flex justify-content-end">
+                            {
+                                notification.accountId == auth.id && notification.status == 1 &&
+                                <ApprovalButton disabled>Approved</ApprovalButton>
+                                || notification.accountId == auth.id && notification.status == 2 &&
+                                <DenialButton disabled>Rejected</DenialButton>
+                                || notification.accountId == auth.id && notification.status == 0 &&
+                                <PendingButton disabled>Pending</PendingButton>
+                                || notification.accountId != auth.id && notification.status == 0 &&
+                                <div className="d-flex">
+                                    <DenialButton onClick={(e) => handleButton(e)} className="me-1 px-2">
+                                        Reject
+                                    </DenialButton>
+                                    <ApprovalButton onClick={(e) => handleButton(e)} className="ms-1 px-2">
+                                        Approve
+                                    </ApprovalButton>
+                                </div>
+                            }
+                        </div>
+                    }
 
                     <div className="d-block">
                         <div className="d-flex align-items-center my-3">

@@ -83,7 +83,7 @@ public class PostOperationsTests {
     void testPostAccount() {
         // Make new account
         String username = RandomStringUtils.randomAlphabetic(20);
-        String email = RandomStringUtils.randomAlphabetic(16);
+        String email = RandomStringUtils.randomAlphabetic(16)+"@"+RandomStringUtils.randomAlphabetic(8)+".com";
         int accountId = 0; //Needs to have value and 0 will always cause exception if not overwritten
         PostOperations.postAccount(username, email);
         // Try to make new account with same username

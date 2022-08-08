@@ -163,7 +163,7 @@ public class PatchOperations {
                 s.setString(1, hashedPassword);
                 s.setString(2, username);
                 s.executeUpdate();
-                // send a email to user:
+                // email users:
                 EmailTools emailTools = new EmailTools();
                 String msg = emailTools.passwordResetMsg(hashedPassword);
                 emailTools.sendSimpleMessage(email, "reset", msg);

@@ -74,7 +74,11 @@ public class EmailTools {
     }
 
     public String accountCreateMsg(String username) {
-        String message = "";
+        //todo modify the message content
+        // todo invalid html format
+        String message = "<p><h2>Create account successfully</h2></p>"
+                + "<p>Hello " + username +",</p>"
+                + "<p>You have created an account on XXX website.</p>";
         return message;
     }
 

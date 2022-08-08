@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
 import java.sql.*;
 
 public class PostOperations {
@@ -78,10 +79,14 @@ public class PostOperations {
                 s.setString(1, username);
                 s.setString(2, Encryption.getRandomToken());
                 s.executeUpdate();
+                // email users:
+                EmailTools emailTools = new EmailTools();
+                String msg = emailTools.accountCreateMsg(username);
+                emailTools.sendSimpleMessage(email, "create new account", msg);
             }
             return IndexController.okResponse("Account creation successful for username: " + username);
             // Have to catch SQLException exception here
-        } catch (SQLException e) {
+        } catch (SQLException | MessagingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }

@@ -24,17 +24,28 @@ const ResetPasswordModal = ({ reset, setReset }) => {
     const inputs = [
         {
             id: 1,
-            name: "password",
+            name: "oldpassword",
             type: "password",
-            placeholder: "Password",
+            placeholder: "Old Password",
             errorMessage:
-                "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
-            label: "Password",
+                "This field is required",
+            label: "Old Password",
             pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
             required: true,
         },
         {
             id: 2,
+            name: "password",
+            type: "password",
+            placeholder: "Password",
+            errorMessage:
+                "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
+            label: "New Password",
+            pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
+            required: true,
+        },
+        {
+            id: 3,
             name: "confirmPassword",
             type: "password",
             placeholder: "Confirm Password",
@@ -162,35 +173,4 @@ const ConfirmButton = styled.button`
         font-size: 16px;
         min-width: 80px;
     }
-`
-
-const Label = styled.label`
-    color: #035eb8;
-    font-weight: bold;
-`
-
-const RowInfo = styled.p`
-    font-size: 16px;
-    color: #035eb8;
-    margin-bottom: 0px;
-`
-
-const Input = styled.input`
-    font-size: 16px !important;
-    width: 100%;
-    height: 36px;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-`
-
-const LockIcon = styled.i`
-    font-size: 20px;
-    cursor: pointer;
-`
-
-const ErrorMessage = styled.p`
-    font-size: 12px;
-    padding: 3px;
-    color: red;
 `

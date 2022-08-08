@@ -45,10 +45,13 @@ const CreateUsersModal = ({ create, setCreate }) => {
             errorMessage:
                 "Invalid Email!",
             label: "Email",
-            // pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
             required: true,
         }
     ];
+
+    const handleCancel = () => {
+
+    }
 
 
     return (
@@ -84,7 +87,7 @@ const CreateUsersModal = ({ create, setCreate }) => {
                                                     (
                                                         <>
                                                             <Icon className="bi bi-dash-circle"
-                                                                onClick={handleRemoveInput} />
+                                                                onClick={() => handleRemoveInput(index)} />
                                                         </>
                                                     )
                                                 }
@@ -102,22 +105,6 @@ const CreateUsersModal = ({ create, setCreate }) => {
                                             ))
                                         }
 
-                                        {/* <Input
-                                            className="my-1"
-                                            type="text"
-                                            placeholder="Username"
-                                            name="username"
-                                            value={user.username}
-                                            autoComplete="off"
-                                            onChange={e => onChange(e, index)} />
-                                        <Input
-                                            className="my-1"
-                                            type="text"
-                                            placeholder="Email"
-                                            name="email"
-                                            value={user.email}
-                                            autoComplete="off"
-                                            onChange={e => onChange(e, index)} /> */}
                                     </div>
 
                                 )
@@ -202,15 +189,6 @@ const ColumnName = styled.h3`
     font-weight: bold;
     color: #035eb8;
     margin-bottom: 0px;
-`
-
-const Input = styled.input`
-    font-size: 16px !important;
-    width: 100%;
-    height: 36px;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `
 
 const Icon = styled.i`

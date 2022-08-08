@@ -46,7 +46,7 @@ export default function CalendarTable({ year, month }) {
 
                 setBankHolidays(holidays)
             })
-
+        
         fetch(`${url}shift/${year}?accountId=${auth.id}`, {
             mode: 'cors',
             method: "GET",
@@ -60,7 +60,6 @@ export default function CalendarTable({ year, month }) {
         .then(response => response.json())
         .then(data => setAllShift(data.shifts))
     }, [year])
-
 
     function getMonth(date) {
         if (date.slice(5, 7)[0] === 0) {
@@ -92,7 +91,7 @@ export default function CalendarTable({ year, month }) {
     }
 
     const getContent = number => {
-        let content = [];
+        let content = [];        
         const theWeekResult = theWeek()
 
         if(width > 915){
@@ -105,33 +104,33 @@ export default function CalendarTable({ year, month }) {
 
         for (let i = 1; i < number + 1; i++) {
             let result = getHoliday(i)
-            content.push(
-                allShift != undefined &&
-                ((result == false) &&
-                    (<GridItems key={i}>
-                        <h3 className="my-2 mx-2">{i}</h3>
-                        <CalendarDay allShift={allShift} year={year} month={month} day={i}/>
-                    </GridItems>))
-                || ((result != false) &&
-                    (<GridItems key={i}>
-                        <div className="d-flex">
+                content.push(
+                    allShift != undefined &&
+                    ((result == false) &&
+                        (<GridItems key={i}>
                             <h3 className="my-2 mx-2">{i}</h3>
-                            {
-                                (result.length > 14 && width >= 1200 &&
-                                    <h3 className="my-2 mx-1">{result.slice(0, 14)} ...</h3>)
-                                ||
-                                (result.length > 14 && width >= 1100 && width < 1200 &&
-                                    <h3 className="my-2 mx-1">{result.slice(0, 10)} ...</h3>)
-                                ||
-                                (result.length > 8 && width >= 915 && width < 1200 &&
-                                    <h3 className="my-2 mx-1">{result.slice(0, 6)} ...</h3>)
-                                ||
-                                (<h3 className="my-2 mx-1">{result}</h3>)
-                            }
-                        </div>
-                        <CalendarDay allShift={allShift} year={year} month={month} day={i} holiday={result}/>
-                    </GridItems>))
-            )
+                            <CalendarDay allShift={allShift} year={year} month={month} day={i}/>
+                        </GridItems>))
+                    || ((result != false) &&
+                        (<GridItems key={i}>
+                            <div className="d-flex">
+                                <h3 className="my-2 mx-2">{i}</h3>
+                                {
+                                    (result.length > 14 && width >= 1200 &&
+                                        <h3 className="my-2 mx-1">{result.slice(0, 14)} ...</h3>)
+                                    ||
+                                    (result.length > 14 && width >= 1100 && width < 1200 &&
+                                        <h3 className="my-2 mx-1">{result.slice(0, 10)} ...</h3>)
+                                    ||
+                                    (result.length > 8 && width >= 915 && width < 1200 &&
+                                        <h3 className="my-2 mx-1">{result.slice(0, 6)} ...</h3>)
+                                    ||
+                                    (<h3 className="my-2 mx-1">{result}</h3>)
+                                }
+                            </div>
+                            <CalendarDay allShift={allShift} year={year} month={month} day={i} holiday={result}/>
+                        </GridItems>))
+                )
         }
         return content;
     }
@@ -139,7 +138,8 @@ export default function CalendarTable({ year, month }) {
     return (
         <Table className='mb-5'>
             <CalendarGrid>
-                {
+                {   
+                    allShift != undefined &&
                     (bigMonth.includes(month) && getContent(31))
                     ||
                     (smallMonth.includes(month) && getContent(30))

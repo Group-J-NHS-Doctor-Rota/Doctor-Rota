@@ -42,16 +42,16 @@ public class EmailTools {
         JavaMailSender mailSender = getJavaMailSender();
         // use mimeMessage
         MimeMessagePreparator mailMessage = mimeMessage -> {
-
             MimeMessageHelper message = new MimeMessageHelper(
                     mimeMessage, true, "UTF-8");
 
             try {
-                message.setFrom("no <no-reply@test.com>");
+                message.setFrom("Doctor Rota <no-reply@doctorrota.com>");
                 message.addTo(to);
-//                message.setReplyTo("no <no-reply@test.com>");
+                //todo maybe set this
+//                message.setReplyTo("Doctor Rota <no-reply@doctorrota.com>");
                 message.setSubject(subject);
-                message.setText(text);
+                message.setText(text, true);
             } catch (MessagingException e) {
                 throw new MessagingException(e.toString());
             }
@@ -61,24 +61,29 @@ public class EmailTools {
     }
 
     public String passwordResetMsg(String pwd) {
-        //todo modify the message content
-        //todo invalid html format
         String message = "<p><h2>Reset your password</h2></p>"
                 + "<p>Hello,</p>"
                 + "<p>You have requested to reset your password.</p>"
                 + "<p>Please use this temporary password to login:</p>"
                 + "<p><h3>" + pwd + "</h3></p>"
-                + "<p>When you login successfully, please change your password to your own one.</p>"
-                + "<p>If you do not want to reset your password, ignore this email.</p>";
+                + "<p>When you login successfully, please change your password to a new one.</p>"
+                + "<p>If you do not want to reset your password, contact an admin.</p>";
         return message;
     }
 
     public String accountCreateMsg(String username) {
-        //todo modify the message content
-        // todo invalid html format
-        String message = "<p><h2>Create account successfully</h2></p>"
+        String message = "<p><h2>Create an account successfully</h2></p>"
                 + "<p>Hello " + username +",</p>"
-                + "<p>You have created an account on XXX website.</p>";
+                + "<p>A new account have been created successfully on the Doctor Rota website. </p>";
+        return message;
+    }
+
+    public String reminderMsg(String username) {
+    //todo connect to api 19
+        String message = "<p><h2>Leave request reminder</h2></p>"
+                + "<p>Hello " + username +",</p>"
+                + "<p>If you haven't done already, "
+                + "please submit any leave requests on the Doctor Rota website as soon as possible. </p>";
         return message;
     }
 

@@ -167,8 +167,8 @@ public class PatchOperations {
             // email users:
             if (email != null && !email.isBlank()) {
                 EmailTools emailTools = new EmailTools();
-                String msg = emailTools.passwordResetMsg(hashedPassword);
-                emailTools.sendSimpleMessage(email, "reset", msg);
+                String msg = emailTools.passwordResetMsg(defaultPassword);
+                emailTools.sendSimpleMessage(email, "Reset your password", msg);
             }
             return IndexController.okResponse("Password reset successfully for username: " + username);
             // Have to catch SQLException exception here

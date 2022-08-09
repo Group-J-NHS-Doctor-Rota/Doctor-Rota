@@ -84,7 +84,7 @@ public class PostOperations {
             if (email != null && !email.isBlank()) {
                 EmailTools emailTools = new EmailTools();
                 String msg = emailTools.accountCreateMsg(username);
-                emailTools.sendSimpleMessage(email, "create new account", msg);
+                emailTools.sendSimpleMessage(email, "Create an account successfully", msg);
             }
             return IndexController.okResponse("Account creation successful for username: " + username);
             // Have to catch SQLException exception here

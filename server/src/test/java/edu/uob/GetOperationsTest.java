@@ -187,7 +187,7 @@ public class GetOperationsTest {
     @Test
     void testGetAccount() {
         // Get first accountId (should always be at least one account)
-        int accountId = 0;
+        int accountId = 31;
         boolean foundId = false;
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
@@ -216,8 +216,8 @@ public class GetOperationsTest {
             assertTrue(rootNode.has("level"));
             assertTrue(rootNode.has("timeWorked"));
             assertTrue(rootNode.has("fixedWorking"));
+            // Only check part-time days if non-empty
             assertTrue(rootNode.has("partTimeDetails"));
-            // Only check days if non-empty
             JsonNode partTimeDetails = rootNode.get("partTimeDetails");
             if(!partTimeDetails.isEmpty()) {
                 assertTrue(partTimeDetails.has("monday"));
@@ -227,6 +227,29 @@ public class GetOperationsTest {
                 assertTrue(partTimeDetails.has("friday"));
                 assertTrue(partTimeDetails.has("saturday"));
                 assertTrue(partTimeDetails.has("sunday"));
+            }
+            // Only check actual shifts for fixedRotaShifts if true
+            assertTrue(rootNode.has("fixedRotaShifts"));
+            JsonNode fixedRotaShifts = rootNode.get("fixedRotaShifts");
+            if(rootNode.get("fixedWorking").asBoolean()) {
+                for(int j = 0; j < fixedRotaShifts.size(); j++) {
+                    JsonNode fixedRotaShift = fixedRotaShifts.get(j);
+                    assertTrue(fixedRotaShift.has("id"));
+                    assertTrue(fixedRotaShift.has("date"));
+                    assertTrue(fixedRotaShift.has("shiftType"));
+                }
+            } else {
+                assertTrue(fixedRotaShifts.isEmpty());
+            }
+            // Check all account rota types
+            assertTrue(rootNode.has("accountRotaTypes"));
+            JsonNode accountRotaTypes = rootNode.get("accountRotaTypes");
+            for(int j = 0; j < accountRotaTypes.size(); j++) {
+                JsonNode accountRotaType = accountRotaTypes.get(j);
+                assertTrue(accountRotaType.has("id"));
+                assertTrue(accountRotaType.has("rotaTypeId"));
+                assertTrue(accountRotaType.has("startDate"));
+                assertTrue(accountRotaType.has("endDate"));
             }
             // Check the id field aligns
             assertEquals(accountId, rootNode.get("id").asInt());
@@ -275,8 +298,8 @@ public class GetOperationsTest {
             assertTrue(account.has("level"));
             assertTrue(account.has("timeWorked"));
             assertTrue(account.has("fixedWorking"));
+            // Only check part-time days if non-empty
             assertTrue(account.has("partTimeDetails"));
-            // Only check days if non-empty
             JsonNode partTimeDetails = account.get("partTimeDetails");
             if(!partTimeDetails.isEmpty()) {
                 assertTrue(partTimeDetails.has("monday"));
@@ -286,6 +309,29 @@ public class GetOperationsTest {
                 assertTrue(partTimeDetails.has("friday"));
                 assertTrue(partTimeDetails.has("saturday"));
                 assertTrue(partTimeDetails.has("sunday"));
+            }
+            // Only check actual shifts for fixedRotaShifts if true
+            assertTrue(account.has("fixedRotaShifts"));
+            JsonNode fixedRotaShifts = account.get("fixedRotaShifts");
+            if(account.get("fixedWorking").asBoolean()) {
+                for(int j = 0; j < fixedRotaShifts.size(); j++) {
+                    JsonNode fixedRotaShift = fixedRotaShifts.get(j);
+                    assertTrue(fixedRotaShift.has("id"));
+                    assertTrue(fixedRotaShift.has("date"));
+                    assertTrue(fixedRotaShift.has("shiftType"));
+                }
+            } else {
+                assertTrue(fixedRotaShifts.isEmpty());
+            }
+            // Check all account rota types
+            assertTrue(account.has("accountRotaTypes"));
+            JsonNode accountRotaTypes = account.get("accountRotaTypes");
+            for(int j = 0; j < accountRotaTypes.size(); j++) {
+                JsonNode accountRotaType = accountRotaTypes.get(j);
+                assertTrue(accountRotaType.has("id"));
+                assertTrue(accountRotaType.has("rotaTypeId"));
+                assertTrue(accountRotaType.has("startDate"));
+                assertTrue(accountRotaType.has("endDate"));
             }
         }
     }

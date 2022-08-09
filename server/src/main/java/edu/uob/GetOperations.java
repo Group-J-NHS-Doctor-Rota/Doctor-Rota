@@ -63,7 +63,7 @@ public class GetOperations {
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ResultSet r = s.executeQuery();
                 if(r.next()) {
-                    addAccountDetailsToObjectNode(r, objectNode);
+                    addAccountDetailsToObjectNode(c, r, objectNode);
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             }
@@ -84,7 +84,7 @@ public class GetOperations {
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
                     ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
-                    addAccountDetailsToObjectNode(r, objectNodeRow);
+                    addAccountDetailsToObjectNode(c, r, objectNodeRow);
                     arrayNode.add(objectNodeRow);
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
@@ -96,7 +96,7 @@ public class GetOperations {
     }
 
     // Needed for get account and get all accounts
-    private static void addAccountDetailsToObjectNode(ResultSet r, ObjectNode objectNode) throws SQLException {
+    private static void addAccountDetailsToObjectNode(Connection c, ResultSet r, ObjectNode objectNode) throws SQLException {
         objectNode.put("id", r.getInt("id"));
         objectNode.put("username", r.getString("username"));
         objectNode.put("email", r.getString("email"));
@@ -111,6 +111,8 @@ public class GetOperations {
         objectNode.put("timeWorked", r.getFloat("timeWorked"));
         objectNode.put("fixedWorking", r.getBoolean("fixedWorking"));
         ObjectNode partTimeDetails = objectNode.putObject("partTimeDetails");
+        ArrayNode fixedRotaShifts = objectNode.putArray("fixedRotaShifts");
+        ArrayNode accountRotaTypes = objectNode.putArray("accountRotaTypes");
         // Only fill part-time details if joined on
         if(r.getString("accountId") != null) {
             partTimeDetails.put("monday", r.getBoolean("monday"));
@@ -120,6 +122,35 @@ public class GetOperations {
             partTimeDetails.put("friday", r.getBoolean("friday"));
             partTimeDetails.put("saturday", r.getBoolean("saturday"));
             partTimeDetails.put("sunday", r.getBoolean("sunday"));
+        }
+        // Only fill fixed rota shifts if account is fixed working
+        if(r.getBoolean("fixedWorking")) {
+            String SQL = "SELECT * FROM fixedRotaShifts WHERE accountId = ?;";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, r.getInt("id"));
+                ResultSet r2 = s.executeQuery();
+                while (r2.next()) {
+                    ObjectNode shift = new ObjectMapper().createObjectNode();
+                    shift.put("id", r2.getInt("id"));
+                    shift.put("date", r2.getString("date"));
+                    shift.put("shiftType", r2.getInt("shiftType"));
+                    fixedRotaShifts.add(shift);
+                }
+            }
+        }
+        // Some people may have more than one if they move rota type
+        String SQL = "SELECT * FROM accountRotaTypes WHERE accountId = ?;";
+        try (PreparedStatement s = c.prepareStatement(SQL)) {
+            s.setInt(1, r.getInt("id"));
+            ResultSet r3 = s.executeQuery();
+            while(r3.next()) {
+                ObjectNode rotaType = new ObjectMapper().createObjectNode();
+                rotaType.put("id", r3.getInt("id"));
+                rotaType.put("rotaTypeId", r3.getInt("rotaTypeId"));
+                rotaType.put("startDate", r3.getString("startDate"));
+                rotaType.put("endDate", r3.getString("endDate"));
+                accountRotaTypes.add(rotaType);
+            }
         }
     }
 

@@ -404,4 +404,19 @@ public class GetOperationsTest {
         // Delete account
         DeleteOperations.deleteAccount(accountId);
     }
+
+//    @Test
+//    void testGetLeaveReminder() {
+//        int accountId = TestTools.getTestAccountId();
+//        String username = TestTools.getRandomUsername();
+//        String password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+//        // Create account
+//        PostOperations.postAccount(username);
+//        // get response, check sender number
+//
+//
+//
+//        // Delete account
+//        DeleteOperations.deleteAccount(accountId);
+//    }
 }

@@ -166,4 +166,10 @@ public class IndexController {
         return PatchOperations.patchLogout(token);
     }
 
+    @GetMapping(value = "/leavereminder", produces = "application/json")
+    public ResponseEntity<ObjectNode> getLeaveReminder(@RequestHeader String token) {
+        ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
+        return GetOperations.getLeaveReminder();
+    }
+
 }

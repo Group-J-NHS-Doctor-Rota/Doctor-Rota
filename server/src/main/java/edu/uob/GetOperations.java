@@ -57,7 +57,7 @@ public class GetOperations {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
             }
             // Only if account id exists, then get single account and store as key value
-            String SQL = "SELECT * FROM accounts WHERE id = ?;";
+            String SQL = "SELECT * FROM accounts a LEFT JOIN partTimeDetails p on a.id = p.accountId WHERE id = ?;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, accountId);
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
@@ -77,7 +77,7 @@ public class GetOperations {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Get all accounts and store in list
-            String SQL = "SELECT * FROM accounts ORDER BY id;";
+            String SQL = "SELECT * FROM accounts a LEFT JOIN partTimeDetails p on a.id = p.accountId ORDER BY id;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("accounts");
@@ -110,7 +110,17 @@ public class GetOperations {
         objectNode.put("level", r.getInt("level"));
         objectNode.put("timeWorked", r.getFloat("timeWorked"));
         objectNode.put("fixedWorking", r.getBoolean("fixedWorking"));
-
+        ObjectNode partTimeDetails = objectNode.putObject("partTimeDetails");
+        // Only fill part-time details if joined on
+        if(r.getString("accountId") != null) {
+            partTimeDetails.put("monday", r.getBoolean("monday"));
+            partTimeDetails.put("tuesday", r.getBoolean("tuesday"));
+            partTimeDetails.put("wednesday", r.getBoolean("wednesday"));
+            partTimeDetails.put("thursday", r.getBoolean("thursday"));
+            partTimeDetails.put("friday", r.getBoolean("friday"));
+            partTimeDetails.put("saturday", r.getBoolean("saturday"));
+            partTimeDetails.put("sunday", r.getBoolean("sunday"));
+        }
     }
 
     // Gets shifts and leave

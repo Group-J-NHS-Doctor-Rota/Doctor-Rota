@@ -216,6 +216,18 @@ public class GetOperationsTest {
             assertTrue(rootNode.has("level"));
             assertTrue(rootNode.has("timeWorked"));
             assertTrue(rootNode.has("fixedWorking"));
+            assertTrue(rootNode.has("partTimeDetails"));
+            // Only check days if non-empty
+            JsonNode partTimeDetails = rootNode.get("partTimeDetails");
+            if(!partTimeDetails.isEmpty()) {
+                assertTrue(partTimeDetails.has("monday"));
+                assertTrue(partTimeDetails.has("tuesday"));
+                assertTrue(partTimeDetails.has("wednesday"));
+                assertTrue(partTimeDetails.has("thursday"));
+                assertTrue(partTimeDetails.has("friday"));
+                assertTrue(partTimeDetails.has("saturday"));
+                assertTrue(partTimeDetails.has("sunday"));
+            }
             // Check the id field aligns
             assertEquals(accountId, rootNode.get("id").asInt());
         } catch (Exception e) {
@@ -263,6 +275,18 @@ public class GetOperationsTest {
             assertTrue(account.has("level"));
             assertTrue(account.has("timeWorked"));
             assertTrue(account.has("fixedWorking"));
+            assertTrue(account.has("partTimeDetails"));
+            // Only check days if non-empty
+            JsonNode partTimeDetails = account.get("partTimeDetails");
+            if(!partTimeDetails.isEmpty()) {
+                assertTrue(partTimeDetails.has("monday"));
+                assertTrue(partTimeDetails.has("tuesday"));
+                assertTrue(partTimeDetails.has("wednesday"));
+                assertTrue(partTimeDetails.has("thursday"));
+                assertTrue(partTimeDetails.has("friday"));
+                assertTrue(partTimeDetails.has("saturday"));
+                assertTrue(partTimeDetails.has("sunday"));
+            }
         }
     }
 

@@ -22,7 +22,7 @@ public class GetOperations {
                     "WHERE N.type = 0 " +
                     // If account is admin, get all notifications, else get other their notifications
                     "AND ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR L.accountid = ? ) " +
-                    "ORDER BY N.id;";
+                    "ORDER BY N.id DESC;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("leaveRequests");

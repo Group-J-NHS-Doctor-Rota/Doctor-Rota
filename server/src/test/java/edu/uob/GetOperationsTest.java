@@ -74,10 +74,10 @@ public class GetOperationsTest {
                 assertTrue(notification.has("note"));
                 assertTrue(notification.has("status"));
                 if(notification.get("leaveRequestId").asInt() == id2) {
-                    assertEquals(id1, notification.get("accountId").asInt());
+                    assertEquals(id2, notification.get("accountId").asInt());
                     assertEquals("2021-09-08", notification.get("date").asText());
                     assertEquals(1, notification.get("type").asInt());
-                    assertEquals("", notification.get("note").asText());
+                    assertEquals("Comment here", notification.get("note").asText());
                     assertEquals(1, notification.get("status").asInt());
                     assertEquals(1, notification.get("length").asInt());
                 }

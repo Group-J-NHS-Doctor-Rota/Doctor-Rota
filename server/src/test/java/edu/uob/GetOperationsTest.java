@@ -416,4 +416,28 @@ public class GetOperationsTest {
         // Delete account
         DeleteOperations.deleteAccount(accountId);
     }
+
+    @Test
+    void testGetRotaGroups() throws JsonProcessingException {
+        ResponseEntity<ObjectNode> response = GetOperations.getRotaGroup();
+        JsonNode rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
+        JsonNode rotaGroups = rootNode.get("rotaGroups");
+        int numberOfGroups = rotaGroups.size();
+        assertTrue(numberOfGroups >= 1, "There should always be at least one rota group");
+        boolean onlyOneTrueStatus = false;
+        // Check each group has required fields
+        for(int i = 0; i < numberOfGroups; i++) {
+            JsonNode rotaGroup = rotaGroups.get(i);
+            assertTrue(rotaGroup.has("id"));
+            assertTrue(rotaGroup.has("startDate"));
+            assertTrue(rotaGroup.has("endDate"));
+            assertTrue(rotaGroup.has("status"));
+            if(onlyOneTrueStatus && rotaGroup.get("status").asBoolean()) {
+                fail("There shouldn't be multiple true/active rota groups.");
+            }
+            onlyOneTrueStatus = onlyOneTrueStatus || rotaGroup.get("status").asBoolean();
+        }
+        assertTrue(onlyOneTrueStatus, "Should have one true/active rota group, not none.");
+    }
+
 }

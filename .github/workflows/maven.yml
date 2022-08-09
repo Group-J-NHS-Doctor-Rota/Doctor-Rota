@@ -18,6 +18,8 @@ jobs:
         
     env:
       JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
+      PEPPER: ${{ secrets.PEPPER }}
+      DEFAULT_PASSWORD: ${{ secrets.DEFAULT_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v3

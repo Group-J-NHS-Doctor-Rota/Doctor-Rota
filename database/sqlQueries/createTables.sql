@@ -21,20 +21,27 @@ CREATE TABLE levelTypes (
 /*Account information for anyone using the website*/
 CREATE TABLE accounts (
     id SERIAL NOT NULL,
-    name varchar NOT NULL,
+    username varchar NOT NULL,
     --Only store encrypted and never actual password
     password varchar NOT NULL,
     salt varchar NOT NULL,
     email varchar,
-    doctorId varchar NOT NULL,
-    accountStatus int NOT NULL,
-    doctorStatus int NOT NULL,
+    -- phone is varchar so it copes regardless of format
+    phone varchar,
+    doctorId varchar,
+    annualLeave int NOT NULL,
+    studyLeave int NOT NULL,
+    workingHours int NOT NULL,
+    accountStatus int,
+    doctorStatus int,
     level int NOT NULL,
     rotaGroupId int,
-    timeWorked float NOT NULL,
-    fixedWorking bool NOT NULL,
+    timeWorked float,
+    fixedWorking bool,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
+    UNIQUE (username),
+    UNIQUE (salt),
     FOREIGN KEY (rotaGroupId) REFERENCES rotagroups(id),
     FOREIGN KEY (level) REFERENCES levelTypes(id)
 );
@@ -89,23 +96,36 @@ CREATE TABLE statusTypes (
     PRIMARY KEY (id)
 );
 
+/*Different types of request lengths*/
+CREATE TABLE lengthTypes (
+    id int NOT NULL,
+    name varchar,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (id)
+);
+
 /*Details about days off and whether they are confirmed*/
 CREATE TABLE leaveRequests (
     id SERIAL NOT NULL,
     accountId int NOT NULL,
     date date NOT NULL,
     type int NOT NULL,
+    -- length type as not always a full day
+    -- int is not the length but the key for length varchar
+    length int NOT NULL DEFAULT 0,
     note varchar,
     status int NOT NULL,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
+    UNIQUE (accountId, date),
     FOREIGN KEY (accountId) REFERENCES accounts(id),
     FOREIGN KEY (type) REFERENCES leaveRequestTypes(id),
+    FOREIGN KEY (length) REFERENCES lengthTypes(id),
     FOREIGN KEY (status) REFERENCES statusTypes(id)
 );
 
 /*Details about what leave requests are addressed by who*/
-CREATE TABLE accountLeaveRequestRelationShips (
+CREATE TABLE accountLeaveRequestRelationships (
     accountId int NOT NULL,
     leaveRequestId int NOT NULL,
     status int NOT NULL,
@@ -140,26 +160,41 @@ CREATE TABLE fixedRotaShifts (
     shiftType int NOT NULL,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
+    UNIQUE (accountId, date),
     FOREIGN KEY (accountId) REFERENCES accounts(id),
     FOREIGN KEY (shiftType) REFERENCES shiftTypes(id)
 );
 
-/*Int to days of the week*/
-CREATE TABLE dayOfWeek (
+/*Details on when part time works do or don't work*/
+CREATE TABLE partTimeDetails (
+    accountId int NOT NULL,
+    monday bool NOT NULL,
+    tuesday bool NOT NULL,
+    wednesday bool NOT NULL,
+    thursday bool NOT NULL,
+    friday bool NOT NULL,
+    saturday bool NOT NULL,
+    sunday bool NOT NULL,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (accountId),
+    FOREIGN KEY (accountId) REFERENCES accounts(id)
+);
+
+/*Different types of possible notification*/
+CREATE TABLE notificationTypes (
     id int NOT NULL,
-    day varchar NOT NULL,
+    name varchar NOT NULL,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id)
 );
 
-/*Details on when part time works do or don't work*/
-CREATE TABLE partTimeDetails (
+/*Details on any notifications for users*/
+CREATE TABLE notifications (
     id SERIAL NOT NULL,
-    accountId int NOT NULL,
-    dayOfWeek int NOT NULL,
-    canWork bool NOT NULL,
+    type int NOT NULL,
+    detailId int NOT NULL,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
-    FOREIGN KEY (accountId) REFERENCES accounts(id),
-    FOREIGN KEY (dayOfWeek) REFERENCES dayOfWeek(id)
+    UNIQUE(type, detailId),
+    FOREIGN KEY (type) REFERENCES notificationTypes(id)
 );

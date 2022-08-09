@@ -9,24 +9,29 @@ VALUES
 /*rotaTypes data*/
 INSERT INTO rotaTypes (id, name)
 VALUES
-    (1, 'Type 1'),
-    (2, 'Type 2'),
-    (3, 'Type 3'),
-    (4, 'Type 4');
+    (1, 'First On'),
+    (2, 'Obstetrics'),
+    (3, 'Second On'),
+    (4, 'Third 0n');
 
 /*shiftTypes data*/
 INSERT INTO shiftTypes (id, name)
 VALUES
     (0, 'Normal Working Day'),
     (1, 'Long Day'),
-    (2, 'Night');
+    (2, 'Night'),
+    (3, 'Trainee Off Day'),
+    --Gap is to allow for any additions, as other should logically come at the end
+    (9, 'Other');
 
 /*leaveRequestTypes data*/
 INSERT INTO leaveRequestTypes (id, name)
 VALUES
     (0, 'Annual Leave'),
     (1, 'Study Leave'),
-    (2, 'Request Not To Be On Call');
+    (2, 'Request Not To Be On Call'),
+    --Gap is to allow for any additions, as other should logically come at the end
+    (9, 'Other');
 
 /*statusTypes data*/
 INSERT INTO statusTypes (id, name)
@@ -35,13 +40,14 @@ VALUES
     (1, 'Approved'),
     (2, 'Rejected');
 
-/*dayOfWeek data*/
-INSERT INTO dayOfWeek (id, day)
+/*statusTypes data*/
+INSERT INTO lengthTypes (id, name)
 VALUES
-    (0, 'Monday'),
-    (1, 'Tuesday'),
-    (2, 'Wednesday'),
-    (3, 'Thursday'),
-    (4, 'Friday'),
-    (5, 'Saturday'),
-    (6, 'Sunday');
+    (0, 'Full day'),
+    (1, 'AM'),
+    (2, 'PM');
+
+/*notificationTypes data*/
+INSERT INTO notificationTypes (id, name)
+VALUES
+    (0, 'Leave Request');

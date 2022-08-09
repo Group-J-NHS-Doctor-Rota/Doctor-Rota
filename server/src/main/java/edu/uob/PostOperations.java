@@ -115,7 +115,7 @@ public class PostOperations {
                 // No, create new as only true
             } else {
                 SQL = "UPDATE rotagroups SET status = false WHERE 1=1; " +
-                        "INSERT INTO rotaGroups (startdate, enddate, status) VALUES (?, ?, TRUE);";
+                        "INSERT INTO rotaGroups (startdate, enddate, status) VALUES (cast(? AS date), cast(? AS date), TRUE);";
                 try(PreparedStatement s = c.prepareStatement(SQL)) {
                     s.setString(1, startDate);
                     s.setString(2, endDate);

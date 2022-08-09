@@ -1,6 +1,8 @@
 import { Modal, Form } from "react-bootstrap"
 import styled from "styled-components"
 import { useState } from "react"
+import CreateUserInput from "../components/CreateUserInput"
+
 
 const CreateUsersModal = ({ create, setCreate }) => {
     const [userList, setUserList] = useState([
@@ -23,6 +25,35 @@ const CreateUsersModal = ({ create, setCreate }) => {
         setUserList(list)
     }
 
+    const inputs = [
+        {
+            id: 1,
+            name: "username",
+            type: "text",
+            placeholder: "Username",
+            errorMessage:
+                "Invalid Username!",
+            label: "Username",
+            pattern: "^[A-Za-z0-9]{3,16}$",
+            required: true,
+        },
+        {
+            id: 2,
+            name: "email",
+            type: "email",
+            placeholder: "Email",
+            errorMessage:
+                "Invalid Email!",
+            label: "Email",
+            required: true,
+        }
+    ];
+
+    const handleCancel = () => {
+
+    }
+
+
     return (
         <>
             <Modal show={create}>
@@ -33,58 +64,53 @@ const CreateUsersModal = ({ create, setCreate }) => {
 
                     <CreateRegion className="p-4">
 
-                    
-                    {userList.map((user, index) => {
-                        return (
-                            index + 1 <= 10 &&
-                            (
-                                <div key={index} className="d-block mb-3">
-                                    <div className="d-flex justify-content-between align-items-center">
-                                        <ColumnName>New User&nbsp;{index + 1}</ColumnName>
-                                        <div className="d-flex justify-content-center align-items-center">
-                                            {
-                                                userList.length - 1 === index &&
-                                                (
-                                                    <>
-                                                        <Icon className="bi bi-plus-circle"
-                                                            onClick={index => handleAddInput(index)} />
-                                                    </>
-                                                )
-                                            }
-                                            {
-                                                userList.length !== 1 &&
-                                                (
-                                                    <>
-                                                        <Icon className="bi bi-dash-circle"
-                                                            onClick={handleRemoveInput} />
-                                                    </>
-                                                )
-                                            }
+
+                        {userList.map((user, index) => {
+                            return (
+                                index + 1 <= 10 &&
+                                (
+                                    <div key={index} className="d-block mb-3">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                            <ColumnName>New User&nbsp;{index + 1}</ColumnName>
+                                            <div className="d-flex justify-content-center align-items-center">
+                                                {
+                                                    userList.length - 1 === index &&
+                                                    (
+                                                        <>
+                                                            <Icon className="bi bi-plus-circle"
+                                                                onClick={index => handleAddInput(index)} />
+                                                        </>
+                                                    )
+                                                }
+                                                {
+                                                    userList.length !== 1 &&
+                                                    (
+                                                        <>
+                                                            <Icon className="bi bi-dash-circle"
+                                                                onClick={() => handleRemoveInput(index)} />
+                                                        </>
+                                                    )
+                                                }
+                                            </div>
                                         </div>
+
+                                        {
+                                            inputs.map(input => (
+                                                <CreateUserInput
+                                                    key={input.id}
+                                                    {...input}
+                                                    value={user[input.name]}
+                                                    onChange={e => onChange(e, index)}
+                                                />
+                                            ))
+                                        }
+
                                     </div>
-                                    
-                                    <Input
-                                        className="my-1"
-                                        type="text"
-                                        placeholder="Username"
-                                        name="username"
-                                        value={user.username}
-                                        autoComplete="off"
-                                        onChange={e => onChange(e, index)} />
-                                    <Input
-                                        className="my-1"
-                                        type="text"
-                                        placeholder="Email"
-                                        name="email"
-                                        value={user.email}
-                                        autoComplete="off"
-                                        onChange={e => onChange(e, index)} />
-                                </div>
-                            
+
+                                )
+                                || <p style={{ color: 'red' }}>The maximum is 10 users in one go!</p>
                             )
-                            || <p style={{ color: 'red' }}>The maximum is 10 users in one go!</p>
-                        )
-                    })}
+                        })}
                     </CreateRegion>
 
                     <div className="d-flex justify-content-center my-4">
@@ -163,15 +189,6 @@ const ColumnName = styled.h3`
     font-weight: bold;
     color: #035eb8;
     margin-bottom: 0px;
-`
-
-const Input = styled.input`
-    font-size: 16px !important;
-    width: 100%;
-    height: 36px;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `
 
 const Icon = styled.i`

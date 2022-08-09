@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { useUrl } from '../contexts/UrlContexts' 
+import { useUrl } from '../contexts/UrlContexts'
 import { Modal, Row, Col, Form } from "react-bootstrap"
 import { useState, useEffect } from "react"
 
@@ -11,13 +11,13 @@ const ManageModal = ({ accountId, manage, setManage }) => {
 
     const { getUrl } = useUrl()
 
-    const url =  getUrl()
+    const url = getUrl()
 
     const toggleDisable = () => setDisable(!disable)
 
     useEffect(() => {
         if (accountId != undefined) {
-            if(url != undefined){
+            if (url != undefined) {
                 fetch(`${url}account/${accountId}`, {
                     mode: 'cors',
                     method: "GET",
@@ -28,10 +28,10 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                         'token': auth.token
                     }
                 })
-                .then(response => response.json())
-                .then(data => {
-                    setAccountDetail(data)
-                })
+                    .then(response => response.json())
+                    .then(data => {
+                        setAccountDetail(data)
+                    })
             }
         }
     }, [accountId])
@@ -44,8 +44,8 @@ const ManageModal = ({ accountId, manage, setManage }) => {
     function handleSubmit(e) {
         e.preventDefault()
 
-        try{
-            if(url != undefined){
+        try {
+            if (url != undefined) {
                 fetch(`${url}account/${accountId}`, {
                     mode: 'cors',
                     method: 'PATCH',
@@ -59,7 +59,7 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                         annualLeave: 16,
                     }),
                 })
-                .then(response => response)
+                    .then(response => response)
             }
         } catch (error) {
             console.log(error)
@@ -162,7 +162,7 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                                     <input
                                         id="field-3"
                                         type="text"
-                                        placeholder="0.6 LTFT"
+                                        placeholder="0.6"
                                         className="mt-2"
                                         disabled={disable}
                                         autoComplete='off'

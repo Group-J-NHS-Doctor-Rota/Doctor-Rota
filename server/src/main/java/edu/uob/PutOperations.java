@@ -67,4 +67,56 @@ public class PutOperations {
         }
     }
 
+    public static ResponseEntity<ObjectNode> putAccountRotaType(int accountId, int rotaTypeId, String startDate, String endDate) {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            if(!ConnectionTools.accountIdExists(accountId, c)) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
+            }
+            // Update existing data to not collide with input data
+            // Delete any date ranges entirely contained in new range
+            String SQL = "DELETE FROM accountRotaTypes WHERE accountId = ? " +
+                    "AND startDate >= cast(? AS date) AND endDate <= cast(? AS date); ";
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, accountId);
+                s.setString(2, startDate);
+                s.setString(3, endDate);
+                s.executeUpdate();
+            }
+            // Update end date if start date is before new range and overlaps
+            SQL = "UPDATE accountRotaTypes SET endDate = cast(? AS date)-1 WHERE accountId = ? " +
+                    "AND startDate < cast(? AS date) AND endDate >= cast(? AS date); ";
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, startDate);
+                s.setInt(2, accountId);
+                s.setString(3, startDate);
+                s.setString(4, startDate);
+                s.executeUpdate();
+            }
+            // Update start date if overlaps and end date is after new range
+            SQL = "UPDATE accountRotaTypes SET startDate = cast(? AS date)+1 WHERE accountId = ? " +
+                    "AND startDate <= cast(? AS date) AND endDate > cast(? AS date); ";
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, endDate);
+                s.setInt(2, accountId);
+                s.setString(3, endDate);
+                s.setString(4, endDate);
+                s.executeUpdate();
+            }
+            // Insert new data
+            SQL = "INSERT INTO accountRotaTypes (accountId, rotaTypeId, startDate, endDate) " +
+                    "VALUES (?, ?, ?, ?);";
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, accountId);
+                s.setInt(2, rotaTypeId);
+                s.setString(3, startDate);
+                s.setString(4, endDate);
+                s.executeUpdate();
+                return IndexController.okResponse("Rota group dates successfully added for accountId: " + accountId);
+            }
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
 }

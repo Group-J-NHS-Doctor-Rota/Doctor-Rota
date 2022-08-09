@@ -178,5 +178,12 @@ public class IndexController {
         ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
         return GetOperations.getRotaGroup();
     }
-
+    
+    @PutMapping(value = "/account/{{accountId}/rotatype", produces = "application/json")
+    public ResponseEntity<ObjectNode> putAccountRotaType(@RequestHeader String token, @PathVariable int accountId,
+                                                         @RequestParam int rotaTypeId,
+                                                         @RequestParam String startDate, @RequestParam String endDate) {
+        ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
+        return PutOperations.putAccountRotaType(accountId, rotaTypeId, startDate, endDate);
+    }
 }

@@ -4,6 +4,8 @@ import { Modal, Row, Col, Form } from "react-bootstrap"
 import { useState, useEffect } from "react"
 
 const ManageModal = ({ accountId, manage, setManage }) => {
+    const auth = JSON.parse(localStorage.getItem('auth'))
+
     const [disable, setDisable] = useState(true)
     const [accountDetail, setAccountDetail] = useState()
 
@@ -22,7 +24,8 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                     headers: {
                         'Access-Control-Allow-Origin': '*',
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'token': auth.token
                     }
                 })
                     .then(response => response.json())
@@ -53,7 +56,7 @@ const ManageModal = ({ accountId, manage, setManage }) => {
                         "Access-Control-Allow-Credentials": true
                     },
                     body: JSON.stringify({
-                        annualLeave: 16
+                        annualLeave: 16,
                     }),
                 })
                     .then(response => response)

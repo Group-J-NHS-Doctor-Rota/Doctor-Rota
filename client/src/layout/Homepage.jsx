@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import DataBar from '../components/DataBar'
 import CalendarTable from '../components/CalendarTable'
@@ -8,10 +8,26 @@ import styled from 'styled-components'
 
 export default function Homgepage() {
     const today = new Date()
+    const filterRef = useRef(null)
 
     const [year, setYear] = useState(today.getFullYear())
     const [month, setMonth] = useState(today.getMonth() + 1)
     const [open, setOpen] = useState(false)
+    
+    const handleClickOutside = event => {
+        if(filterRef.current && !filterRef.current.contains(event.target) && event.target.id != "icon_filter"){
+            setOpen(false)
+        }else{
+            setOpen(true)
+        }
+    }
+
+    useEffect(() => {        
+        document.addEventListener('click', handleClickOutside)
+
+        return () => document.removeEventListener('click', handleClickOutside)
+    }, [])
+
 
     function handleNextMonth() {
         if (month == 12) {
@@ -57,13 +73,16 @@ export default function Homgepage() {
                     </div>
 
                     <div style={{ fontSize: '40px' }}>
-                        <Icon className="bi bi-filter" style={{ cursor: 'pointer' }} onClick={() => setOpen(!open)}></Icon>
+                        <Icon id="icon_filter" className="bi bi-filter" style={{ cursor: 'pointer' }} onClick={() => setOpen(!open)}></Icon>
                     </div>
                 </div>
 
-                {
-                    open && <FilterCard setOpen={setOpen} />
-                }
+                <div ref={filterRef}>
+                    {
+                        open && <FilterCard id="filter_card" open={open} setOpen={setOpen} />
+                    }
+                </div>
+
 
                 <Week className="my-2">
                     <div className="d-flex justify-content-center"><h3 className="fs-5">Mon</h3></div>

@@ -10,13 +10,15 @@ export default function DataBar() {
         studyLeave: 0
     })
 
+    const auth = JSON.parse(localStorage.getItem('auth'))
+
     const { getUrl } = useUrl()
 
     const url =  getUrl()
 
     useEffect(() => {
         if(url != undefined){
-            const newUrl = `${url}leaves?accountId=1`
+            const newUrl = `${url}leaves?accountId=${auth.id}`
             
             fetch(newUrl, {
                 mode: 'cors',
@@ -25,6 +27,7 @@ export default function DataBar() {
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
+                    'token': auth.token
                 }
             })
             .then(response => response.json())

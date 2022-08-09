@@ -11,9 +11,12 @@ import styled from 'styled-components'
 
 // https://date.nager.at/swagger/index.html
 // https://day.js.org/docs/en/plugin/dev-helper
+// https://www.youtube.com/watch?v=YmpWOTT2qdw
 
 export default function CalendarTable({ year, month }) {
     const { width } = useWindowDimensions();
+
+    const auth = JSON.parse(localStorage.getItem('auth'))
 
     let isLeapYear = require('dayjs/plugin/isLeapYear')
     dayjs.extend(isLeapYear)
@@ -30,6 +33,7 @@ export default function CalendarTable({ year, month }) {
 
     const url =  getUrl()
 
+
     useEffect(() => {
         fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/GB`)
             .then(response => response.json())
@@ -42,20 +46,20 @@ export default function CalendarTable({ year, month }) {
 
                 setBankHolidays(holidays)
             })
-
-        fetch(`${url}shift/${year}?accountId=1`, {
+        
+        fetch(`${url}shift/${year}?accountId=${auth.id}`, {
             mode: 'cors',
             method: "GET",
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'token': auth.token
             }
         })
         .then(response => response.json())
         .then(data => setAllShift(data.shifts))
     }, [year])
-
 
     function getMonth(date) {
         if (date.slice(5, 7)[0] === 0) {
@@ -87,43 +91,46 @@ export default function CalendarTable({ year, month }) {
     }
 
     const getContent = number => {
-        let content = [];
+        let content = [];        
         const theWeekResult = theWeek()
 
-        for(let i = 0; i < theWeekResult-1; i++){
-            content.push(
-                <GridItems key={`grid-items-${i}`}/>
-            )
+        if(width > 915){
+            for(let i = 0; i < theWeekResult-1; i++){
+                content.push(
+                    <GridItems key={`grid-items-${i}`}/>
+                )
+            }
         }
 
         for (let i = 1; i < number + 1; i++) {
             let result = getHoliday(i)
-            content.push(
-                ((result == false) &&
-                    (<GridItems key={i}>
-                        <h3 className="my-2 mx-2">{i}</h3>
-                        <CalendarDay allShift={allShift} year={year} month={month} day={i}/>
-                    </GridItems>))
-                || ((result != false) &&
-                    (<GridItems key={i}>
-                        <div className="d-flex">
+                content.push(
+                    allShift != undefined &&
+                    ((result == false) &&
+                        (<GridItems key={i}>
                             <h3 className="my-2 mx-2">{i}</h3>
-                            {
-                                (result.length > 14 && width >= 1200 &&
-                                    <h3 className="my-2 mx-1">{result.slice(0, 14)} ...</h3>)
-                                ||
-                                (result.length > 14 && width >= 1100 && width < 1200 &&
-                                    <h3 className="my-2 mx-1">{result.slice(0, 10)} ...</h3>)
-                                ||
-                                (result.length > 8 && width >= 915 && width < 1200 &&
-                                    <h3 className="my-2 mx-1">{result.slice(0, 6)} ...</h3>)
-                                ||
-                                (<h3 className="my-2 mx-1">{result}</h3>)
-                            }
-                        </div>
-                        <CalendarDay allShift={allShift} year={year} month={month} day={i} holiday={result}/>
-                    </GridItems>))
-            )
+                            <CalendarDay allShift={allShift} year={year} month={month} day={i}/>
+                        </GridItems>))
+                    || ((result != false) &&
+                        (<GridItems key={i}>
+                            <div className="d-flex">
+                                <h3 className="my-2 mx-2">{i}</h3>
+                                {
+                                    (result.length > 14 && width >= 1200 &&
+                                        <h3 className="my-2 mx-1">{result.slice(0, 14)} ...</h3>)
+                                    ||
+                                    (result.length > 14 && width >= 1100 && width < 1200 &&
+                                        <h3 className="my-2 mx-1">{result.slice(0, 10)} ...</h3>)
+                                    ||
+                                    (result.length > 8 && width >= 915 && width < 1200 &&
+                                        <h3 className="my-2 mx-1">{result.slice(0, 6)} ...</h3>)
+                                    ||
+                                    (<h3 className="my-2 mx-1">{result}</h3>)
+                                }
+                            </div>
+                            <CalendarDay allShift={allShift} year={year} month={month} day={i} holiday={result}/>
+                        </GridItems>))
+                )
         }
         return content;
     }
@@ -131,7 +138,8 @@ export default function CalendarTable({ year, month }) {
     return (
         <Table className='mb-5'>
             <CalendarGrid>
-                {
+                {   
+                    allShift != undefined &&
                     (bigMonth.includes(month) && getContent(31))
                     ||
                     (smallMonth.includes(month) && getContent(30))

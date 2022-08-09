@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Modal } from 'react-bootstrap'
+import { useUrl } from '../contexts/UrlContexts' 
 
 import { useNavigate } from 'react-router-dom';
 
@@ -8,8 +9,38 @@ import '../css/general.css'
 import styled from 'styled-components'
 
 export default function LogoutModal({ logout, setLogout }) {
-
     const navigate = useNavigate()
+
+    const auth = JSON.parse(localStorage.getItem('auth'))
+    const { getUrl } = useUrl()
+
+    const url =  getUrl()
+
+    function handleLogout(){
+        try{
+            if(url != undefined){
+                fetch(`${url}logout`, {
+                    mode: 'cors',
+                    method: 'PATCH',
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Credentials": true,
+                        'token': auth.token
+                    }
+                })
+                .then(response => {
+                    setLogout(false)
+                    localStorage.clear()
+                    navigate('signin')
+                })
+            }
+        }catch(error){
+            console.log(error)
+            setLogout(true)
+        }
+    }
 
     return (
         <>
@@ -23,10 +54,7 @@ export default function LogoutModal({ logout, setLogout }) {
                         Close
                     </CloseButton>
 
-                    <ConfirmButton className="m-2" onClick={() => {
-                        setLogout(false)
-                        navigate('signin')
-                    }}>
+                    <ConfirmButton className="m-2" onClick={handleLogout}>
                         Confirm
                     </ConfirmButton>
                 </div>

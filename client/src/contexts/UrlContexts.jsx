@@ -7,7 +7,6 @@ export function useUrl() {
 }
 
 export function UrlProvider({ children }) {
-    
     function getUrl(){
         const url = process.env.REACT_APP_BASE_URL
 

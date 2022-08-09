@@ -7,6 +7,7 @@ import { Modal } from 'react-bootstrap'
 import styled from 'styled-components'
 
 export default function ProfileModal({ profile, setProfile }) {
+    const auth = JSON.parse(localStorage.getItem('auth'))
     const { getUrl } = useUrl()
 
     const url =  getUrl()
@@ -19,7 +20,6 @@ export default function ProfileModal({ profile, setProfile }) {
         email: "",
         phone: ""
     })
-    const accountId = 1
 
     const [errorMsg, setErrorMsg] = useState({
         email_invalid: false,
@@ -28,26 +28,27 @@ export default function ProfileModal({ profile, setProfile }) {
 
     useEffect(() => {
         if(url != undefined){
-            fetch(`${url}account`, {
+            fetch(`${url}account/${auth.id}`, {
                 mode: 'cors',
                 method: "GET",
                 headers: {
                     'Access-Control-Allow-Origin': '*',
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'token': auth.token
                 }
             })
             .then(response => response.json())
-            .then(data => {
-                const result = data.accounts.filter((account) => account.id == 1)[0]
+            .then(result => {
                 setInformation(result)
                 setInitial({
                     email: result.email,
                     phone: result.phone,
                     username: result.username,
                     doctorId: result.doctorId
-                })
+                })  
             })
+
         }
     }, [])
 
@@ -82,17 +83,17 @@ export default function ProfileModal({ profile, setProfile }) {
         if(errorMsg.email_invalid != true && errorMsg.phone_invalid != true){
             try {
                 if(url != undefined){
-                    fetch(`${url}account/${accountId}?phone=${information.phone}&email=${information.email}`, {
+                    fetch(`${url}account/${auth.id}?phone=${information.phone}&email=${information.email}`, {
                         mode: 'cors',
                         method: 'PATCH',
                         headers: {
                             'Access-Control-Allow-Origin': '*',
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
-                            "Access-Control-Allow-Credentials": true
+                            "Access-Control-Allow-Credentials": true,
+                            'token': auth.token
                         }
                     })
-                    .then(response => console.log(response))
                 }
 
                 setProfile(false)
@@ -213,7 +214,6 @@ export default function ProfileModal({ profile, setProfile }) {
                                                     autoComplete='off'
                                                     onChange={onChange} 
                                                 />
-
                                             }
                                             <LockIcon className="bi bi-lock-fill ms-2" />
                                         </div>

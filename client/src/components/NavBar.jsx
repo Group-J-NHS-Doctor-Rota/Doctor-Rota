@@ -7,16 +7,20 @@ import { useUrl } from '../contexts/UrlContexts'
 import LogoutModal from '../modals/LogoutModal'
 import ProfileModal from '../modals/ProfileModal';
 import RequestLeaveModal from '../modals/RequestLeaveModal';
+import RefreshModal from '../modals/RefreshModal';
 
 import styled from 'styled-components'
 import ResetPasswordModal from '../modals/ResetPasswordModal';
 
 export default function NavBar() {
+    const auth = JSON.parse(localStorage.getItem('auth'))
+
     const [open, setOpen] = useState(false)
     const [profile, setProfile] = useState(false)
     const [logout, setLogout] = useState(false)
     const [leave, setLeave] = useState(false)
     const [reset, setReset] = useState(false)
+    const [refresh, setRefresh] = useState(false)
 
     const { getUrl } = useUrl()
 
@@ -34,18 +38,19 @@ export default function NavBar() {
     }, [open])
 
     const [accountDetail, setAccountDetail] = useState()
-    const accountId = 1
 
     useEffect(() => {
-        if (accountId != undefined) {
-            if (url != undefined) {
-                fetch(`https://doctor-rota-spring-develop.herokuapp.com/account/${accountId}`, {
+
+        if (auth.id != undefined) {
+            if(url != undefined){
+                fetch(`${url}account/${auth.id}`, {
                     mode: 'cors',
                     method: "GET",
                     headers: {
                         'Access-Control-Allow-Origin': '*',
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'token': auth.token
                     }
                 })
                     .then(response => response.json())
@@ -54,7 +59,7 @@ export default function NavBar() {
                     })
             }
         }
-    }, [accountId])
+    }, [auth.id])
 
     function toggleList(type) {
         setOpen(!open)
@@ -100,9 +105,8 @@ export default function NavBar() {
                         <div className="d-flex justify-content-end me-2">
 
                             {
-                                // check if the user is admin: level = 1 -> admin
-                                // accountDetail.level === 1 &&
-                                (<RefreshButton className="my-2 me-3">Refresh Rota</RefreshButton>)
+                                auth.level == 1 &&
+                                (<RefreshButton className="my-2 me-4" onClick={() => setRefresh(true)}>Refresh Rota</RefreshButton>)
                             }
 
                             <i id="icon_list" className="bi bi-list" style={{ fontSize: '40px', cursor: 'pointer', color: 'white' }} onClick={() => toggleList()}></i>
@@ -129,17 +133,18 @@ export default function NavBar() {
                                 </div>
                             </NavBarItem>
 
+                            {
+                                auth.level == 1 &&
+                                <NavBarItem className="d-flex my-2" onClick={() => redirectPage('account')}>
+                                    <div className="d-flex align-middle mx-2">
+                                        <i className="bi bi-people-fill" style={{ fontSize: '30px' }}></i>
+                                    </div>
 
-                            <NavBarItem className="d-flex my-2" onClick={() => redirectPage('account')}>
-                                <div className="d-flex align-middle mx-2">
-                                    <i className="bi bi-people-fill" style={{ fontSize: '30px' }}></i>
-                                </div>
-
-                                <div className="d-flex align-items-center">
-                                    <p className="mb-0">Manage Accounts</p>
-                                </div>
-                            </NavBarItem>
-
+                                    <div className="d-flex align-items-center">
+                                        <p className="mb-0">Manage Accounts</p>
+                                    </div>
+                                </NavBarItem>
+                            }
 
                             <NavBarItem className="d-flex my-2" onClick={() => toggleList("leave")}>
                                 <div className="d-flex align-middle mx-2">
@@ -189,7 +194,9 @@ export default function NavBar() {
             <LogoutModal logout={logout} setLogout={setLogout} />
             <ProfileModal profile={profile} setProfile={setProfile} />
             <RequestLeaveModal leave={leave} setLeave={setLeave} />
+            
             <ResetPasswordModal reset={reset} setReset={setReset} />
+            <RefreshModal refresh={refresh} setRefresh={setRefresh} />
 
             <Outlet />
         </>

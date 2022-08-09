@@ -26,7 +26,7 @@ public class PatchOperationsTests {
         String username1 = TestTools.getRandomUsername();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // Create new account with id 998999999 (definitely unused), with some data
+            // Create new account with random account id (definitely unused) and some data
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             String SQL = "INSERT INTO accounts (id, username, password, email) " +
                     "VALUES (?, ?, 'sdfdfsgghndfh', 'person@test.com'); ";
@@ -64,7 +64,7 @@ public class PatchOperationsTests {
         String connectionString = ConnectionTools.getConnectionString();
         String username1 = TestTools.getRandomUsername();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // Create new account with id 919999999 (definitely unused)
+            // Create new account with random account id (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             String SQL = "INSERT INTO accounts (id, username, password, email) " +
                     "VALUES (?, ?, 'sdfdsh', 'ttt@test.com');";

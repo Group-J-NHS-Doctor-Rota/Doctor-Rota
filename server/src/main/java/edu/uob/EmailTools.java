@@ -19,12 +19,9 @@ public class EmailTools {
 
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        // Gmail:
+        // use Gmail smtp sever:
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
-        // outlook:
-//        mailSender.setHost("smtp-mail.outlook.com");
-//        mailSender.setPort(587);
 
         mailSender.setUsername(emailFrom);
         mailSender.setPassword(pwd);

@@ -173,4 +173,10 @@ public class IndexController {
         return PostOperations.postRotaGroup(startDate, endDate);
     }
 
+    @GetMapping(value = "/rotagroup", produces = "application/json")
+    public ResponseEntity<ObjectNode> postRotaGroup(@RequestHeader String token) {
+        ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
+        return GetOperations.getRotaGroup();
+    }
+
 }

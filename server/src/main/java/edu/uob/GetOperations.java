@@ -287,4 +287,29 @@ public class GetOperations {
         }
     }
 
+    public static ResponseEntity<ObjectNode> getRotaGroup() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Get all rotaGroup data
+            String SQL = "SELECT * FROM rotaGroups; ";
+            ObjectNode objectNode = new ObjectMapper().createObjectNode();
+            ArrayNode arrayNode = objectNode.putArray("rotaGroups");
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                while(r.next()) {
+                    ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
+                    objectNodeRow.put("id", r.getInt("id"));
+                    objectNodeRow.put("startDate", r.getString("startDate"));
+                    objectNodeRow.put("endDate", r.getString("endDate"));
+                    objectNodeRow.put("status", r.getBoolean("status"));
+                    arrayNode.add(objectNodeRow);
+                }
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+
 }

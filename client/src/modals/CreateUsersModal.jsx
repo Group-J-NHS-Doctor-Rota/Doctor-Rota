@@ -1,12 +1,19 @@
 import { Modal, Form } from "react-bootstrap"
 import styled from "styled-components"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useUrl } from '../contexts/UrlContexts'
+
 import CreateUserInput from "../components/CreateUserInput"
 
 
 const CreateUsersModal = ({ create, setCreate }) => {
+    const { getUrl } = useUrl()
+    const url = getUrl()
+
+    const [inputId, setInputId] = useState(1)
+
     const [userList, setUserList] = useState([
-        { username: '', email: '' },
+        { id: 0, username: '', email: '' },
     ])
     const onChange = (e, index) => {
         const list = [...userList]
@@ -15,15 +22,41 @@ const CreateUsersModal = ({ create, setCreate }) => {
         setUserList(list)
     }
 
-    const handleAddInput = () => {
-        setUserList([...userList, { username: '', email: '' }])
+    const handleAddInput = (user) => {
+        setInputId(inputId+1)
+        setUserList([...userList, { id: inputId, username: '', email: '' }])
     }
 
-    const handleRemoveInput = index => {
-        const list = [...userList]
-        list.splice(index, 1)
-        setUserList(list)
+    const handleRemoveInput = (user) => {
+        const newList = userList.filter((eachUser) => eachUser.id != user.id)
+
+        setUserList(newList)
     }
+
+    console.log(userList)
+
+    // useEffect(() => {
+    //     try {
+    //         if (url !== undefined) {
+    //             fetch(`${url}account?username=Steve Lin&email=steven123@gmail.com&username=Dennis liu`, {
+    //                 mode: 'cors',
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Access-Control-Allow-Origin': '*',
+    //                     'Content-Type': 'application/json',
+    //                     'Accept': 'application/json',
+    //                     "Access-Control-Allow-Credentials": true,
+
+    //                 }
+    //             })
+    //             .then(response => {
+    //                 console.log(response)
+    //             })
+    //         }
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }, [])
 
     const inputs = [
         {
@@ -34,7 +67,7 @@ const CreateUsersModal = ({ create, setCreate }) => {
             errorMessage:
                 "Invalid Username!",
             label: "Username",
-            pattern: "^[A-Za-z0-9]{3,16}$",
+            pattern: "[a-zA-Z \./']+",
             required: true,
         },
         {
@@ -63,9 +96,8 @@ const CreateUsersModal = ({ create, setCreate }) => {
                     </div>
 
                     <CreateRegion className="p-4">
-
-
                         {userList.map((user, index) => {
+                            // console.log(user)
                             return (
                                 index + 1 <= 10 &&
                                 (
@@ -78,7 +110,7 @@ const CreateUsersModal = ({ create, setCreate }) => {
                                                     (
                                                         <>
                                                             <Icon className="bi bi-plus-circle"
-                                                                onClick={index => handleAddInput(index)} />
+                                                                onClick={() => handleAddInput(user)} />
                                                         </>
                                                     )
                                                 }
@@ -87,7 +119,7 @@ const CreateUsersModal = ({ create, setCreate }) => {
                                                     (
                                                         <>
                                                             <Icon className="bi bi-dash-circle"
-                                                                onClick={() => handleRemoveInput(index)} />
+                                                                onClick={() => handleRemoveInput(user)} />
                                                         </>
                                                     )
                                                 }

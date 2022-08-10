@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 const CreateUserInput = (props) => {
     const [focused, setFocused] = useState(false);
-    const { label, errorMessage, onChange, id, ...inputProps } = props;
+    const { label, errorMessage, onChange, display, id, ...inputProps } = props;
 
     const handleFocus = (e) => {
         setFocused(true);

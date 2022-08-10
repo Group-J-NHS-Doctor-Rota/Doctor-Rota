@@ -13,6 +13,10 @@ export default function RefreshModal({ refresh, setRefresh }){
                     <Title>Warning</Title>
                 </div>
 
+                <div className="px-5">
+                    <Content>Are you sure you want to refresh all the shifts?</Content>
+                </div>
+
                 <div className="d-flex justify-content-center my-3">
                     <CloseButton className="m-2" onClick={() => setRefresh(false)}>
                         Close
@@ -34,6 +38,16 @@ const Title = styled.h1`
 
     @media (max-width: 575px){
         font-size: 24px;
+    }
+`
+
+const Content = styled.p`
+    font-size: 20px;
+    font-weight: bold;
+    color: #035eb8;
+
+    @media (max-width: 575px){
+        font-size: 16px;
     }
 `
 

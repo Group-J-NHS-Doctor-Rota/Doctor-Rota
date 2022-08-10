@@ -12,7 +12,10 @@ const ResetPasswordModal = ({ reset, setReset }) => {
 
     const navigate = useNavigate();
 
+    const auth = JSON.parse(localStorage.getItem('auth'))
+
     const [values, setValues] = useState({
+        oldpassword: "",
         password: "",
         confirmPassword: "",
     });
@@ -28,7 +31,7 @@ const ResetPasswordModal = ({ reset, setReset }) => {
             type: "password",
             placeholder: "Old Password",
             errorMessage:
-                "This field is required",
+                "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
             label: "Old Password",
             pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
             required: true,
@@ -56,38 +59,42 @@ const ResetPasswordModal = ({ reset, setReset }) => {
         },
     ];
 
-    const passwordMatches = true //temporary variable
-    const accountId = 3 // temporary variable
+    const accountId = auth.id // temporary variable
 
     const handleSubmit = e => {
         e.preventDefault();
 
-        if (passwordMatches) {
-            try {
-                if (url != undefined) {
-                    fetch(`${url}password?accountId=${accountId}`, {
-                        mode: 'cors',
-                        method: 'PATCH',
-                        headers: {
-                            'Access-Control-Allow-Origin': '*',
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            "Access-Control-Allow-Credentials": true
-                        }
+        try {
+            if (url != undefined) {
+                fetch(`${url}password?accountId=${accountId}`, {
+                    mode: 'cors',
+                    method: 'PATCH',
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Credentials": true,
+                        "oldPassword": values.oldpassword,
+                        "newPassword": values.newPassword,
+                        'token': auth.token
+                    }
+                })
+                .then(response => {
+                    // console.log(response)
+                    // console.log(response.status)
+                        // could be the same old password
+                    setValues({
+                        oldpassword: "",
+                        password: "",
+                        confirmPassword: "",
                     })
-                        .then(response => {
-                            console.log(response)
-                            console.log(response.status)
-                        })
-                }
-
+                })
+            }
                 setReset(false)
             } catch (error) {
                 console.log(error)
             }
-        } else {
-            setReset(true)
-        }
+        
     };
 
     const handleCancel = e => {
@@ -110,11 +117,11 @@ const ResetPasswordModal = ({ reset, setReset }) => {
                                 />
                             ))}
                         </div>
-                        <div className="d-flex justify-content-center my-5">
+                        <div className="d-flex justify-content-center my-3">
                             <CloseButton type="button" className="m-2" onClick={handleCancel}>
                                 Close
                             </CloseButton>
-                            <ConfirmButton type="sunbit" className="m-2" onClick={handleSubmit}>
+                            <ConfirmButton type="sunbit" className="m-2">
                                 Reset
                             </ConfirmButton>
                         </div>

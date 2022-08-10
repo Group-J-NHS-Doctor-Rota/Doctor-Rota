@@ -60,18 +60,18 @@ export default function SignIn() {
 
     const resetInputs = [
         {
-            id: 1,
+            id: 3,
             name: "username",
             type: "text",
             placeholder: "Username",
             errorMessage:
                 "If you forget the username, please contact admin!",
             label: "Username",
-            pattern: "^[A-Za-z0-9]{3,16}$",
+            pattern: "[a-zA-Z \./']+",
             required: true,
         },
         {
-            id: 2,
+            id: 4,
             name: "email",
             type: "email",
             placeholder: "Email",
@@ -82,14 +82,13 @@ export default function SignIn() {
         }
     ];
 
-    const handleSubmit = e => {
+    const handleResetSubmit = e => {
         e.preventDefault()
 
-        reset === false && navigate('/')
-
         if (reset === true) {
-
             if (information !== undefined) {
+                // console.log(information)
+                // when can not find email or username?
                 try {
                     if (url !== undefined) {
                         fetch(`${url}passwordreset?username=${information.username}&email=${information.email}`, {
@@ -102,18 +101,19 @@ export default function SignIn() {
                                 "Access-Control-Allow-Credentials": true
                             }
                         })
-                            .then(response => {
-                                console.log(response)
-                                console.log(response.status)
-                            })
+                        .then(response => {
+                            console.log(response)
+                            // CORS problem here
+                        })
                     }
                 } catch (error) {
                     console.log(error)
                 }
             }
         }
+    }
 
-    async function handleSubmit(e){
+    function handleSubmit(e){
         e.preventDefault();
 
         login(values.username, values.password)
@@ -126,7 +126,7 @@ export default function SignIn() {
             }else{
                 setError(true)
             }
-        }, 600);
+        }, 1000);
     };
 
     const onLoginChange = (e) => {
@@ -140,176 +140,134 @@ export default function SignIn() {
     const navigate = useNavigate()
 
     return (
-        <>
-            <LoginCard>
-                <Container>
-                    <div className="d-flex justify-content-between">
-
-                        {reset === false &&
-                            (<div><Title>Login</Title></div>)
-                            ||
-                            reset === true &&
-                            (<div><Title>Reset</Title></div>)
-                        }
-                        <img src="https://www.nbt.nhs.uk/themes/custom/nbt/logo.png"
-                            alt="logo" width="120px" />
-                    </div>
-
-                    <form id="signin_form" action="#" method="post" onSubmit={handleSubmit}>
-                        {
-                            //login form
-                            reset === false &&
-                            (<div>
-                                <div className="mb-4">
-
-                                    {inputs.map((input) => (
-                                        <FormInput
-                                            key={input.id}
-                                            {...input}
-                                            value={values[input.name]}
-                                            onChange={onLoginChange}
-                                        />
-                                    ))}
-                                </div>
-
-                                <div className="d-flex justify-content-center mb-3">
-                                    <LoginBtn type="submit">LOGIN</LoginBtn>
-                                </div>
-                            </div>)
-
-
-
-                            ||
-
-
-                            // reset form
-                            reset === true &&
-                            (
-                                <div>
-                                    <div className="mb-4">
-
-                                        {resetInputs.map((input) => (
-                                            <FormInput
-                                                key={input.id}
-                                                {...input}
-                                                value={information[input.name]}
-                                                onChange={onResetChange}
-                                            />
-                                        ))}
-                                    </div>
-
-                                    <div className="d-flex justify-content-center mb-3">
-                                        <LoginBtn type="submit"
-                                            onClick={async () => {
-                                                setStatus(true)
-                                                setTimeout(() => {
-                                                    setStatus(false)
-                                                }, 10000)
-                                            }}>Send Link</LoginBtn>
-                                    </div>
-                                </div>
-                            )
-                        }
-                        <div className="d-flex justify-content-center mb-3"
-                            onClick={() => setReset(!reset)}>
+        <div>
+            <div>
+                <LoginCard>
+                    <Container>
+                        <div className="d-flex justify-content-between">
+    
                             {reset === false &&
-                                (<Link>Forgot your password?</Link>)
+                                (<div><Title>Login</Title></div>)
                                 ||
-                                (<Link>Login</Link>)
+                                reset === true &&
+                                (<div><Title>Reset</Title></div>)
                             }
+                            <img src="https://www.nbt.nhs.uk/themes/custom/nbt/logo.png"
+                                alt="logo" width="120px" />
                         </div>
+                                {
+                                //login form
+                                reset === false &&
+                                (
+                                    <form id="signin_form" action="#" method="post" onSubmit={handleSubmit}>
+                                        <div>
+        
+                                            {inputs.map((input) => (
+                                                <FormInput
+                                                    key={input.id}
+                                                    {...input}
+                                                    value={values[input.name]}
+                                                    display="true"
+                                                    onChange={onLoginChange}
+                                                />
+                                            ))}
+                                        </div>
 
+                                        {
+                                            error &&
+                                            <ErrorMessage>account is not match with password</ErrorMessage>
+                                        }
+        
+                                        <div className="d-flex justify-content-center mt-3">
+                                            <LoginBtn type="submit">LOGIN</LoginBtn>
+                                        </div>
+                                    </form>
+                                )
+                                ||
+                                // reset form
+                                reset === true &&
+                                (
+                                    <form id="reset_form" action="#" method="post" onSubmit={handleResetSubmit}>
+                                        <div className="mb-4">
+    
+                                            {resetInputs.map((input) => (
+                                                <FormInput
+                                                    key={input.id}
+                                                    {...input}
+                                                    value={information[input.name]}
+                                                    display="true"
+                                                    onChange={onResetChange}
+                                                />
+                                            ))}
+                                        </div>
+    
+                                        <div className="d-flex justify-content-center mb-3">
+                                            <LoginBtn type="submit"
+                                                onClick={() => {
+                                                    setStatus(true)
+                                                    setTimeout(() => {
+                                                        setStatus(false)
+                                                    }, 10000)
+                                                }}>Send Link</LoginBtn>
+                                        </div>
+                                    </form>
+                                )
+                            }
+                            <div className="d-flex justify-content-center my-3"
+                                onClick={() => setReset(!reset)}>
+                                {reset === false &&
+                                    (<Link>Forgot your password?</Link>)
+                                    ||
+                                    (<Link>Login</Link>)
+                                }
+                            </div>
+    
+                            <div className="mb-5">
+                                <p>Don't have an account? <Link
+                                    onClick={() => {
+                                        setContact(true)
+                                        setTimeout(() => {
+                                            setContact(false)
+                                        }, 5000)
+                                    }}
+                                    style={{ cursor: 'pointer' }}>Contact Admin</Link></p>
+                            </div>
+    
+                    </Container>
+                </LoginCard >
+    
+                {
+                    status === true &&
+                    (
                         <div>
-                            <p>Don't have an account? <Link
-                                onClick={async () => {
-                                    setContact(true)
-                                    // alert("Please go to admin office or email admin")
-                                    setTimeout(() => {
-                                        setContact(false)
-                                    }, 5000)
-                                }}
-                                style={{ cursor: 'pointer' }}>Contact Admin</Link></p>
+                            <OnClickMessage>
+                                <i className="bi bi-info-square mx-2" />
+                                Success! Please follow the instructions in the email.
+                            </OnClickMessage>
                         </div>
-                    </form>
-
-                </Container>
-            </LoginCard >
-
-            {
-                status === true &&
-                (
-                    <>
-                        <OnClickMessage>
-                            <i className="bi bi-info-square mx-2" />
-                            Success! Please follow the instructions in the email.
-                        </OnClickMessage>
-                    </>
-                )
-            }
-
-            {
-                contact === true &&
-                (
-                    <>
-                        <OnClickMessage>
-                            <i className="bi bi-info-square mx-2" />
-                            Please go to admin office or email admin.
-                        </OnClickMessage>
-                    </>
-                )
-            }
-
-
-        </>
-
-        <LoginCard>
-            <Container>
-                <div className="d-flex justify-content-between">
-                    <Title>Login</Title>
-                    <img src="https://www.nbt.nhs.uk/themes/custom/nbt/logo.png"
-                        alt="logo" width="120px" />
-                </div>
-                <form id="signin_form" action="#" method="post" onSubmit={handleSubmit}>
-                    <div>
-                        {/* <Title className="mb-5">Login</Title> */}
-
-                        {inputs.map((input) => (
-                            <FormInput
-                                key={input.id}
-                                {...input}
-                                value={values[input.name]}
-                                onChange={onChange}
-                            />
-                        ))}
-                    </div>
-
-                    {
-                        error &&
-                        <ErrorMessage>account is not match with password</ErrorMessage>
-                    }
-
-                    <div className="d-flex justify-content-center mt-3">
-                        <LoginBtn type="submit">LOGIN</LoginBtn>
-                    </div>
-                    <div className="d-flex justify-content-center mb-3"
-                        onClick={() => navigate('/reset-password')}>
-                        <Link href="#">Forgot your password?</Link>
-                    </div>
-
-                    <div className="mb-2">
-                        <p>Don't have an account? <Link
-                            style={{ cursor: 'pointer' }}>Contact Admin</Link></p>
-                    </div>
-                </form>
-            </Container>
-        </LoginCard >
+                    )
+                }
+    
+                {
+                    contact === true &&
+                    (
+                        <div>
+                            <OnClickMessage>
+                                <i className="bi bi-info-square mx-2" />
+                                Please go to admin office or email admin.
+                            </OnClickMessage>
+                        </div>
+                    )
+                }
+            </div>
+        </div>
     )
 }
 
 const LoginCard = styled.div`
     margin: 90px auto 0 auto;
     max-width: 468px;
-    min-height: 500px;
+    min-height: 520px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border-radius: 5px;
     background-color: #f5f9fe;
@@ -353,12 +311,12 @@ const OnClickMessage = styled.div`
     text-align: center;
     color: #035eb8;
     border: 1px solid rgba(3, 94, 184, 1);
-    background-color: rgba(3, 94, 184, 0.3);
+    background-color: #f5f9fe;
     border-radius: 4px;
-    
+`
+
 const ErrorMessage = styled.p`
     font-size: 12px;
     padding: 3px;
     color: red;
-    // display: none;
 `

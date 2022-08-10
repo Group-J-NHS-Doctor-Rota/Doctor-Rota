@@ -85,6 +85,7 @@ export default function SignUp() {
                                 key={input.id}
                                 {...input}
                                 value={values[input.name]}
+                                display="true"
                                 onChange={onChange}
                             />
                         ))}

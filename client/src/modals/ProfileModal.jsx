@@ -40,6 +40,7 @@ export default function ProfileModal({ profile, setProfile }) {
             })
             .then(response => response.json())
             .then(result => {
+                console.log(result)
                 setInformation(result)
                 setInitial({
                     email: result.email,
@@ -143,7 +144,7 @@ export default function ProfileModal({ profile, setProfile }) {
                                 </RowInfo>
                             </div>
 
-                            <div className="d-flex align-items-center my-3">
+                            {/* <div className="d-flex align-items-center my-3">
                                 <Label className="d-flex me-3">
                                     <i className="bi bi-person-badge-fill" style={{ fontSize: '30px' }} />
                                 </Label>
@@ -153,7 +154,7 @@ export default function ProfileModal({ profile, setProfile }) {
                                         information.doctorId
                                     }
                                 </RowInfo>
-                            </div>
+                            </div> */}
 
                             <div className='d-block'>
                                 {
@@ -241,7 +242,7 @@ export default function ProfileModal({ profile, setProfile }) {
                                     </div>
                                 }
                             </div>
-                            <div className="d-flex justify-content-center my-5">
+                            <div className="d-flex justify-content-center my-3">
                                 <CloseButton type="button" className="m-2" onClick={handleCancel}>
                                     Close
                                 </CloseButton>

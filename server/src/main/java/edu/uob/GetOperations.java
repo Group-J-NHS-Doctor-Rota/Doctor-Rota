@@ -295,6 +295,7 @@ public class GetOperations {
             // Send reminder to all users
             int accountNum = ConnectionTools.getAccountsSum();
             int sendCounter = 0;
+            EmailTools emailTools = new EmailTools();
             String SQL = "SELECT email, username FROM accounts ORDER BY id;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ResultSet r = s.executeQuery();
@@ -303,7 +304,6 @@ public class GetOperations {
                     String email = r.getString("email");
                     String username = r.getString("username");
                     if (email != null && !email.isBlank()) {
-                        EmailTools emailTools = new EmailTools();
                         String msg = emailTools.reminderMsg(username);
                         emailTools.sendSimpleMessage(email, "Leave request reminder", msg);
                         sendCounter += 1;

@@ -403,17 +403,12 @@ public class GetOperationsTest {
         DeleteOperations.deleteAccount(accountId);
     }
 
-    @Test
-    void testGetLeaveReminder() throws JsonProcessingException {
-        // Get a response, check the status code
-        ResponseEntity<ObjectNode> response = GetOperations.getLeaveReminder();
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        // Check the total number of accounts
-        int total = ConnectionTools.getAccountsSum();
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
-        String responseMsg = String.valueOf(rootNode.get("message"));
-        assertTrue(responseMsg.contains("There are " + total + " users"));
-    }
+    // todo maybe we don't need this part.
+//    @Test
+//    void testGetLeaveReminder() {
+//        // Get a response, check the status code
+//        ResponseEntity<ObjectNode> response = GetOperations.getLeaveReminder();
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//    }
 
 }

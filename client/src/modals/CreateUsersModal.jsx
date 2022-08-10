@@ -229,13 +229,12 @@ const CreateUsersModal = ({ create, setCreate }) => {
                         {
                             errorMsg.usernameRepeated &&
                             <ErrorMessage className="mt-2 mb-0">
-                                Username: 
+                                Duplicated username: 
                                 {
                                     repeatedUsername.map((name) => (
-                                        <span style={{ display: 'inline' }}>{name} </span>
+                                        <span key={name} style={{ display: 'inline' }}>{name} </span>
                                     ))
                                 }
-                                are repeated
                             </ErrorMessage>
                         }
 

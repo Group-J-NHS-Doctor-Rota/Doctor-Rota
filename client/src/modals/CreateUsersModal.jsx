@@ -1,6 +1,6 @@
 import { Modal } from "react-bootstrap"
 import styled from "styled-components"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useUrl } from '../contexts/UrlContexts'
 
 import FormInput from '../components/FormInput';
@@ -19,6 +19,33 @@ const CreateUsersModal = ({ create, setCreate }) => {
     const [errorMsg, setErrorMsg] = useState({
         usernameRepeated: false,
     })
+
+    const [accounts, setAccounts] = useState([])
+    const [repeatedUsername, setRepeatedUsername] = useState([])
+
+    useEffect(() => {
+        let newArray = []
+        
+        if(url != undefined){
+            fetch(`${url}account`, {
+                mode: 'cors',
+                method: "GET",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'token': auth.token
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                for(let i = 0; i < data.accounts.length; i++){
+                    newArray.push(data.accounts[i].username)
+                }
+                setAccounts(newArray)
+            })
+        }
+    },[])
 
     const onChange = (e, index) => {
         const list = [...userList]
@@ -68,36 +95,33 @@ const CreateUsersModal = ({ create, setCreate }) => {
         setErrorMsg({
             usernameRepeated: false,
         })
+        setRepeatedUsername([])
         setCreate(false)
     }
 
-    // function handleString(){
-    //     let string = ""
-        
-    //     for(let i = 0; i < userList.length; i++){
-    //         string = string + "username="
-    //         string = string + userList[i].username
-    //         string = string + "&"
-    //         string = string + "email="
-    //         string = string + userList[i].email
-
-    //         if(i != userList.length - 1){
-    //             string = string + "&"
-    //         }
-    //     }
-
-    //     return string
-    // }
-
     function containsDuplicates(array){        
-        // call API get all account username here
-        // 重複的帳號列在下方一起顯示
-        if (array.length !== new Set(array).size) {
-            return true;
+        let newArray = []
+
+        for(let i = 0; i < accounts.length; i++){
+            newArray[i] = accounts[i]
+        }
+
+        for(let i = 0; i < array.length; i++){
+            newArray.push(array[i])
         }
         
+        if (newArray.length !== new Set(newArray).size) {
+            let result = newArray.filter((item, index, arr) => {
+                return arr.indexOf(item) !== index
+            })
+
+            setRepeatedUsername(result)
+
+            return true;
+        }
         return false;
     }
+
     
     function handleSubmit(e){
         e.preventDefault()
@@ -111,7 +135,7 @@ const CreateUsersModal = ({ create, setCreate }) => {
         if(containsDuplicates(array)){
             setErrorMsg({... errorMsg, ["usernameRepeated"]: true})
         }else{
-            
+            setErrorMsg({... errorMsg, ["usernameRepeated"]: false})
             try {
                 if (url !== undefined) {
                     for(let i = 0; i < userList.length; i++){
@@ -129,7 +153,9 @@ const CreateUsersModal = ({ create, setCreate }) => {
                         .then(response => {
                             if(response.status == 409){
                                 setErrorMsg({... errorMsg, ["usernameRepeated"]: true})
-                            }  
+                            }else{
+                                setCreate(false)
+                            }
                         })
                     }
                 }
@@ -138,6 +164,8 @@ const CreateUsersModal = ({ create, setCreate }) => {
             }
         }
     }
+
+    console.log(repeatedUsername)
 
     return (
         <>
@@ -200,7 +228,15 @@ const CreateUsersModal = ({ create, setCreate }) => {
                         
                         {
                             errorMsg.usernameRepeated &&
-                            <ErrorMessage className="mt-2 mb-0">Username are repeated</ErrorMessage>
+                            <ErrorMessage className="mt-2 mb-0">
+                                Username: 
+                                {
+                                    repeatedUsername.map((name) => (
+                                        <span style={{ display: 'inline' }}>{name} </span>
+                                    ))
+                                }
+                                are repeated
+                            </ErrorMessage>
                         }
 
                         <div className="d-flex justify-content-center my-4">

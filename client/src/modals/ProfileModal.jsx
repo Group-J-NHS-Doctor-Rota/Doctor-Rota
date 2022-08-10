@@ -4,7 +4,6 @@ import { useUrl } from '../contexts/UrlContexts'
 
 import FormInput from '../components/FormInput';
 
-
 import { Modal } from 'react-bootstrap'
 
 import styled from 'styled-components'
@@ -45,11 +44,6 @@ export default function ProfileModal({ profile, setProfile }) {
         phone: ""
     })
 
-    const [errorMsg, setErrorMsg] = useState({
-        email_invalid: false,
-        phone_invalid: false
-    })
-
     useEffect(() => {
         if(url != undefined){
             fetch(`${url}account/${auth.id}`, {
@@ -64,7 +58,6 @@ export default function ProfileModal({ profile, setProfile }) {
             })
             .then(response => response.json())
             .then(result => {
-                console.log(result)
                 setInformation(result)
                 setInitial({
                     email: result.email,
@@ -79,63 +72,32 @@ export default function ProfileModal({ profile, setProfile }) {
 
     const onChange = (e) => {
         setInformation({ ...information, [e.target.name]: e.target.value });
-        checkInputValidation(e.target.name, e.target.value)
     };
-
-    function checkInputValidation(name, value){
-        const numberOfValue = value.length
-        
-        if(name == "email"){
-            if(value.slice(numberOfValue-4, numberOfValue) == ".com" && value.includes("@")){
-                setErrorMsg({... errorMsg, ["email_invalid"]: false})
-            }else{
-                setErrorMsg({... errorMsg, ["email_invalid"]: true})
-            }
-        }
-        if(name == "phone"){
-            const pattern = /^[0-9]+$/
-            if(!pattern.test(value)){
-                setErrorMsg({... errorMsg, ["phone_invalid"]: true})
-            }else{
-                setErrorMsg({... errorMsg, ["phone_invalid"]: false})
-            }
-        }
-    }
 
     function handleSubmit(e) {
         e.preventDefault()
 
-        if(errorMsg.email_invalid != true && errorMsg.phone_invalid != true){
-            try {
-                if(url != undefined){
-                    fetch(`${url}account/${auth.id}?phone=${information.phone}&email=${information.email}`, {
-                        mode: 'cors',
-                        method: 'PATCH',
-                        headers: {
-                            'Access-Control-Allow-Origin': '*',
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            "Access-Control-Allow-Credentials": true,
-                            'token': auth.token
-                        }
-                    })
-                }
-
-                setProfile(false)
-            } catch (error) {
-                console.log(error)
+        try {
+            if(url != undefined){
+                fetch(`${url}account/${auth.id}?phone=${information.phone}&email=${information.email}`, {
+                    mode: 'cors',
+                    method: 'PATCH',
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        "Access-Control-Allow-Credentials": true,
+                        'token': auth.token
+                    }
+                })
             }
-        }else{
-            setProfile(true)
+            setProfile(false)
+        } catch (error) {
+            console.log(error)
         }
-
     }
 
     function handleCancel(){
-        setErrorMsg({
-            email_invalid: false,
-            phone_invalid: false
-        })
         setInformation({
             email: initial.email,
             phone: initial.phone,
@@ -143,10 +105,6 @@ export default function ProfileModal({ profile, setProfile }) {
             doctorId: initial.doctorId
         })
         setProfile(false)
-    }
-
-    const handleIcon = () => {
-
     }
 
     return (
@@ -167,122 +125,10 @@ export default function ProfileModal({ profile, setProfile }) {
                                 </RowInfo>
                             </div>
 
-                            {/* <div className="d-flex align-items-center my-3">
-                                <Label className="d-flex me-3">
-                                    <i className="bi bi-person-badge-fill" style={{ fontSize: '30px' }} />
-                                </Label>
-                                <RowInfo className="d-flex mb-0">
-                                    {
-                                        information != undefined &&
-                                        information.doctorId
-                                    }
-                                </RowInfo>
-                            </div> */}
-
-                            {/* <div className='d-block'>
-                                {
-                                    errorMsg.email_invalid &&
-                                    <div>
-                                        <div className="d-flex align-items-center mt-3">
-                                            <Label htmlFor="email" className="d-flex me-3">
-                                                <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
-                                            </Label>
-                                            {
-                                                information != undefined &&
-                                                <Input 
-                                                    type="email"
-                                                    name='email'
-                                                    value={information.email}
-                                                    autoComplete='off'
-                                                    onChange={onChange} 
-                                                />
-                                            }
-                                            <LockIcon className="bi bi-unlock-fill ms-2" />
-                                        </div>
-                                        <div>
-                                            <ErrorMessage>The email format is wrong</ErrorMessage>
-                                        </div>
-                                    </div>
-                                    ||
-                                    <div className="d-flex align-items-center my-3">
-                                        <Label htmlFor="email" className="d-flex me-3">
-                                            <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
-                                        </Label>
-                                        {
-                                            information != undefined &&
-                                            <Input 
-                                                type="email"
-                                                name='email'
-                                                value={information.email}
-                                                autoComplete='off'
-                                                onChange={onChange} 
-                                            />
-                                        }
-                                        <LockIcon className="bi bi-unlock-fill ms-2" />
-                                    </div>
-                                }
-
-                                {
-                                    errorMsg.phone_invalid &&
-                                    <div>
-                                        <div className="d-flex align-items-center mt-3">
-                                            <Label htmlFor="phone" className="d-flex me-3">
-                                                <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
-                                            </Label>
-                                            {
-                                                information != undefined &&
-                                                <Input 
-                                                    type="tel"
-                                                    name='phone'
-                                                    value={information.phone}
-                                                    autoComplete='off'
-                                                    onChange={onChange} 
-                                                />
-                                            }
-                                            <LockIcon className="bi bi-lock-fill ms-2" />
-                                        </div>
-                                        <div>
-                                            <ErrorMessage>The phone format is wrong</ErrorMessage>
-                                        
-                                        </div>
-                                    </div>
-                                    ||
-                                    <div className="d-flex align-items-center my-3">
-                                        <Label htmlFor="phone" className="d-flex me-3">
-                                            <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
-                                        </Label>
-                                        {
-                                            information != undefined &&
-                                            <Input 
-                                                type="tel"
-                                                name='phone'
-                                                value={information.phone}
-                                                autoComplete='off'
-                                                onChange={onChange} 
-                                            />
-                                        }
-                                        <LockIcon className="bi bi-lock-fill ms-2" />
-                                    </div>
-                                }
-                            </div> */}
-
                             <form id="profile_form" onSubmit={handleSubmit}>
                                 <div className="mb-4">
                                     {inputs.map((input) => (
-                                        <div className="d-flex align-items-center my-3">
-                                            
-                                            {/* {
-                                                input.id == 1 &&
-                                                <Label htmlFor="email" className="d-flex me-3">
-                                                    <i className="bi bi-envelope-fill" style={{ fontSize: '30px' }} />
-                                                </Label>
-                                                ||
-                                                input.id == 2 &&
-                                                <Label htmlFor="phone" className="d-flex me-3">
-                                                    <i className="bi bi-telephone-fill" style={{ fontSize: '30px' }} />
-                                                </Label>
-                                            } */}
-
+                                        <div key={input.id} className="d-flex align-items-center my-3">
                                             <FormInput
                                                 key={input.id}
                                                 {...input}
@@ -294,20 +140,16 @@ export default function ProfileModal({ profile, setProfile }) {
                                         </div>
                                     ))}
                                 </div>
+                                <div className="d-flex justify-content-center my-3">
+                                    <CloseButton type="button" className="m-2" onClick={handleCancel}>
+                                        Close
+                                    </CloseButton>
+                                    <ConfirmButton type="sunbit" className="m-2">
+                                        Update
+                                    </ConfirmButton>
+                                </div>
                             </form>
-
-                            
-                            
-                            <div className="d-flex justify-content-center my-3">
-                                <CloseButton type="button" className="m-2" onClick={handleCancel}>
-                                    Close
-                                </CloseButton>
-                                <ConfirmButton type="sunbit" className="m-2">
-                                    Update
-                                </ConfirmButton>
-                            </div>
                         </div>
-                    
                 </ModalContainer>
             </Modal>
         </>

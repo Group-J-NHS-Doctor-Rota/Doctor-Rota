@@ -105,7 +105,7 @@ public class PutOperations {
             }
             // Insert new data
             SQL = "INSERT INTO accountRotaTypes (accountId, rotaTypeId, startDate, endDate) " +
-                    "VALUES (?, ?, ?, ?);";
+                    "VALUES (?, ?, cast(? AS date), cast(? AS date));";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, accountId);
                 s.setInt(2, rotaTypeId);

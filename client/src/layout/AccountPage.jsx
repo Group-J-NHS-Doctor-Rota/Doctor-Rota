@@ -46,8 +46,20 @@ export default function AccountPage() {
             .then(response => response.json())
             .then(data => {
                 const result = data.accounts.filter(result => result.username.includes(search))
-                setTotalPage(Math.ceil(result.length/6))
-                setAccounts(result)
+
+                let number = 1
+                const tempArray = []
+
+                for(let i = 0; i < result.length; i++){
+                    result[i].number = number
+                    tempArray.push(result[i])
+                    number++
+                }
+                
+                const totalNumber = tempArray.length
+
+                setTotalPage(Math.ceil(totalNumber/6))
+                setAccounts(tempArray)
             })
         }
     }, [search])
@@ -60,7 +72,7 @@ export default function AccountPage() {
     const getTableContent = () => {
         let content = [];
 
-        accounts.filter(account => (currentPage) * 6 >= account.id && account.id > (currentPage - 1) * 6)
+        accounts.filter(account => (currentPage) * 6 >= account.number && account.number > (currentPage - 1) * 6)
             .map((account) => (
                 content.push(
                     <AccountCard key={account.id} onClick={() => handleClick(account.id)}>

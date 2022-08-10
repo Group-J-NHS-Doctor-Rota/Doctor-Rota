@@ -192,7 +192,7 @@ public class GetOperationsTest {
     @Test
     void testGetAccount() {
         // Get first accountId (should always be at least one account)
-        int accountId = 31;
+        int accountId = 0;
         boolean foundId = false;
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {

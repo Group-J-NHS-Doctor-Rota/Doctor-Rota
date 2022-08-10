@@ -5,9 +5,6 @@ import { useUrl } from '../contexts/UrlContexts'
 
 import FormInput from '../components/FormInput';
 
-import CreateUserInput from "../components/CreateUserInput"
-
-
 const CreateUsersModal = ({ create, setCreate }) => {
     const auth = JSON.parse(localStorage.getItem('auth'))
 

@@ -164,7 +164,6 @@ public class GetOperationsTest {
 
             // Check response for one leaves (level 0 account)
             response = GetOperations.getLeaves(id1);
-            System.out.println(response);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertTrue(rootNode.has("id"));
             assertTrue(rootNode.has("studyLeave"));

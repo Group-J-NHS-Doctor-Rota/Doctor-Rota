@@ -125,9 +125,9 @@ public class GetOperationsTest {
             assertFalse(ConnectionTools.accountIdExists(1000000000, c));
             assertFalse(ConnectionTools.idExistInTable(id1, "accountId", "leaveRequests", c));
             assertFalse(ConnectionTools.idExistInTable(id2, "accountId", "leaveRequests", c));
-            String SQL = "INSERT INTO accounts (id, username, password, email, level) " +
-                    "VALUES (?, ?, 'pwd999999075', 'user3@test.com', 0), " +
-                    "(?, ?, 'pwd999999076', 'user4@test.com', 1);";
+            String SQL = "INSERT INTO accounts (id, username, password, email, level, timeWorked) " +
+                    "VALUES (?, ?, 'pwd999999075', 'user3@test.com', 0, 0.8), " +
+                    "(?, ?, 'pwd999999076', 'user4@test.com', 1, 1);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1); s.setString(2, username1);
                 s.setInt(3, id2); s.setString(4, username2);
@@ -158,14 +158,20 @@ public class GetOperationsTest {
             assertTrue(rootNode.has("id"));
             assertTrue(rootNode.has("studyLeave"));
             assertTrue(rootNode.has("annualLeave"));
-            assertEquals("{\"id\":" + id2 + ",\"studyLeave\":14.5,\"annualLeave\":30.0}", response.getBody().toString());
+            assertEquals(id2, rootNode.get("id").asInt());
+            assertEquals(14.5, rootNode.get("studyLeave").asDouble());
+            assertEquals(30.0, rootNode.get("annualLeave").asDouble());
+
             // Check response for one leaves (level 0 account)
             response = GetOperations.getLeaves(id1);
+            System.out.println(response);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertTrue(rootNode.has("id"));
             assertTrue(rootNode.has("studyLeave"));
             assertTrue(rootNode.has("annualLeave"));
-            assertEquals("{\"id\":" + id1 + ",\"studyLeave\":15.0,\"annualLeave\":28.5}", response.getBody().toString());
+            assertEquals(id1, rootNode.get("id").asInt());
+            assertEquals(12.0, rootNode.get("studyLeave").asDouble());
+            assertEquals(22.5, rootNode.get("annualLeave").asDouble());
 
             // Check response expecting no shifts (no account)
             response = GetOperations.getLeaves(1000000000);

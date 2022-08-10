@@ -248,14 +248,14 @@ public class GetOperations {
                     }
                 }
             }
-            SQL = "SELECT id, annualLeave, studyLeave FROM accounts WHERE id = ?; ";
+            SQL = "SELECT id, annualLeave, studyLeave, timeWorked FROM accounts WHERE id = ?; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
-                    double studyLeaves = r.getInt("studyLeave") - usedStudyLeaves;
-                    double annualLeaves = r.getInt("annualLeave") - usedAnnualLeaves;
+                    double studyLeaves = r.getInt("studyLeave")*r.getFloat("timeWorked") - usedStudyLeaves;
+                    double annualLeaves = r.getInt("annualLeave")*r.getFloat("timeWorked") - usedAnnualLeaves;
                     objectNode.put("id", r.getInt("id"));
                     objectNode.put("studyLeave", studyLeaves);
                     objectNode.put("annualLeave", annualLeaves);

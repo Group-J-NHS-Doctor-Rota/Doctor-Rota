@@ -293,16 +293,15 @@ public class GetOperations {
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Get all email addresses and store in list
             // Send reminder to all users
-            int accountNum = -1;
+            int accountNum = ConnectionTools.getAccountsSum();
             int sendCounter = 0;
-            String SQL = "SELECT email, username COUNT(*) AS total FROM accounts ORDER BY id;";
+            String SQL = "SELECT email, username FROM accounts ORDER BY id;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
                     // email users:
                     String email = r.getString("email");
                     String username = r.getString("username");
-                    accountNum = r.getInt("total");
                     if (email != null && !email.isBlank()) {
                         EmailTools emailTools = new EmailTools();
                         String msg = emailTools.reminderMsg(username);
@@ -310,9 +309,9 @@ public class GetOperations {
                         sendCounter += 1;
                     }
                 }
-                return IndexController.okResponse("There are" + accountNum +
-                        "users in database, and leave request reminders are sent to " +
-                        sendCounter + " users");
+                return IndexController.okResponse("There are " + accountNum
+                        + " users in database, and leave request reminders are sent to " +
+                        sendCounter + " users. Please check if some users' email addresses are blank.");
             }
             // Have to catch SQLException exception here
         } catch (SQLException| MessagingException e) {

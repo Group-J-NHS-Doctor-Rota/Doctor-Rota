@@ -90,4 +90,19 @@ public class ConnectionTools {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
+
+    public static int getAccountsSum() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            String SQL = "SELECT COUNT(*) AS total FROM accounts;";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                r.next();
+                return r.getInt("total");
+            }
+        } catch(SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+
+    }
 }

@@ -6,15 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
+import java.sql.*;
 
 public class GetOperationsTest {
 
@@ -405,18 +403,89 @@ public class GetOperationsTest {
         DeleteOperations.deleteAccount(accountId);
     }
 
-//    @Test
-//    void testGetLeaveReminder() {
-//        int accountId = TestTools.getTestAccountId();
-//        String username = TestTools.getRandomUsername();
-//        String password = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
-//        // Create account
-//        PostOperations.postAccount(username);
-//        // get response, check sender number
-//
-//
-//
-//        // Delete account
-//        DeleteOperations.deleteAccount(accountId);
-//    }
+    @Test
+    void testGetLeaveReminder() {
+//        // get a response, check the status code
+//        ResponseEntity<ObjectNode> response = GetOperations.getLeaveReminder();
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // Get random account ids and usernames to test
+        int id1 = TestTools.getTestAccountId();
+        int id2 = TestTools.getTestAccountId();
+        String username1 = TestTools.getRandomUsername();
+        String email1 = RandomStringUtils.randomAlphabetic(16)
+                +"@"+RandomStringUtils.randomAlphabetic(8)+".com";
+        String username2 = TestTools.getRandomUsername();
+        String email2 = RandomStringUtils.randomAlphabetic(16)
+                +"@"+RandomStringUtils.randomAlphabetic(8)+".com";
+
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Create new accounts with two random ids (definitely unused)
+            // id1 is a level 0 account, and id2 is a level 1 account
+            assertFalse(ConnectionTools.accountIdExists(id1, c));
+            assertFalse(ConnectionTools.accountIdExists(id2, c));
+            String SQL = "INSERT INTO accounts (id, username, password, email, level) " +
+                    "VALUES (?, ?, 'ndsjkfgndsfpgn', ?, 0), " +
+                    "(?, ?, 'sdfgsdfgdfs', ?, 1); ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, id1);
+                s.setString(2, username1);
+                s.setString(3, email1);
+                s.setInt(4, id2);
+                s.setString(5, username2);
+                s.setString(6, email2);
+                s.executeUpdate();
+            }
+            // Check account creation
+            assertTrue(ConnectionTools.accountIdExists(id1, c));
+            assertTrue(ConnectionTools.accountIdExists(id2, c));
+
+            // get response, check sender number
+            ResponseEntity<ObjectNode> response = GetOperations.getLeaveReminder();
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+
+            // Delete all test data
+            DeleteOperations.deleteAccount(id1);
+            DeleteOperations.deleteAccount(id2);
+            // Check delete
+            assertFalse(ConnectionTools.accountIdExists(id1, c));
+            assertFalse(ConnectionTools.accountIdExists(id2, c));
+        } catch (Exception e) {
+            fail("Database connection and SQL queries should have worked\n" + e);
+        }
+    }
+
+    @Test
+    void saveSmith() {
+        String email = "test101@test.com";
+        String username = "John Smith";
+        int id = 101;
+
+//        PatchOperations.patchPasswordReset(username, email);
+
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+
+            String SQL = "SELECT id, email, username, level FROM accounts WHERE username = 'Jane Smith'; ";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                while (r.next()) {
+                    id = r.getInt("id");
+                    username = r.getString("username");
+                    email = r.getString("email");
+                    System.out.println(id);
+                    System.out.println(username);
+                    System.out.println(email);
+                    System.out.println(r.getInt("level"));
+//                    PatchOperations.patchPasswordReset(username, email);
+
+                }
+            }
+
+        } catch (Exception e) {
+            fail("Database connection and SQL queries should have worked\n" + e);
+        }
+
+    }
 }

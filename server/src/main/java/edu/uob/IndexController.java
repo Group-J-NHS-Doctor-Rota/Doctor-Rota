@@ -179,7 +179,7 @@ public class IndexController {
         return GetOperations.getRotaGroup();
     }
     
-    @PutMapping(value = "/account/{{accountId}/rotatype", produces = "application/json")
+    @PutMapping(value = "/account/{accountId}/rotatype", produces = "application/json")
     public ResponseEntity<ObjectNode> putAccountRotaType(@RequestHeader String token, @PathVariable int accountId,
                                                          @RequestParam int rotaTypeId,
                                                          @RequestParam String startDate, @RequestParam String endDate) {

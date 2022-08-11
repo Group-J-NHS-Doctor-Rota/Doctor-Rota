@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react'
 
 import Shift from './Shift'
 import CalendarDayModal from '../modals/CalendarDayModal'
-// import { handleFilterClick } from '../components/FilterCard'
 
 import styled from 'styled-components'
 
@@ -15,10 +14,15 @@ export default function CalendarDay({ allShift, year, month, day, holiday }) {
     const [calendayDay, setCalendarDay] = useState(false)
     const [shifts, setShifts] = useState([])
 
-    
-    const filterRota = filterResult.rota_type
-    const filterShifts = filterResult.shifts_type
-    const filterMember = filterResult.member    
+    let filterRota = ""
+    let filterShifts = ""
+    let filterMember = ""
+
+    if(filterResult != null){
+        filterRota = filterResult.rota_type
+        filterShifts = filterResult.shifts_type
+        filterMember = filterResult.member  
+    }
     
     useEffect(() => {
         setShifts([])

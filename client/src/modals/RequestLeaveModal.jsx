@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { useUrl } from '../contexts/UrlContexts' 
-import { useNavigate } from 'react-router-dom';
 
 import { Modal, Form } from 'react-bootstrap'
 
@@ -9,7 +8,6 @@ import '../css/general.css'
 import styled from 'styled-components'
 
 export default function RequestLeaveModal({ leave, setLeave }) {
-    const navigate = useNavigate();
     // need to fix
 
     // const toDay = new Date().toISOString().substring(0, 10);
@@ -27,7 +25,9 @@ export default function RequestLeaveModal({ leave, setLeave }) {
         multiple_start_day_invalid: false,
         multiple_end_day_invalid: false,
         multiple_start_end_invalid: false,
-        comments_required: false
+        comments_required: false,
+        annual_leave_invalid: false,
+        study_leave_invalid: false
     })
 
     const [values, setValues] = useState({
@@ -42,12 +42,54 @@ export default function RequestLeaveModal({ leave, setLeave }) {
         comments: ""
     })
 
+    const [leaves, setLeaves] = useState({
+        annualLeave: 0,
+        studyLeave: 0
+    })
+
+    useEffect(() => {
+        if(url != undefined){
+            const newUrl = `${url}leaves?accountId=${auth.id}`
+            
+            fetch(newUrl, {
+                mode: 'cors',
+                method: 'GET',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'token': auth.token
+                }
+            })
+            .then(response => response.json())
+            .then(data => setLeaves({
+                annualLeave: data.annualLeave,
+                studyLeave: data.studyLeave
+            }))
+        }
+    }, [])
+
+
     function setValue(e) {
         setValues({ ...values, [e.target.name]: e.target.value })
 
         if(e.target.name == "type_leave"){
             if(e.target.value != ""){
                 setErrorMsg({... errorMsg, ["type_leave_required"]: false})
+            }
+            if(e.target.value == 0){
+                if(leaves.annualLeave <= 0){
+                    setErrorMsg({... errorMsg, ["annual_leave_invalid"]: true })
+                }else{
+                    setErrorMsg({... errorMsg, ["annual_leave_invalid"]: false })
+                }
+            }
+            if(e.target.value == 1){
+                if(leaves.studyLeave <= 0){
+                    setErrorMsg({... errorMsg, ["study_leave_invalid"]: true })
+                }else{
+                    setErrorMsg({... errorMsg, ["study_leave_invalid"]: false })
+                }
             }
         }
 
@@ -83,7 +125,6 @@ export default function RequestLeaveModal({ leave, setLeave }) {
 
 
                 if(values.multiple_end_day != "" && e.target.value != ""){
-
                     if(!isValidDate(e.target.value, values.multiple_end_day)){
                         setErrorMsg({... errorMsg, ["multiple_start_end_invalid"]: true})
                     }else{
@@ -106,7 +147,6 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                 setErrorMsg({... errorMsg, ["multiple_end_day_invalid"]: false})
 
                 if(values.multiple_start_day != "" && e.target.value != ""){
-
                     if(!isValidDate(values.multiple_start_day, e.target.value)){
                         setErrorMsg({... errorMsg, ["multiple_start_end_invalid"]: true})
                     }else{
@@ -261,8 +301,29 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                             'token': auth.token
                         }
                     })
+                    setErrorMsg({
+                        type_leave_required: false,
+                        single_day_required: false,
+                        single_day_invalid: false,
+                        multiple_start_day_required: false,
+                        multiple_end_day_required: false,
+                        multiple_start_day_invalid: false,
+                        multiple_end_day_invalid: false,
+                        multiple_start_end_invalid: false
+                    })
+                    setValues({
+                        type_leave: "",
+                        type_day: "single",
+                        single_half_full: "0",
+                        single_day: "",
+                        multiple_start_half_full: "0",
+                        multiple_end_half_full: "0",
+                        multiple_start_day: "",
+                        multiple_end_day: "",
+                        comments: ""
+                    })
                     setLeave(false)
-                    navigate('/notification')
+
                 }catch(error){
                     console.log(error)
                 }
@@ -324,9 +385,28 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                                     'token': auth.token
                                 }
                             })
+                            setErrorMsg({
+                                type_leave_required: false,
+                                single_day_required: false,
+                                single_day_invalid: false,
+                                multiple_start_day_required: false,
+                                multiple_end_day_required: false,
+                                multiple_start_day_invalid: false,
+                                multiple_end_day_invalid: false,
+                                multiple_start_end_invalid: false
+                            })
+                            setValues({
+                                type_leave: "",
+                                type_day: "single",
+                                single_half_full: "0",
+                                single_day: "",
+                                multiple_start_half_full: "0",
+                                multiple_end_half_full: "0",
+                                multiple_start_day: "",
+                                multiple_end_day: "",
+                                comments: ""
+                            })
                             setLeave(false)
-                            navigate('/notification')
-                            // navigation
                         }catch(error){
                             console.log(error)
                         }
@@ -367,11 +447,16 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                     if(values.type_leave == "Study Leave"){
                         setLeave(true)
                     }else{
-                        checkDateValidation()
+                        if(errorMsg.study_leave_invalid != true && errorMsg.annual_leave_invalid != true){
+                            checkDateValidation()
+                        }
                     }
                 }else{
                     setErrorMsg({... errorMsg, ["comments_required"]: false})
-                    checkDateValidation()
+                    if(errorMsg.study_leave_invalid != true && errorMsg.annual_leave_invalid != true){
+                        checkDateValidation()
+                    }
+
                 }
             }
         }catch(error){
@@ -400,6 +485,14 @@ export default function RequestLeaveModal({ leave, setLeave }) {
                             {
                                 errorMsg.type_leave_required &&
                                 <ErrorMessage className="mb-0">this field cannot be empty</ErrorMessage>
+                            }
+                            {
+                                errorMsg.annual_leave_invalid && values.type_leave == 0 &&
+                                <ErrorMessage className="mb-0">your annual leave is run out</ErrorMessage>
+                            }
+                            {
+                                errorMsg.study_leave_invalid && values.type_leave == 1 &&
+                                <ErrorMessage className="mb-0">your study leave is run out</ErrorMessage>
                             }
                         </div>
 

@@ -59,7 +59,7 @@ const ResetPasswordModal = ({ reset, setReset }) => {
         },
     ];
 
-    const accountId = auth.id // temporary variable
+    const accountId = auth.id
 
     const handleSubmit = e => {
         e.preventDefault();
@@ -75,7 +75,7 @@ const ResetPasswordModal = ({ reset, setReset }) => {
                         'Accept': 'application/json',
                         "Access-Control-Allow-Credentials": true,
                         "oldPassword": values.oldpassword,
-                        "newPassword": values.newPassword,
+                        "newPassword": values.password,
                         'token': auth.token
                     }
                 })
@@ -113,6 +113,7 @@ const ResetPasswordModal = ({ reset, setReset }) => {
                                     key={input.id}
                                     {...input}
                                     value={values[input.name]}
+                                    display="true"
                                     onChange={onChange}
                                 />
                             ))}

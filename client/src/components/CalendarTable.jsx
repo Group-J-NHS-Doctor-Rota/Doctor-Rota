@@ -33,7 +33,6 @@ export default function CalendarTable({ year, month }) {
 
     const url =  getUrl()
 
-
     useEffect(() => {
         fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/GB`)
             .then(response => response.json())

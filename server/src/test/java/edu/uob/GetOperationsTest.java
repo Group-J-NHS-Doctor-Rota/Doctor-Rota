@@ -65,7 +65,7 @@ public class GetOperationsTest {
             // Check each notification has required fields
             int numberOfNotifications = rootNode.get("leaveRequests").size();
             for(int i = 0; i < numberOfNotifications; i++) {
-                JsonNode notification = rootNode.get("leaveRequests").get(0);
+                JsonNode notification = rootNode.get("leaveRequests").get(i);
                 assertTrue(notification.has("id"));
                 assertTrue(notification.has("leaveRequestId"));
                 assertTrue(notification.has("accountId"));
@@ -289,7 +289,7 @@ public class GetOperationsTest {
         }
         // Check all accounts, have all the fields
         for(int i = 0; i < numberOfAccounts; i++) {
-            JsonNode account = rootNode.get("accounts").get(0);
+            JsonNode account = rootNode.get("accounts").get(i);
             assertTrue(account.has("id"));
             assertTrue(account.has("username"));
             assertTrue(account.has("email"));

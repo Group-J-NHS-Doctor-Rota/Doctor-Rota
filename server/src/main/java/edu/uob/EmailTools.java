@@ -11,13 +11,15 @@ import java.util.Properties;
 public class EmailTools {
     String emailFrom;
     String pwd;
+    JavaMailSender mailSender;
 
     public EmailTools() {
         emailFrom = ConnectionTools.getEnvOrSysVariable("EMAIL_FROM");
         pwd = ConnectionTools.getEnvOrSysVariable("EMAIL_PASSWORD");
+        mailSender = getJavaMailSender();
     }
 
-    public JavaMailSender getJavaMailSender() {
+    private JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         // use Gmail smtp sever:
         mailSender.setHost("smtp.gmail.com");
@@ -36,7 +38,6 @@ public class EmailTools {
     }
 
     public void sendSimpleMessage(String to, String subject, String text) throws MessagingException {
-        JavaMailSender mailSender = getJavaMailSender();
         // use mimeMessage
         MimeMessagePreparator mailMessage = mimeMessage -> {
             MimeMessageHelper message = new MimeMessageHelper(
@@ -76,7 +77,6 @@ public class EmailTools {
     }
 
     public String reminderMsg(String username) {
-    //todo connect to api 19
         String message = "<p><h2>Leave request reminder</h2></p>"
                 + "<p>Hello " + username +",</p>"
                 + "<p>If you haven't done already, "

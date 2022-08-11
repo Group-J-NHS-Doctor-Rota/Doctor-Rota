@@ -8,6 +8,8 @@ import FormInput from '../components/FormInput';
 const CreateUsersModal = ({ create, setCreate }) => {
     const auth = JSON.parse(localStorage.getItem('auth'))
 
+    const reload=()=>window.location.reload();
+
     const { getUrl } = useUrl()
     const url = getUrl()
 
@@ -46,7 +48,7 @@ const CreateUsersModal = ({ create, setCreate }) => {
             })
         }
     },[])
-
+    
     const onChange = (e, index) => {
         const list = [...userList]
         list[index][e.target.name] = e.target.value
@@ -165,11 +167,9 @@ const CreateUsersModal = ({ create, setCreate }) => {
         }
     }
 
-    console.log(repeatedUsername)
-
     return (
         <>
-            <Modal show={create}>
+            <Modal show={create} onExit={reload}>
                 <ModalContainer>
                     <div className="d-flex justify-content-between">
                         <ModalTitle className="my-5">Create Users</ModalTitle>

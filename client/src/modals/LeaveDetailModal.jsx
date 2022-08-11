@@ -8,11 +8,11 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
     const [accountInfo, setAccountInfo] = useState()
     
     const auth = JSON.parse(localStorage.getItem('auth'))
+    const reload=()=>window.location.reload();
     
     const { getUrl } = useUrl()
     
     const url =  getUrl()
-    
     
     useEffect(() => {
         if(url != undefined && notification != undefined){
@@ -72,7 +72,7 @@ const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
 
     return (
         <>
-            <Modal show={leaveDetail}>
+            <Modal show={leaveDetail} onExit={reload}>
                 <ModalContainer>
                     <ModalTitle className="mt-5 mb-3">Request Detail</ModalTitle>
                     

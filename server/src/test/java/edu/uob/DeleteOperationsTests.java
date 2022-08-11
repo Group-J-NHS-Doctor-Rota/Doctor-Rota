@@ -12,18 +12,20 @@ public class DeleteOperationsTests {
 
     @Test
     void testDeleteAccount() {
-        // Get random account id and username to test
+        // Get random account id, username and email to test
         int id1 = TestTools.getTestAccountId();
         String username1 = TestTools.getRandomUsername();
+        String email1 = TestTools.getRandomEmail();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Create new account with id1
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             String SQL = "INSERT INTO accounts (id, username, password, email) " +
-                    "VALUES (?, ?, 'sdfdfsgghndfh', 'person@test.com');";
+                    "VALUES (?, ?, 'sdfdfsgghndfh', ?);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
                 s.setString(2, username1);
+                s.setString(3, email1);
                 s.executeUpdate();
             }
             // Add data to various tables

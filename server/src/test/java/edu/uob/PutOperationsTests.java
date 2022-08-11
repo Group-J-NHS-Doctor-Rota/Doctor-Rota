@@ -14,15 +14,17 @@ public class PutOperationsTests {
         // Get random id and username to test
         int id1 = TestTools.getTestAccountId();
         String username1 = TestTools.getRandomUsername();
+        String email1 = TestTools.getRandomEmail();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Create new account with id (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             String SQL = "INSERT INTO accounts (id, username, password, email) " +
-                    "VALUES (?, ?, 'ndsjkfgndsfpgn', 'mctester@test.com');";
+                    "VALUES (?, ?, 'ndsjkfgndsfpgn', ?);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
                 s.setString(2, username1);
+                s.setString(3, email1);
                 s.executeUpdate();
             }
             // Check account creation
@@ -81,16 +83,18 @@ public class PutOperationsTests {
         // Get random id and username to test
         int id1 = TestTools.getTestAccountId();
         String username1 = TestTools.getRandomUsername();
+        String email1 = TestTools.getRandomEmail();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             Date date1 = Date.valueOf("1922-07-18");
             // Create new account with id (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             String SQL = "INSERT INTO accounts (id, username, password, email) " +
-                    "VALUES (?, ?, 'pwd999999070', 'test_user070@test.com');";
+                    "VALUES (?, ?, 'pwd999999070', ?);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
                 s.setString(2, username1);
+                s.setString(3, email1);
                 s.executeUpdate();
             }
             // Check account creation

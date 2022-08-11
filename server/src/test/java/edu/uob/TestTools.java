@@ -43,4 +43,10 @@ public class TestTools {
         return RandomStringUtils.randomAlphanumeric(length);
     }
 
+    public static String getRandomEmail() {
+        int length = ThreadLocalRandom.current().nextInt(2, 41);
+        return RandomStringUtils.randomAlphabetic(length)
+                +"@"+RandomStringUtils.randomAlphabetic(20)+".com";
+    }
+
 }

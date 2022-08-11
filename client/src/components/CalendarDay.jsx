@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 
 import Shift from './Shift'
 import CalendarDayModal from '../modals/CalendarDayModal'
+// import { handleFilterClick } from '../components/FilterCard'
 
 import styled from 'styled-components'
 
@@ -13,7 +14,6 @@ export default function CalendarDay({ allShift, year, month, day, holiday }) {
     
     const [calendayDay, setCalendarDay] = useState(false)
     const [shifts, setShifts] = useState([])
-
     
     const handleFilter = useCallback(() => {
         if(allShift != undefined && filterResult == null){
@@ -49,97 +49,96 @@ export default function CalendarDay({ allShift, year, month, day, holiday }) {
                 isDateMatch(shift.date) && setValue(shift)
             })
         }
-        
-    }, [])
+    }, [month])
     
     useEffect(() => {
         setShifts([])
+        
+        handleFilter()
 
-        // handleFilter()
-
-        if(allShift != undefined && filterResult == null){
-            allShift
-            .forEach(shift => {
-                isDateMatch(shift.date) && setValue(shift)
-            })
-        }
-        if(filterResult != null){
-            if(filterResult.member == 10){
-                if(allShift != undefined && filterResult != null && filterResult.rota_type == 10 && filterResult.shifts_type == 10){
-                    allShift
-                    .forEach(shift => {
-                        isDateMatch(shift.date) && setValue(shift)
-                    })
-                }
-                if(allShift != undefined && filterResult != null && filterResult.rota_type != 10 && filterResult.shifts_type != 10){
-                    allShift
-                    .filter(shift => shift.rotaType == filterResult.rota_type && shift.type == filterResult.shifts_type)
-                    .forEach(shift => {
-                        isDateMatch(shift.date) && setValue(shift)
-                    })
-                }
-                if(allShift != undefined && filterResult != null && filterResult.rota_type == 10 && filterResult.shifts_type != 10){
-                    allShift
-                    .filter(shift => shift.type == filterResult.shifts_type)
-                    .forEach(shift => {
-                        isDateMatch(shift.date) && setValue(shift)
-                    })
-                }
-                if(allShift != undefined && filterResult != null && filterResult.rota_type != 10 && filterResult.shifts_type == 10){
-                    allShift
-                    .filter(shift => shift.rotaType == filterResult.rota_type)
-                    .forEach(shift => {
-                        isDateMatch(shift.date) && setValue(shift)
-                    })
-                }
-            }
-            if(filterResult.member == 0){
-                if(allShift != undefined && filterResult != null && filterResult.rota_type == 10 && filterResult.shifts_type == 10){
-                    allShift
-                    .filter(shift => shift.accountId == auth.id)
-                    .forEach(shift => {
-                        isDateMatch(shift.date) && setValue(shift)
-                    })
-                }
-                if(allShift != undefined && filterResult != null && filterResult.rota_type != 10 && filterResult.shifts_type != 10){
-                    allShift
-                    .filter(shift => shift.accountId == auth.id)
-                    .filter(shift => shift.rotaType == filterResult.rota_type && shift.type == filterResult.shifts_type)
-                    .forEach(shift => {
-                        isDateMatch(shift.date) && setValue(shift)
-                    })
-                }
-                if(allShift != undefined && filterResult != null && filterResult.rota_type == 10 && filterResult.shifts_type != 10){
-                    allShift
-                    .filter(shift => shift.accountId == auth.id)
-                    .filter(shift => shift.type == filterResult.shifts_type)
-                    .forEach(shift => {
-                        isDateMatch(shift.date) && setValue(shift)
-                    })
-                }
-                if(allShift != undefined && filterResult != null && filterResult.rota_type != 10 && filterResult.shifts_type == 10){
-                    allShift
-                    .filter(shift => shift.accountId == auth.id)
-                    .filter(shift => shift.rotaType == filterResult.rota_type)
-                    .forEach(shift => {
-                        isDateMatch(shift.date) && setValue(shift)
-                    })
-                }
-            }
-        }
+        // if(allShift != undefined && filterResult == null){
+        //     allShift
+        //     .forEach(shift => {
+        //         isDateMatch(shift.date) && setValue(shift)
+        //     })
+        // }
+        // if(filterResult != null){
+        //     if(filterResult.member == 10){
+        //         if(allShift != undefined && filterResult != null && filterResult.rota_type == 10 && filterResult.shifts_type == 10){
+        //             allShift
+        //             .forEach(shift => {
+        //                 isDateMatch(shift.date) && setValue(shift)
+        //             })
+        //         }
+        //         if(allShift != undefined && filterResult != null && filterResult.rota_type != 10 && filterResult.shifts_type != 10){
+        //             allShift
+        //             .filter(shift => shift.rotaType == filterResult.rota_type && shift.type == filterResult.shifts_type)
+        //             .forEach(shift => {
+        //                 isDateMatch(shift.date) && setValue(shift)
+        //             })
+        //         }
+        //         if(allShift != undefined && filterResult != null && filterResult.rota_type == 10 && filterResult.shifts_type != 10){
+        //             allShift
+        //             .filter(shift => shift.type == filterResult.shifts_type)
+        //             .forEach(shift => {
+        //                 isDateMatch(shift.date) && setValue(shift)
+        //             })
+        //         }
+        //         if(allShift != undefined && filterResult != null && filterResult.rota_type != 10 && filterResult.shifts_type == 10){
+        //             allShift
+        //             .filter(shift => shift.rotaType == filterResult.rota_type)
+        //             .forEach(shift => {
+        //                 isDateMatch(shift.date) && setValue(shift)
+        //             })
+        //         }
+        //     }
+        //     if(filterResult.member == 0){
+        //         if(allShift != undefined && filterResult != null && filterResult.rota_type == 10 && filterResult.shifts_type == 10){
+        //             allShift
+        //             .filter(shift => shift.accountId == auth.id)
+        //             .forEach(shift => {
+        //                 isDateMatch(shift.date) && setValue(shift)
+        //             })
+        //         }
+        //         if(allShift != undefined && filterResult != null && filterResult.rota_type != 10 && filterResult.shifts_type != 10){
+        //             allShift
+        //             .filter(shift => shift.accountId == auth.id)
+        //             .filter(shift => shift.rotaType == filterResult.rota_type && shift.type == filterResult.shifts_type)
+        //             .forEach(shift => {
+        //                 isDateMatch(shift.date) && setValue(shift)
+        //             })
+        //         }
+        //         if(allShift != undefined && filterResult != null && filterResult.rota_type == 10 && filterResult.shifts_type != 10){
+        //             allShift
+        //             .filter(shift => shift.accountId == auth.id)
+        //             .filter(shift => shift.type == filterResult.shifts_type)
+        //             .forEach(shift => {
+        //                 isDateMatch(shift.date) && setValue(shift)
+        //             })
+        //         }
+        //         if(allShift != undefined && filterResult != null && filterResult.rota_type != 10 && filterResult.shifts_type == 10){
+        //             allShift
+        //             .filter(shift => shift.accountId == auth.id)
+        //             .filter(shift => shift.rotaType == filterResult.rota_type)
+        //             .forEach(shift => {
+        //                 isDateMatch(shift.date) && setValue(shift)
+        //             })
+        //         }
+        //     }
+        // }
     }, [month])
 
     function isDateMatch(date){
         let shiftMonth = date.slice(5, 7)
         let shiftDay = date.slice(8, 10)
-
+        
         if(shiftMonth[0] == 0){
             shiftMonth = date.slice(6, 7)
         }
         if(shiftDay[0] == 0){
             shiftDay = date.slice(9, 10)
         }
-
+        
         if(shiftMonth == month && shiftDay == day){
             return true
         }else{

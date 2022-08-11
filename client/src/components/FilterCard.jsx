@@ -85,7 +85,7 @@ export default function FilterCard({ open, setOpen }){
         }
     ]
 
-    const handleClick = (e) => {
+    const handleFilterClick = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
     };
 
@@ -101,7 +101,7 @@ export default function FilterCard({ open, setOpen }){
                                     key={rotaType.id}
                                     {...rotaType}
                                     values={values}
-                                    handleClick={handleClick}
+                                    handleClick={handleFilterClick}
                                 />
                             ))
                         }
@@ -115,7 +115,7 @@ export default function FilterCard({ open, setOpen }){
                                     key={typeShift.id}
                                     {...typeShift}
                                     values={values}
-                                    handleClick={handleClick}
+                                    handleClick={handleFilterClick}
                                 />
                             ))
                         }
@@ -132,7 +132,7 @@ export default function FilterCard({ open, setOpen }){
                                             key={member.id}
                                             {...member}
                                             values={values}
-                                            handleClick={handleClick}
+                                            handleClick={handleFilterClick}
                                         />
                                     ))
                                 }

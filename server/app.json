@@ -1,0 +1,6 @@
+{
+  "name": "Junior Doctor Rota Design",
+  "description": "A Spring Boot app as API for rota building app, deployment on Heroku",
+  "repository": "https://github.com/Group-J-NHS-Doctor-Rota/Doctor-Rota",
+  "keywords": ["Spring Boot", "Heroku", "Deployment"]
+}

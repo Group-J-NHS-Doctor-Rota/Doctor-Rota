@@ -138,6 +138,7 @@ public class MySpringApplicationTests {
 		).andExpect(status().isUnauthorized());
 	}
 
+	// Cannot provide email
 	private String createAccount() throws Exception {
 		// Generate username
 		String username = TestTools.getRandomUsername();
@@ -161,12 +162,7 @@ public class MySpringApplicationTests {
 
 	private void deleteAccount(String username) throws Exception {
 		// Get account id
-		ResultActions response = mockMvc.perform(get("/login")
-				.header("password", defaultPassword).queryParam("username", username)
-		);
-		response.andExpect(status().isOk());
-		JsonNode login = new ObjectMapper().readTree(response.andReturn().getResponse().getContentAsString());
-		int accountId = login.get("accountId").asInt();
+		int accountId = getAccountId(username);
 		// Use main delete account method
 		deleteAccount(accountId, username);
 	}
@@ -178,6 +174,15 @@ public class MySpringApplicationTests {
 		response.andExpect(status().isOk());
 		JsonNode account = new ObjectMapper().readTree(response.andReturn().getResponse().getContentAsString());
 		assertEquals(expectedLevel, account.get("level").asInt(), "Should be level " + expectedLevel);
+	}
+
+	private int getAccountId(String username) throws Exception {
+		ResultActions response = mockMvc.perform(get("/login")
+				.header("password", defaultPassword).queryParam("username", username)
+		);
+		response.andExpect(status().isOk());
+		JsonNode login = new ObjectMapper().readTree(response.andReturn().getResponse().getContentAsString());
+		return login.get("accountId").asInt();
 	}
 
 	@Test
@@ -214,6 +219,62 @@ public class MySpringApplicationTests {
 		).andExpect(status().isOk());
 		// Check level change
 		checkLevel(accountId, 1);
+		// Delete account
+		deleteAccount(accountId, username);
+	}
+
+	@Test
+	public void testChangePassword() throws Exception {
+		// Create account
+		String username = createAccount();
+		// Login like normal
+		mockMvc.perform(get("/login")
+				.header("password", defaultPassword).queryParam("username", username)
+		).andExpect(status().isOk());
+		// Change password
+		int accountId = getAccountId(username);
+		String newPassword = TestTools.getRandomUsername();
+		mockMvc.perform(patch("/password")
+				.header("token", validToken).header("oldPassword", defaultPassword)
+				.header("newPassword", newPassword).queryParam("accountId", String.valueOf(accountId))
+		).andExpect(status().isOk());
+		// Login with new password
+		mockMvc.perform(get("/login")
+				.header("password", newPassword).queryParam("username", username)
+		).andExpect(status().isOk());
+		// Delete account
+		deleteAccount(accountId, username);
+	}
+
+	@Test
+	public void testResetPassword() throws Exception {
+		// Create username + email
+		String username = TestTools.getRandomUsername();
+		String email = TestTools.getRandomEmail();
+		// Create account (not using method as need to specify the email)
+		mockMvc.perform(post("/account")
+				.header("token", validToken).queryParam("username", username)
+				.queryParam("email", email)
+		).andExpect(status().isOk());
+		// Change password
+		int accountId = getAccountId(username);
+		String newPassword = TestTools.getRandomUsername();
+		mockMvc.perform(patch("/password")
+				.header("token", validToken).header("oldPassword", defaultPassword)
+				.header("newPassword", newPassword).queryParam("accountId", String.valueOf(accountId))
+		).andExpect(status().isOk());
+		// Try logging in with old password
+		mockMvc.perform(get("/login")
+				.header("password", defaultPassword).queryParam("username", username)
+		).andExpect(status().isConflict());
+		// Reset password
+		mockMvc.perform(patch("/passwordreset")
+				.queryParam("username", username).queryParam("email", email)
+		).andExpect(status().isOk());
+		// Login in with old password
+		mockMvc.perform(get("/login")
+				.header("password", defaultPassword).queryParam("username", username)
+		).andExpect(status().isOk());
 		// Delete account
 		deleteAccount(accountId, username);
 	}

@@ -155,7 +155,7 @@ public class IndexController {
         return PatchOperations.patchPassword(oldPassword, newPassword, accountId);
     }
 
-    @PatchMapping(value = "/passwordReset", produces = "application/json")
+    @PatchMapping(value = "/passwordreset", produces = "application/json")
     public ResponseEntity<ObjectNode> patchPasswordReset(@RequestParam String username, @RequestParam String email) {
         return PatchOperations.patchPasswordReset(username, email);
     }

@@ -157,7 +157,6 @@ public class GetOperations {
     }
 
     // Gets shifts and leave
-    // TODO: this might need refactoring
     public static ResponseEntity<ObjectNode> getShifts(int year, int accountId) {
         String connectionString = ConnectionTools.getConnectionString();
         try (Connection c = DriverManager.getConnection(connectionString)) {

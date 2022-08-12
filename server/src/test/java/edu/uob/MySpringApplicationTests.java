@@ -160,13 +160,6 @@ public class MySpringApplicationTests {
 		).andExpect(status().isConflict());
 	}
 
-	private void deleteAccount(String username) throws Exception {
-		// Get account id
-		int accountId = getAccountId(username);
-		// Use main delete account method
-		deleteAccount(accountId, username);
-	}
-
 	private void checkLevel(int accountId, int expectedLevel) throws Exception {
 		ResultActions response = mockMvc.perform(get("/account/" + accountId)
 				.header("token", validToken)

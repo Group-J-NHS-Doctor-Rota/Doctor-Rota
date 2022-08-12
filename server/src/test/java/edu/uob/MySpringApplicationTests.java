@@ -6,17 +6,23 @@ package edu.uob;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -26,9 +32,17 @@ public class MySpringApplicationTests {
 	private WebApplicationContext webApplicationContext;
 
 	private MockMvc mockMvc;
+	private static String validToken;
+	private static String defaultPassword;
+
+	@BeforeClass
+	public static void setup1() {
+		validToken = ConnectionTools.getValidToken();
+		defaultPassword = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");
+	}
 
 	@Before
-	public void setup() {
+	public void setup2() {
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 	}
 
@@ -122,6 +136,86 @@ public class MySpringApplicationTests {
 		mockMvc.perform(patch("/logout")
 				.header("token", randomToken)
 		).andExpect(status().isUnauthorized());
+	}
+
+	private String createAccount() throws Exception {
+		// Generate username
+		String username = TestTools.getRandomUsername();
+		// Create account
+		mockMvc.perform(post("/account")
+				.header("token", validToken).queryParam("username",username)
+		).andExpect(status().isOk());
+		return username;
+	}
+
+	private void deleteAccount(int accountId, String username) throws Exception {
+		// Delete account
+		mockMvc.perform(delete("/account/" + accountId)
+				.header("token", validToken)
+		).andExpect(status().isOk());
+		// Check delete account
+		mockMvc.perform(get("/login")
+				.header("password", defaultPassword).queryParam("username", username)
+		).andExpect(status().isConflict());
+	}
+
+	private void deleteAccount(String username) throws Exception {
+		// Get account id
+		ResultActions response = mockMvc.perform(get("/login")
+				.header("password", defaultPassword).queryParam("username", username)
+		);
+		response.andExpect(status().isOk());
+		JsonNode login = new ObjectMapper().readTree(response.andReturn().getResponse().getContentAsString());
+		int accountId = login.get("accountId").asInt();
+		// Use main delete account method
+		deleteAccount(accountId, username);
+	}
+
+	private void checkLevel(int accountId, int expectedLevel) throws Exception {
+		ResultActions response = mockMvc.perform(get("/account/" + accountId)
+				.header("token", validToken)
+		);
+		response.andExpect(status().isOk());
+		JsonNode account = new ObjectMapper().readTree(response.andReturn().getResponse().getContentAsString());
+		assertEquals(expectedLevel, account.get("level").asInt(), "Should be level " + expectedLevel);
+	}
+
+	@Test
+	public void testAccountCreation() throws Exception {
+		// Create account
+		String username = createAccount();
+		// Check account exists
+		ResultActions response = mockMvc.perform(get("/login")
+				.header("password", defaultPassword).queryParam("username", username)
+		);
+		response.andExpect(status().isOk());
+		JsonNode login = new ObjectMapper().readTree(response.andReturn().getResponse().getContentAsString());
+		int accountId = login.get("accountId").asInt();
+		// Delete account
+		deleteAccount(accountId, username);
+	}
+
+	@Test
+	public void testAdminCreation() throws Exception {
+		// Create account
+		String username = createAccount();
+		// Get accountId
+		ResultActions response = mockMvc.perform(get("/login")
+				.header("password", defaultPassword).queryParam("username", username)
+		);
+		response.andExpect(status().isOk());
+		JsonNode login = new ObjectMapper().readTree(response.andReturn().getResponse().getContentAsString());
+		int accountId = login.get("accountId").asInt();
+		// New account have standard privileges (level 0)
+		checkLevel(accountId, 0);
+		// Change level to 1
+		mockMvc.perform(patch("/account/" + accountId)
+				.header("token", validToken).queryParam("level", "1")
+		).andExpect(status().isOk());
+		// Check level change
+		checkLevel(accountId, 1);
+		// Delete account
+		deleteAccount(accountId, username);
 	}
 
 }

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
 import java.sql.*;
 import java.util.Calendar;
 
@@ -82,6 +83,7 @@ public class GetOperations {
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("accounts");
                 ResultSet r = s.executeQuery();
+                r.getFetchSize();
                 while(r.next()) {
                     ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
                     addAccountDetailsToObjectNode(c, r, objectNodeRow);
@@ -327,7 +329,38 @@ public class GetOperations {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
-
+    
+    public static ResponseEntity<ObjectNode> getLeaveReminder() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Get all email addresses and store in list
+            // Send reminder to all users
+            int accountNum = ConnectionTools.getAccountsSum();
+            int sendCounter = 0;
+            EmailTools emailTools = new EmailTools();
+            String SQL = "SELECT email, username FROM accounts ORDER BY id;";
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                while(r.next()) {
+                    // email users:
+                    String email = r.getString("email");
+                    String username = r.getString("username");
+                    if (email != null && !email.isBlank()) {
+                        String msg = emailTools.reminderMsg(username);
+                        emailTools.sendSimpleMessage(email, "Leave request reminder", msg);
+                        sendCounter += 1;
+                    }
+                }
+                return IndexController.okResponse("There are " + accountNum
+                        + " users in database, and leave request reminders are sent to " +
+                        sendCounter + " users. Please check if some users' email addresses are blank.");
+            }
+            // Have to catch SQLException exception here
+        } catch (SQLException| MessagingException e) {
+                    throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+    
     public static ResponseEntity<ObjectNode> getRotaGroup() {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {

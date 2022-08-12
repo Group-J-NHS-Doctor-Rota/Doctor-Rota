@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
 import java.sql.*;
 
 public class PatchOperations {
@@ -163,9 +164,15 @@ public class PatchOperations {
                 s.setString(2, username);
                 s.executeUpdate();
             }
+            // email users:
+            if (email != null && !email.isBlank()) {
+                EmailTools emailTools = new EmailTools();
+                String msg = emailTools.passwordResetMsg(defaultPassword);
+                emailTools.sendSimpleMessage(email, "Reset your password", msg);
+            }
             return IndexController.okResponse("Password reset successfully for username: " + username);
             // Have to catch SQLException exception here
-        } catch (SQLException e) {
+        } catch (SQLException | MessagingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }

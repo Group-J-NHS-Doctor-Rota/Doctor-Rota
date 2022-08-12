@@ -6,15 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
+import java.sql.*;
 
 public class GetOperationsTest {
 
@@ -25,18 +23,22 @@ public class GetOperationsTest {
         int id2 = TestTools.getTestAccountId();
         String username1 = TestTools.getRandomUsername();
         String username2 = TestTools.getRandomUsername();
+        String email1 = TestTools.getRandomEmail();
+        String email2 = TestTools.getRandomEmail();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // Create new accounts with ids 999999199 and 999999299 (definitely unused)
+            // Create new accounts with random ids (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             assertFalse(ConnectionTools.accountIdExists(id2, c));
             assertFalse(ConnectionTools.accountIdExists(1000000000, c));
             String SQL = "INSERT INTO accounts (id, username, password, email, level) " +
-                    "VALUES (?, ?, 'ndsjkfgndsfpgn', 'mctester@test.com', 0), " +
-                    "(?, ?, 'sdfgsdfgdfs', 'mctest@test.com', 1);";
+                    "VALUES (?, ?, 'ndsjkfgndsfpgn', ?, 0), " +
+                    "(?, ?, 'sdfgsdfgdfs', ?, 1);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1); s.setString(2, username1);
-                s.setInt(3, id2); s.setString(4, username2);
+                s.setString(3, email1);
+                s.setInt(4, id2); s.setString(5, username2);
+                s.setString(6, email2);
                 s.executeUpdate();
             }
             // Check account creation
@@ -117,6 +119,8 @@ public class GetOperationsTest {
         int id2 = TestTools.getTestAccountId();
         String username1 = TestTools.getRandomUsername();
         String username2 = TestTools.getRandomUsername();
+        String email1 = TestTools.getRandomEmail();
+        String email2 = TestTools.getRandomEmail();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Create new accounts with random ids (definitely unused)
@@ -126,11 +130,13 @@ public class GetOperationsTest {
             assertFalse(ConnectionTools.idExistInTable(id1, "accountId", "leaveRequests", c));
             assertFalse(ConnectionTools.idExistInTable(id2, "accountId", "leaveRequests", c));
             String SQL = "INSERT INTO accounts (id, username, password, email, level, timeWorked) " +
-                    "VALUES (?, ?, 'pwd999999075', 'user3@test.com', 0, 0.8), " +
-                    "(?, ?, 'pwd999999076', 'user4@test.com', 1, 1);";
+                    "VALUES (?, ?, 'pwd999999075', ?, 0, 0.8), " +
+                    "(?, ?, 'pwd999999076', ?, 1, 1);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1); s.setString(2, username1);
-                s.setInt(3, id2); s.setString(4, username2);
+                s.setString(3, email1);
+                s.setInt(4, id2); s.setString(5, username2);
+                s.setString(6, email2);
                 s.executeUpdate();
             }
             // Check account creation
@@ -348,6 +354,8 @@ public class GetOperationsTest {
         int id3 = TestTools.getTestAccountId();
         String username1 = TestTools.getRandomUsername();
         String username2 = TestTools.getRandomUsername();
+        String email1 = TestTools.getRandomEmail();
+        String email2 = TestTools.getRandomEmail();
         int year = 1922;
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
@@ -356,11 +364,13 @@ public class GetOperationsTest {
             assertFalse(ConnectionTools.accountIdExists(id2, c));
             assertFalse(ConnectionTools.accountIdExists(id3, c));
             String SQL = "INSERT INTO accounts (id, username, password, email, level) " +
-                    "VALUES (?, ?, 'pwd999999001', 'user1@test.com', 0), " +
-                    "(?, ?, 'pwd999999077', 'user2@test.com', 1);";
+                    "VALUES (?, ?, 'pwd999999001', ?, 0), " +
+                    "(?, ?, 'pwd999999077', ?, 1);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1); s.setString(2, username1);
-                s.setInt(3, id2); s.setString(4, username2);
+                s.setString(3, email1);
+                s.setInt(4, id2); s.setString(5, username2);
+                s.setString(6, email2);
                 s.executeUpdate();
             }
             // Check account creation
@@ -491,7 +501,15 @@ public class GetOperationsTest {
         // Delete account
         DeleteOperations.deleteAccount(accountId);
     }
-
+    
+    // todo maybe we don't need this part.
+//    @Test
+//    void testGetLeaveReminder() {
+//        // Get a response, check the status code
+//        ResponseEntity<ObjectNode> response = GetOperations.getLeaveReminder();
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//    }
+    
     @Test
     void testGetRotaGroups() throws JsonProcessingException {
         ResponseEntity<ObjectNode> response = GetOperations.getRotaGroup();

@@ -17,18 +17,20 @@ public class PostOperationsTests {
 
     @Test
     void testPostLeaveRequest() throws SQLException {
-        // Get random id and username to test
+        // Get random id, username and email to test
         int id1 = TestTools.getTestAccountId();
         String username1 = TestTools.getRandomUsername();
+        String email1 = TestTools.getRandomEmail();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Create new account with id (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             String SQL = "INSERT INTO accounts (id, username, password, email) " +
-                    "VALUES (?, ?, 'dfjghkjhk', 'tim@test.com');";
+                    "VALUES (?, ?, 'dfjghkjhk', ?);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
                 s.setString(2, username1);
+                s.setString(3, email1);
                 s.executeUpdate();
             }
             // Check account creation
@@ -89,7 +91,7 @@ public class PostOperationsTests {
     void testPostAccount() {
         // Make new account
         String username = TestTools.getRandomUsername();
-        String email = RandomStringUtils.randomAlphabetic(16);
+        String email = TestTools.getRandomEmail();
         int accountId = 0; //Needs to have value and 0 will always cause exception if not overwritten
         PostOperations.postAccount(username, email);
         // Try to make new account with same username

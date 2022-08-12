@@ -16,13 +16,13 @@ public class GetOperations {
 
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            String SQL = "SELECT N.id, L.id AS leaveRequestId, L.accountId, L.date, L.type, L.note, L.status " +
+            String SQL = "SELECT N.id, L.id AS leaveRequestId, L.accountId, L.date, L.type, L.note, L.status, L.length " +
                     "FROM notifications N " +
                     "LEFT JOIN leaveRequests L on N.detailId = L.id " +
                     "WHERE N.type = 0 " +
                     // If account is admin, get all notifications, else get other their notifications
                     "AND ( ((SELECT level FROM accounts WHERE id = ?) = 1) OR L.accountid = ? ) " +
-                    "ORDER BY N.id;";
+                    "ORDER BY N.id DESC;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("leaveRequests");
@@ -39,6 +39,7 @@ public class GetOperations {
                     objectNodeRow.put("type", r.getInt("type"));
                     objectNodeRow.put("note", r.getString("note"));
                     objectNodeRow.put("status", r.getInt("status"));
+                    objectNodeRow.put("length", r.getInt("length"));
                     arrayNode.add(objectNodeRow);
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
@@ -56,13 +57,13 @@ public class GetOperations {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id "+accountId+" does not exist");
             }
             // Only if account id exists, then get single account and store as key value
-            String SQL = "SELECT * FROM accounts WHERE id = ?;";
+            String SQL = "SELECT * FROM accounts a LEFT JOIN partTimeDetails p on a.id = p.accountId WHERE id = ?;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, accountId);
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ResultSet r = s.executeQuery();
                 if(r.next()) {
-                    addAccountDetailsToObjectNode(r, objectNode);
+                    addAccountDetailsToObjectNode(c, r, objectNode);
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             }
@@ -76,14 +77,14 @@ public class GetOperations {
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // Get all accounts and store in list
-            String SQL = "SELECT * FROM accounts ORDER BY id;";
+            String SQL = "SELECT * FROM accounts a LEFT JOIN partTimeDetails p on a.id = p.accountId ORDER BY id;";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 ArrayNode arrayNode = objectNode.putArray("accounts");
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
                     ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
-                    addAccountDetailsToObjectNode(r, objectNodeRow);
+                    addAccountDetailsToObjectNode(c, r, objectNodeRow);
                     arrayNode.add(objectNodeRow);
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(objectNode);
@@ -95,7 +96,7 @@ public class GetOperations {
     }
 
     // Needed for get account and get all accounts
-    private static void addAccountDetailsToObjectNode(ResultSet r, ObjectNode objectNode) throws SQLException {
+    private static void addAccountDetailsToObjectNode(Connection c, ResultSet r, ObjectNode objectNode) throws SQLException {
         objectNode.put("id", r.getInt("id"));
         objectNode.put("username", r.getString("username"));
         objectNode.put("email", r.getString("email"));
@@ -109,7 +110,48 @@ public class GetOperations {
         objectNode.put("level", r.getInt("level"));
         objectNode.put("timeWorked", r.getFloat("timeWorked"));
         objectNode.put("fixedWorking", r.getBoolean("fixedWorking"));
-
+        ObjectNode partTimeDetails = objectNode.putObject("partTimeDetails");
+        ArrayNode fixedRotaShifts = objectNode.putArray("fixedRotaShifts");
+        ArrayNode accountRotaTypes = objectNode.putArray("accountRotaTypes");
+        // Only fill part-time details if joined on
+        if(r.getString("accountId") != null) {
+            partTimeDetails.put("monday", r.getBoolean("monday"));
+            partTimeDetails.put("tuesday", r.getBoolean("tuesday"));
+            partTimeDetails.put("wednesday", r.getBoolean("wednesday"));
+            partTimeDetails.put("thursday", r.getBoolean("thursday"));
+            partTimeDetails.put("friday", r.getBoolean("friday"));
+            partTimeDetails.put("saturday", r.getBoolean("saturday"));
+            partTimeDetails.put("sunday", r.getBoolean("sunday"));
+        }
+        // Only fill fixed rota shifts if account is fixed working
+        if(r.getBoolean("fixedWorking")) {
+            String SQL = "SELECT * FROM fixedRotaShifts WHERE accountId = ?;";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, r.getInt("id"));
+                ResultSet r2 = s.executeQuery();
+                while (r2.next()) {
+                    ObjectNode shift = new ObjectMapper().createObjectNode();
+                    shift.put("id", r2.getInt("id"));
+                    shift.put("date", r2.getString("date"));
+                    shift.put("shiftType", r2.getInt("shiftType"));
+                    fixedRotaShifts.add(shift);
+                }
+            }
+        }
+        // Some people may have more than one if they move rota type
+        String SQL = "SELECT * FROM accountRotaTypes WHERE accountId = ?;";
+        try (PreparedStatement s = c.prepareStatement(SQL)) {
+            s.setInt(1, r.getInt("id"));
+            ResultSet r3 = s.executeQuery();
+            while(r3.next()) {
+                ObjectNode rotaType = new ObjectMapper().createObjectNode();
+                rotaType.put("id", r3.getInt("id"));
+                rotaType.put("rotaTypeId", r3.getInt("rotaTypeId"));
+                rotaType.put("startDate", r3.getString("startDate"));
+                rotaType.put("endDate", r3.getString("endDate"));
+                accountRotaTypes.add(rotaType);
+            }
+        }
     }
 
     // Gets shifts and leave
@@ -206,14 +248,14 @@ public class GetOperations {
                     }
                 }
             }
-            SQL = "SELECT id, annualLeave, studyLeave FROM accounts WHERE id = ?; ";
+            SQL = "SELECT id, annualLeave, studyLeave, timeWorked FROM accounts WHERE id = ?; ";
             try(PreparedStatement s = c.prepareStatement(SQL)) {
                 ObjectNode objectNode = new ObjectMapper().createObjectNode();
                 s.setInt(1, accountId); // In SQL sentence, WHERE id = ?
                 ResultSet r = s.executeQuery();
                 while(r.next()) {
-                    double studyLeaves = r.getInt("studyLeave") - usedStudyLeaves;
-                    double annualLeaves = r.getInt("annualLeave") - usedAnnualLeaves;
+                    double studyLeaves = r.getInt("studyLeave")*r.getFloat("timeWorked") - usedStudyLeaves;
+                    double annualLeaves = r.getInt("annualLeave")*r.getFloat("timeWorked") - usedAnnualLeaves;
                     objectNode.put("id", r.getInt("id"));
                     objectNode.put("studyLeave", studyLeaves);
                     objectNode.put("annualLeave", annualLeaves);
@@ -279,6 +321,31 @@ public class GetOperations {
             objectNode.put("token", token);
             objectNode.put("accountId", accountId);
             objectNode.put("level", level);
+            return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+
+    public static ResponseEntity<ObjectNode> getRotaGroup() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Get all rotaGroup data
+            String SQL = "SELECT * FROM rotaGroups; ";
+            ObjectNode objectNode = new ObjectMapper().createObjectNode();
+            ArrayNode arrayNode = objectNode.putArray("rotaGroups");
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                while(r.next()) {
+                    ObjectNode objectNodeRow = new ObjectMapper().createObjectNode();
+                    objectNodeRow.put("id", r.getInt("id"));
+                    objectNodeRow.put("startDate", r.getString("startDate"));
+                    objectNodeRow.put("endDate", r.getString("endDate"));
+                    objectNodeRow.put("status", r.getBoolean("status"));
+                    arrayNode.add(objectNodeRow);
+                }
+            }
             return ResponseEntity.status(HttpStatus.OK).body(objectNode);
             // Have to catch SQLException exception here
         } catch (SQLException e) {

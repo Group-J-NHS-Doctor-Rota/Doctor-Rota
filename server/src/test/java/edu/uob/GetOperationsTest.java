@@ -44,8 +44,8 @@ public class GetOperationsTest {
             assertTrue(ConnectionTools.accountIdExists(id2, c));
 
             // Add test data for leave requests and notifications
-            SQL = "INSERT INTO leaveRequests (id, accountId, date, type, note, status) " +
-                    "VALUES (?, ?, '2021-09-07', 0, '', 0), (?, ?, '2021-09-08', 1, 'Comment here', 1); " +
+            SQL = "INSERT INTO leaveRequests (id, accountId, date, type, note, status, length) " +
+                    "VALUES (?, ?, '2021-09-07', 0, '', 0, 0), (?, ?, '2021-09-08', 1, 'Comment here', 1, 1); " +
                     "INSERT INTO notifications (type, detailId) " +
                     "VALUES (0, ?), (0, ?);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
@@ -60,14 +60,12 @@ public class GetOperationsTest {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertTrue(rootNode.get("leaveRequests").size() >= 2); // Might be greater than 2 as data may already be in table
-            assertTrue(response.getBody().toString().contains("leaveRequestId\":"+id1+",\"accountId\":"+id1+
-                    ",\"date\":\"2021-09-07\",\"type\":0,\"note\":\"\",\"status\":0}"));
-            assertTrue(response.getBody().toString().contains("leaveRequestId\":"+id2+",\"accountId\":"+id2+
-                    ",\"date\":\"2021-09-08\",\"type\":1,\"note\":\"Comment here\",\"status\":1}"));
+            assertTrue(response.getBody().toString().contains("leaveRequestId\":"+id1));
+            assertTrue(response.getBody().toString().contains("leaveRequestId\":"+id2));
             // Check each notification has required fields
             int numberOfNotifications = rootNode.get("leaveRequests").size();
             for(int i = 0; i < numberOfNotifications; i++) {
-                JsonNode notification = rootNode.get("leaveRequests").get(0);
+                JsonNode notification = rootNode.get("leaveRequests").get(i);
                 assertTrue(notification.has("id"));
                 assertTrue(notification.has("leaveRequestId"));
                 assertTrue(notification.has("accountId"));
@@ -75,13 +73,27 @@ public class GetOperationsTest {
                 assertTrue(notification.has("type"));
                 assertTrue(notification.has("note"));
                 assertTrue(notification.has("status"));
+                if(notification.get("leaveRequestId").asInt() == id2) {
+                    assertEquals(id2, notification.get("accountId").asInt());
+                    assertEquals("2021-09-08", notification.get("date").asText());
+                    assertEquals(1, notification.get("type").asInt());
+                    assertEquals("Comment here", notification.get("note").asText());
+                    assertEquals(1, notification.get("status").asInt());
+                    assertEquals(1, notification.get("length").asInt());
+                }
             }
             // Check response expecting one notification
             response = GetOperations.getNotifications(id1);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertEquals(1, rootNode.get("leaveRequests").size());
-            assertTrue(response.getBody().toString().contains("leaveRequestId\":"+id1+",\"accountId\":"+id1+
-                    ",\"date\":\"2021-09-07\",\"type\":0,\"note\":\"\",\"status\":0}"));
+            JsonNode leaveRequest = rootNode.get("leaveRequests").get(0);
+            assertEquals(id1, leaveRequest.get("leaveRequestId").asInt());
+            assertEquals(id1, leaveRequest.get("accountId").asInt());
+            assertEquals("2021-09-07", leaveRequest.get("date").asText());
+            assertEquals(0, leaveRequest.get("type").asInt());
+            assertEquals("", leaveRequest.get("note").asText());
+            assertEquals(0, leaveRequest.get("status").asInt());
+            assertEquals(0, leaveRequest.get("length").asInt());
             // Check response expecting no notifications (no account)
             response = GetOperations.getNotifications(1000000000);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
@@ -113,9 +125,9 @@ public class GetOperationsTest {
             assertFalse(ConnectionTools.accountIdExists(1000000000, c));
             assertFalse(ConnectionTools.idExistInTable(id1, "accountId", "leaveRequests", c));
             assertFalse(ConnectionTools.idExistInTable(id2, "accountId", "leaveRequests", c));
-            String SQL = "INSERT INTO accounts (id, username, password, email, level) " +
-                    "VALUES (?, ?, 'pwd999999075', 'user3@test.com', 0), " +
-                    "(?, ?, 'pwd999999076', 'user4@test.com', 1);";
+            String SQL = "INSERT INTO accounts (id, username, password, email, level, timeWorked) " +
+                    "VALUES (?, ?, 'pwd999999075', 'user3@test.com', 0, 0.8), " +
+                    "(?, ?, 'pwd999999076', 'user4@test.com', 1, 1);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1); s.setString(2, username1);
                 s.setInt(3, id2); s.setString(4, username2);
@@ -146,14 +158,19 @@ public class GetOperationsTest {
             assertTrue(rootNode.has("id"));
             assertTrue(rootNode.has("studyLeave"));
             assertTrue(rootNode.has("annualLeave"));
-            assertEquals("{\"id\":" + id2 + ",\"studyLeave\":14.5,\"annualLeave\":30.0}", response.getBody().toString());
+            assertEquals(id2, rootNode.get("id").asInt());
+            assertEquals(14.5, rootNode.get("studyLeave").asDouble());
+            assertEquals(30.0, rootNode.get("annualLeave").asDouble());
+
             // Check response for one leaves (level 0 account)
             response = GetOperations.getLeaves(id1);
             rootNode = mapper.readTree(String.valueOf(response.getBody()));
             assertTrue(rootNode.has("id"));
             assertTrue(rootNode.has("studyLeave"));
             assertTrue(rootNode.has("annualLeave"));
-            assertEquals("{\"id\":" + id1 + ",\"studyLeave\":15.0,\"annualLeave\":28.5}", response.getBody().toString());
+            assertEquals(id1, rootNode.get("id").asInt());
+            assertEquals(12.0, rootNode.get("studyLeave").asDouble());
+            assertEquals(22.5, rootNode.get("annualLeave").asDouble());
 
             // Check response expecting no shifts (no account)
             response = GetOperations.getLeaves(1000000000);
@@ -204,6 +221,41 @@ public class GetOperationsTest {
             assertTrue(rootNode.has("level"));
             assertTrue(rootNode.has("timeWorked"));
             assertTrue(rootNode.has("fixedWorking"));
+            // Only check part-time days if non-empty
+            assertTrue(rootNode.has("partTimeDetails"));
+            JsonNode partTimeDetails = rootNode.get("partTimeDetails");
+            if(!partTimeDetails.isEmpty()) {
+                assertTrue(partTimeDetails.has("monday"));
+                assertTrue(partTimeDetails.has("tuesday"));
+                assertTrue(partTimeDetails.has("wednesday"));
+                assertTrue(partTimeDetails.has("thursday"));
+                assertTrue(partTimeDetails.has("friday"));
+                assertTrue(partTimeDetails.has("saturday"));
+                assertTrue(partTimeDetails.has("sunday"));
+            }
+            // Only check actual shifts for fixedRotaShifts if true
+            assertTrue(rootNode.has("fixedRotaShifts"));
+            JsonNode fixedRotaShifts = rootNode.get("fixedRotaShifts");
+            if(rootNode.get("fixedWorking").asBoolean()) {
+                for(int j = 0; j < fixedRotaShifts.size(); j++) {
+                    JsonNode fixedRotaShift = fixedRotaShifts.get(j);
+                    assertTrue(fixedRotaShift.has("id"));
+                    assertTrue(fixedRotaShift.has("date"));
+                    assertTrue(fixedRotaShift.has("shiftType"));
+                }
+            } else {
+                assertTrue(fixedRotaShifts.isEmpty());
+            }
+            // Check all account rota types
+            assertTrue(rootNode.has("accountRotaTypes"));
+            JsonNode accountRotaTypes = rootNode.get("accountRotaTypes");
+            for(int j = 0; j < accountRotaTypes.size(); j++) {
+                JsonNode accountRotaType = accountRotaTypes.get(j);
+                assertTrue(accountRotaType.has("id"));
+                assertTrue(accountRotaType.has("rotaTypeId"));
+                assertTrue(accountRotaType.has("startDate"));
+                assertTrue(accountRotaType.has("endDate"));
+            }
             // Check the id field aligns
             assertEquals(accountId, rootNode.get("id").asInt());
         } catch (Exception e) {
@@ -237,7 +289,7 @@ public class GetOperationsTest {
         }
         // Check all accounts, have all the fields
         for(int i = 0; i < numberOfAccounts; i++) {
-            JsonNode account = rootNode.get("accounts").get(0);
+            JsonNode account = rootNode.get("accounts").get(i);
             assertTrue(account.has("id"));
             assertTrue(account.has("username"));
             assertTrue(account.has("email"));
@@ -251,6 +303,41 @@ public class GetOperationsTest {
             assertTrue(account.has("level"));
             assertTrue(account.has("timeWorked"));
             assertTrue(account.has("fixedWorking"));
+            // Only check part-time days if non-empty
+            assertTrue(account.has("partTimeDetails"));
+            JsonNode partTimeDetails = account.get("partTimeDetails");
+            if(!partTimeDetails.isEmpty()) {
+                assertTrue(partTimeDetails.has("monday"));
+                assertTrue(partTimeDetails.has("tuesday"));
+                assertTrue(partTimeDetails.has("wednesday"));
+                assertTrue(partTimeDetails.has("thursday"));
+                assertTrue(partTimeDetails.has("friday"));
+                assertTrue(partTimeDetails.has("saturday"));
+                assertTrue(partTimeDetails.has("sunday"));
+            }
+            // Only check actual shifts for fixedRotaShifts if true
+            assertTrue(account.has("fixedRotaShifts"));
+            JsonNode fixedRotaShifts = account.get("fixedRotaShifts");
+            if(account.get("fixedWorking").asBoolean()) {
+                for(int j = 0; j < fixedRotaShifts.size(); j++) {
+                    JsonNode fixedRotaShift = fixedRotaShifts.get(j);
+                    assertTrue(fixedRotaShift.has("id"));
+                    assertTrue(fixedRotaShift.has("date"));
+                    assertTrue(fixedRotaShift.has("shiftType"));
+                }
+            } else {
+                assertTrue(fixedRotaShifts.isEmpty());
+            }
+            // Check all account rota types
+            assertTrue(account.has("accountRotaTypes"));
+            JsonNode accountRotaTypes = account.get("accountRotaTypes");
+            for(int j = 0; j < accountRotaTypes.size(); j++) {
+                JsonNode accountRotaType = accountRotaTypes.get(j);
+                assertTrue(accountRotaType.has("id"));
+                assertTrue(accountRotaType.has("rotaTypeId"));
+                assertTrue(accountRotaType.has("startDate"));
+                assertTrue(accountRotaType.has("endDate"));
+            }
         }
     }
 
@@ -404,4 +491,28 @@ public class GetOperationsTest {
         // Delete account
         DeleteOperations.deleteAccount(accountId);
     }
+
+    @Test
+    void testGetRotaGroups() throws JsonProcessingException {
+        ResponseEntity<ObjectNode> response = GetOperations.getRotaGroup();
+        JsonNode rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
+        JsonNode rotaGroups = rootNode.get("rotaGroups");
+        int numberOfGroups = rotaGroups.size();
+        assertTrue(numberOfGroups >= 1, "There should always be at least one rota group");
+        boolean onlyOneTrueStatus = false;
+        // Check each group has required fields
+        for(int i = 0; i < numberOfGroups; i++) {
+            JsonNode rotaGroup = rotaGroups.get(i);
+            assertTrue(rotaGroup.has("id"));
+            assertTrue(rotaGroup.has("startDate"));
+            assertTrue(rotaGroup.has("endDate"));
+            assertTrue(rotaGroup.has("status"));
+            if(onlyOneTrueStatus && rotaGroup.get("status").asBoolean()) {
+                fail("There shouldn't be multiple true/active rota groups.");
+            }
+            onlyOneTrueStatus = onlyOneTrueStatus || rotaGroup.get("status").asBoolean();
+        }
+        assertTrue(onlyOneTrueStatus, "Should have one true/active rota group, not none.");
+    }
+
 }

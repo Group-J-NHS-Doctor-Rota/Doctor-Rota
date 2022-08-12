@@ -1,7 +1,12 @@
 package edu.uob;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -78,7 +83,6 @@ public class PostOperationsTests {
             // Check delete
             assertFalse(ConnectionTools.accountIdExists(id1, c));
         } catch (Exception e) {
-            TestTools.deleteAnyTestData();
             fail("Database connection and SQL queries should have worked\n" + e);
         }
     }
@@ -151,6 +155,49 @@ public class PostOperationsTests {
         }
         // Delete account
         DeleteOperations.deleteAccount(accountId);
+    }
+
+    @Test
+    void testPostRotaGroup() throws JsonProcessingException {
+        // Get current rota group details
+        ResponseEntity<ObjectNode> response = GetOperations.getRotaGroup();
+        JsonNode rotaGroups = new ObjectMapper().readTree(String.valueOf(response.getBody())).get("rotaGroups");
+        JsonNode rotaGroup;
+        String startDateCurrent = "", endDateCurrent = "";
+        for(int i = 0; i < rotaGroups.size(); i++) {
+            rotaGroup = rotaGroups.get(i);
+            if(rotaGroup.get("status").asBoolean()) {
+                startDateCurrent = rotaGroup.get("startDate").asText();
+                endDateCurrent = rotaGroup.get("endDate").asText();
+            }
+        }
+        // Post new rota group
+        PostOperations.postRotaGroup("1974-01-01", "1974-04-04");
+        // Check current rota group
+        response = GetOperations.getRotaGroup();
+        rotaGroups = new ObjectMapper().readTree(String.valueOf(response.getBody())).get("rotaGroups");
+        int testId = 0;
+        for(int i = 0; i < rotaGroups.size(); i++) {
+            rotaGroup = rotaGroups.get(i);
+            if(rotaGroup.get("status").asBoolean()) {
+                assertEquals("1974-01-01", rotaGroup.get("startDate").asText());
+                assertEquals("1974-04-04", rotaGroup.get("endDate").asText());
+                testId = rotaGroup.get("id").asInt();
+            }
+        }
+        // Reset rota group
+        PostOperations.postRotaGroup(startDateCurrent, endDateCurrent);
+        // Delete all test data
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            String SQL = "DELETE FROM rotaGroups WHERE id = ?;";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, testId);
+                s.executeUpdate();
+            }
+        } catch (Exception e) {
+            fail("Database connection and SQL queries should have worked\n" + e);
+        }
     }
 
 }

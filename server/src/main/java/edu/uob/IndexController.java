@@ -165,11 +165,31 @@ public class IndexController {
         ConnectionTools.validTokenAuthorised(token, 0);
         return PatchOperations.patchLogout(token);
     }
-
+    
     @GetMapping(value = "/leavereminder", produces = "application/json")
     public ResponseEntity<ObjectNode> getLeaveReminder(@RequestHeader String token) {
         ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
         return GetOperations.getLeaveReminder();
     }
+    
+    @PostMapping(value = "/rotagroup", produces = "application/json")
+    public ResponseEntity<ObjectNode> postRotaGroup(@RequestHeader String token, @RequestParam String startDate,
+                                                    @RequestParam String endDate) {
+        ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
+        return PostOperations.postRotaGroup(startDate, endDate);
+    }
 
+    @GetMapping(value = "/rotagroup", produces = "application/json")
+    public ResponseEntity<ObjectNode> postRotaGroup(@RequestHeader String token) {
+        ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
+        return GetOperations.getRotaGroup();
+    }
+    
+    @PutMapping(value = "/account/{accountId}/rotatype", produces = "application/json")
+    public ResponseEntity<ObjectNode> putAccountRotaType(@RequestHeader String token, @PathVariable int accountId,
+                                                         @RequestParam int rotaTypeId,
+                                                         @RequestParam String startDate, @RequestParam String endDate) {
+        ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
+        return PutOperations.putAccountRotaType(accountId, rotaTypeId, startDate, endDate);
+    }
 }

@@ -1,6 +1,11 @@
 package edu.uob;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -143,6 +148,60 @@ public class PutOperationsTests {
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             assertFalse(ConnectionTools.idExistInTable(id1,
                     "accountId", "fixedRotaShifts", c));
+        } catch (SQLException e) {
+            fail("Database connection and SQL queries should have worked\n" + e);
+        }
+    }
+
+    @Test
+    public void testPutAccountRotaType() throws JsonProcessingException {
+        // Get random id and username to test
+        int id1 = TestTools.getTestAccountId();
+        String username1 = TestTools.getRandomUsername();
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Create new account with id (definitely unused)
+            assertFalse(ConnectionTools.accountIdExists(id1, c));
+            String SQL = "INSERT INTO accounts (id, username, password, email) " +
+                    "VALUES (?, ?, 'pwd999999070', 'test_user070@test.com');";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setInt(1, id1);
+                s.setString(2, username1);
+                s.executeUpdate();
+            }
+            // Check account creation
+            assertTrue(ConnectionTools.accountIdExists(id1, c));
+            // Add some rota type dates
+            PutOperations.putAccountRotaType(id1, 1, "2001-01-01", "2001-02-01");
+            PutOperations.putAccountRotaType(id1, 2, "2001-01-01", "2001-03-01");
+            PutOperations.putAccountRotaType(id1, 2, "2001-02-01", "2001-09-01");
+            PutOperations.putAccountRotaType(id1, 3, "2001-04-01", "2001-07-01");
+            PutOperations.putAccountRotaType(id1, 4, "2001-03-01", "2001-05-01");
+            // Check stored results are as expected
+            ResponseEntity<ObjectNode> response = GetOperations.getAccount(id1);
+            JsonNode rootNode = new ObjectMapper().readTree(String.valueOf(response.getBody()));
+            JsonNode accountRotaTypes = rootNode.get("accountRotaTypes");
+            assertEquals(4, accountRotaTypes.size(), "Should only be 4 as 1st input is completely overlapped by second");
+            JsonNode accountRotaType0 = accountRotaTypes.get(0);
+            assertEquals(2, accountRotaType0.get("rotaTypeId").asInt());
+            assertEquals("2001-01-01", accountRotaType0.get("startDate").asText(), "Should start as input");
+            assertEquals("2001-01-31", accountRotaType0.get("endDate").asText(), "Should end early as 3rd overlaps");
+            JsonNode accountRotaType1 = accountRotaTypes.get(1);
+            assertEquals(2, accountRotaType1.get("rotaTypeId").asInt());
+            assertEquals("2001-02-01", accountRotaType1.get("startDate").asText(), "Should start as input");
+            assertEquals("2001-02-28", accountRotaType1.get("endDate").asText(), "Should end early as 4th overlaps");
+            JsonNode accountRotaType2 = accountRotaTypes.get(2);
+            assertEquals(3, accountRotaType2.get("rotaTypeId").asInt());
+            assertEquals("2001-05-02", accountRotaType2.get("startDate").asText(), "Should start late as 5th overlaps");
+            assertEquals("2001-07-01", accountRotaType2.get("endDate").asText(), "Should end as input");
+            JsonNode accountRotaType3 = accountRotaTypes.get(3);
+            assertEquals(4, accountRotaType3.get("rotaTypeId").asInt());
+            assertEquals("2001-03-01", accountRotaType3.get("startDate").asText(), "Should be as 5th input");
+            assertEquals("2001-05-01", accountRotaType3.get("endDate").asText(), "Should be as 5th input");
+            // Delete all test data
+            DeleteOperations.deleteAccount(id1);
+            // Check delete
+            assertFalse(ConnectionTools.accountIdExists(id1, c));
         } catch (SQLException e) {
             fail("Database connection and SQL queries should have worked\n" + e);
         }

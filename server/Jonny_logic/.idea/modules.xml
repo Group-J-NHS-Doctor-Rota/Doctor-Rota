@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-<<<<<<< HEAD
-      <module fileurl="file://$PROJECT_DIR$/.idea/RotaDesign.iml" filepath="$PROJECT_DIR$/.idea/RotaDesign.iml" />
-=======
       <module fileurl="file://$PROJECT_DIR$/.idea/Doctor-Rota.iml" filepath="$PROJECT_DIR$/.idea/Doctor-Rota.iml" />
       <module fileurl="file://$PROJECT_DIR$/server/server.iml" filepath="$PROJECT_DIR$/server/server.iml" />
->>>>>>> 89daae18f0409ce84019017d7ebd0682e4b5bcaf
     </modules>
   </component>
 </project>

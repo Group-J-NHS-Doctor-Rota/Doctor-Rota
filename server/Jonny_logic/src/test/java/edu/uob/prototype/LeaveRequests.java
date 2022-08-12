@@ -19,7 +19,7 @@ public class LeaveRequests {
 
     @Test
     void leaveAndNotOnCallRequests() {
-        ArrayList<JuniorDoctor> doctors = Schedule.addDoctors(names, hours);
+        ArrayList<JuniorDoctor> doctors = SortData.addDoctors(names, hours);
 
         JuniorDoctor james = doctors.get(0);
         james.addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 18), LeaveType.STUDY);
@@ -50,7 +50,7 @@ public class LeaveRequests {
         assertTrue(sam.getAnnualOrStudyLeaveRequest().containsKey(LocalDate.of(2021, 10, 19)));
         assertTrue(sam.getAnnualOrStudyLeaveRequest().containsKey(LocalDate.of(2021, 10, 20)));
 
-        int numberOfDays = Schedule.setNumberOfDays(startDate, endDate);
+        int numberOfDays = SortData.setNumberOfDays(startDate, endDate);
 
         assertEquals(numberOfDays, 90);
 
@@ -73,7 +73,7 @@ public class LeaveRequests {
         assertTrue(sam.getAnnualOrStudyLeaveRequest().containsKey(LocalDate.of(2021, 10, 20)));
 
 
-        ArrayList<JuniorDoctor> doctors2 = Schedule.addDoctors(names, hours);
+        ArrayList<JuniorDoctor> doctors2 = SortData.addDoctors(names, hours);
 
         for (int i = 0; i < doctors2.size() - 3; i++) {
             JuniorDoctor doctor = doctors2.get(i);
@@ -106,7 +106,7 @@ public class LeaveRequests {
         assertNotEquals(doctors2.get(6).getAnnualOrStudyLeaveRequestType(LocalDate.of(2021, 9, 18)), LeaveType.STUDY);
         assertNotEquals(doctors2.get(7).getAnnualOrStudyLeaveRequestType(LocalDate.of(2021, 9, 18)), LeaveType.STUDY);
 
-        ArrayList<JuniorDoctor> doctors3 = Schedule.addDoctors(names, hours);
+        ArrayList<JuniorDoctor> doctors3 = SortData.addDoctors(names, hours);
 
         doctors3.get(0).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 16), LeaveType.STUDY);
         doctors3.get(0).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 17), LeaveType.STUDY);

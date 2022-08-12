@@ -1,12 +1,11 @@
 package edu.uob.prototype;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
 
-public class Schedule {
+
+public class SortData {
 //    private final static String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "Will", "Adam"};
 //    private final static double[] hours = {1,1,1,1,1,1,1,1};
     private static LocalDate startDate;

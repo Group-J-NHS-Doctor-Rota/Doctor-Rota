@@ -18,7 +18,7 @@ final class RotaTests {
 
     @Test
     void basicInitialisation() {
-        ArrayList<JuniorDoctor> doctors = Schedule.addDoctors(names, hours);
+        ArrayList<JuniorDoctor> doctors = SortData.addDoctors(names, hours);
         doctors.get(0).resetDoctor();
         assertEquals(doctors.get(0).getName(), "James");
         assertEquals(doctors.get(0).getLongDays(), 11);
@@ -26,7 +26,7 @@ final class RotaTests {
         assertEquals(doctors.get(0).getTheatre(), 32);
         assertEquals(doctors.size(), 8);
 
-        int numberOfDays = Schedule.setNumberOfDays(startDate, endDate);
+        int numberOfDays = SortData.setNumberOfDays(startDate, endDate);
         assertEquals(numberOfDays, 90);
 
 
@@ -124,108 +124,14 @@ final class RotaTests {
 
 
     @Test
-    void testRuleBreaks() {
-
-        //test that more than 7 days in a row == error
-
-        ArrayList<JuniorDoctor> doctors1 = Schedule.addDoctors(names, hours);
-
-        JuniorDoctor alex = doctors1.get(1);
-        // assigning shifts - 7 in a row which is allowed
-        alex.setShifts(LocalDate.of(2021,10,1), Shifts.THEATRE);
-        alex.setShifts(LocalDate.of(2021,10,2), Shifts.THEATRE);
-        alex.setShifts(LocalDate.of(2021,10,3), Shifts.THEATRE);
-        alex.setShifts(LocalDate.of(2021,10,4), Shifts.THEATRE);
-        alex.setShifts(LocalDate.of(2021,10,5), Shifts.THEATRE);
-        alex.setShifts(LocalDate.of(2021,10,6), Shifts.THEATRE);
-        alex.setShifts(LocalDate.of(2021,10,7), Shifts.THEATRE);
-
-        BuildSchedule.setOffDays(startDate, endDate, doctors1);
-
-        //check rules score == 0
-        assertEquals(Rules.sevenConsecutiveShifts(alex, startDate, endDate), 0);
-        //add additional shift (breaking rule) - doesn't even have to be next shift
-        // as meant to have 48 hours off after 7 consecutive shifts
-        alex.setShifts(LocalDate.of(2021,10,9), Shifts.THEATRE);
-        //check that rule count == 1
-        assertEquals(Rules.sevenConsecutiveShifts(alex, startDate, endDate), 1);
-
-        //james.setShifts(LocalDate.of(2021,9,20), Shifts.DAYON);
-
-        //test 4 days in a row rule
-
-        ArrayList<JuniorDoctor> doctors = Schedule.addDoctors(names, hours);
-        JuniorDoctor james = doctors.get(0);
-
-        james.setShifts(LocalDate.of(2021,9,20), Shifts.DAYON);
-        james.setShifts(LocalDate.of(2021,9,21), Shifts.DAYON);
-        james.setShifts(LocalDate.of(2021,9,22), Shifts.DAYON);
-        james.setShifts(LocalDate.of(2021,9,23), Shifts.DAYON);
-
-
-        BuildSchedule.setOffDays(startDate, endDate, doctors);
-
-        assertEquals(Rules.fourLongDaysInARow(james, startDate, endDate), 0);
-
-        james.setShifts(LocalDate.of(2021,9,24), Shifts.THEATRE);
-        assertEquals(Rules.fourLongDaysInARow(james, startDate, endDate), 1);
-
-
-        //less than 22 day + nights
-
-        //three weekends in a row
-        JuniorDoctor sam = doctors.get(2);
-
-        //weekend 1
-        sam.setShifts(LocalDate.of(2021,8,7), Shifts.DAYON);
-        sam.setShifts(LocalDate.of(2021,8,8), Shifts.DAYON);
-
-        //weekend 2
-        sam.setShifts(LocalDate.of(2021,8,14), Shifts.DAYON);
-        sam.setShifts(LocalDate.of(2021,8,15), Shifts.DAYON);
-
-        //two weekends in a row does not cause issues
-        assertEquals(sam.getShiftType(LocalDate.of(2021,8,14)), Shifts.DAYON);
-        assertEquals(sam.getShiftType(LocalDate.of(2021,8,7)), Shifts.DAYON);
-        assertEquals(sam.getShiftType(LocalDate.of(2021,8,20)), Shifts.DAYOFF);
-        assertEquals(Rules.threeWeekendsInARow(sam, startDate, endDate), 0);
-
-        sam.setShifts(LocalDate.of(2021,8,21), Shifts.DAYON);
-        sam.setShifts(LocalDate.of(2021,8,22), Shifts.DAYON);
-
-        assertEquals(sam.getShiftType(LocalDate.of(2021,8,21)), Shifts.DAYON);
-        assertEquals(Rules.threeWeekendsInARow(sam, startDate, endDate), 1);
-
-
-        //72 hour work week
-        JuniorDoctor bob = doctors.get(3);
-
-        bob.setShifts(LocalDate.of(2021,8,9), Shifts.DAYON);
-        bob.setShifts(LocalDate.of(2021,8,10), Shifts.DAYON);
-        bob.setShifts(LocalDate.of(2021,8,11), Shifts.DAYON);
-        bob.setShifts(LocalDate.of(2021,8,12), Shifts.DAYON);
-        bob.setShifts(LocalDate.of(2021,8,13), Shifts.DAYON);
-
-
-        assertEquals(Rules.seventyTwoHourWorkWeek(bob, startDate, endDate), 0);
-
-        bob.setShifts(LocalDate.of(2021,8,14), Shifts.DAYON);
-
-        assertEquals(Rules.seventyTwoHourWorkWeek(bob, startDate, endDate), 2);
-
-
-
-    }
-
-    @Test
     void painWeek(){
-        ArrayList<JuniorDoctor> doctors = Schedule.addDoctors(names, hours);
+        ArrayList<JuniorDoctor> doctors = SortData.addDoctors(names, hours);
 
         for(JuniorDoctor doctor : doctors){
             doctor.setPainWeek();
         }
 
-        int numberOfDays = Schedule.setNumberOfDays(startDate, endDate);
+        int numberOfDays = SortData.setNumberOfDays(startDate, endDate);
 
         BuildSchedule iteration;
         int rules;
@@ -245,8 +151,8 @@ final class RotaTests {
 
     @Test
     void fixedWorkingPattern(){
-        ArrayList<JuniorDoctor> doctors = Schedule.addDoctors(names, hours);
-        int numberOfDays = Schedule.setNumberOfDays(startDate, endDate);
+        ArrayList<JuniorDoctor> doctors = SortData.addDoctors(names, hours);
+        int numberOfDays = SortData.setNumberOfDays(startDate, endDate);
 
         Hashtable<LocalDate, ArrayList<Shifts>> fixedWorkingPattern = new Hashtable<>();
 

@@ -79,7 +79,7 @@ public class Rules {
             }
         }
         rulesBroken += requiredNormalShiftsPerDay(doctors);
-        //System.out.println(description);
+        rulesBroken += lowerOrHigher(doctors);
     }
 
     public static int painWeek(JuniorDoctor doctor){
@@ -398,6 +398,33 @@ public class Rules {
             date = date.plusDays(1);
         }
         return errorCounter;
+    }
+
+    public static int lowerOrHigher(ArrayList<JuniorDoctor> doctors){
+
+        boolean less = false;
+        boolean more = false;
+
+        for(JuniorDoctor doctor : doctors){
+            LocalDate date = startDate;
+            int required = doctor.getSetLongDays() + doctor.getSetNights();
+            int totalDaysAndNights = 0;
+            while(date.isBefore(endDate.plusDays(1))){
+                if(doctor.getShiftType(date).equals(Shifts.NIGHT) || doctor.getShiftType(date).equals(Shifts.DAYON)){
+                    totalDaysAndNights++;
+                }
+                date = date.plusDays(1);
+            }
+            if(required > totalDaysAndNights){
+                less = true;
+            }else if(required < totalDaysAndNights){
+                more = true;
+            }
+        }
+        if(less && more){
+            return 1;
+        }
+        return 0;
     }
 
     public int getRulesBroken(){

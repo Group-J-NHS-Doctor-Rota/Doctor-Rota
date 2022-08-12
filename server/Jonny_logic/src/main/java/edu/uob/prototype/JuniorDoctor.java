@@ -22,6 +22,9 @@ public class JuniorDoctor {
     private final double setTheatre;
     private final int setWeekends;
     private LocalDate painWeekStartDate;
+//    private final LocalDate startDate;
+//    private final LocalDate endDate;
+
 
     JuniorDoctor(double hours){
         shifts = new Hashtable<>();
@@ -35,6 +38,8 @@ public class JuniorDoctor {
         }
         notOnCallRequest = new Hashtable<>();
         studyOrAnnualLeave = new Hashtable<>();
+//        this.startDate = start;
+//        this.endDate = end;
     }
 
     public void resetDoctor(){
@@ -45,6 +50,10 @@ public class JuniorDoctor {
         totalOnCall = nights + longDays;
         shifts = new Hashtable<>();
     }
+
+//    public LocalDate getStartDate(){return this.startDate;}
+//
+//    public LocalDate getEndDate(){return this.endDate;}
 
     public boolean shiftTaken(LocalDate date){
         return this.shifts.containsKey(date);

@@ -26,7 +26,7 @@ public class IndexController {
 
     @GetMapping(value = "/", produces = "application/json")
     public ResponseEntity<ObjectNode> index() {
-        return okResponse("Spring boot server running correctly");
+        return PostOperations.postFirstAdminAccount();
     }
 
     @GetMapping(value = "/test", produces = "application/json")

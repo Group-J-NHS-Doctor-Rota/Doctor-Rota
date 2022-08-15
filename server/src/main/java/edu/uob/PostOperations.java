@@ -135,4 +135,27 @@ public class PostOperations {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
+
+    public static ResponseEntity<ObjectNode> postFirstAdminAccount() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Delete any non-admin accounts with this special username
+            String SQL = "DELETE FROM accounts WHERE username = 'FIRST ADMIN' AND level != 1; ";
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.executeUpdate();
+            }
+            // Check if an admin already exists
+            SQL = "SELECT EXISTS (SELECT level FROM accounts WHERE level = 1); ";
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                r.next();
+                if(r.getBoolean(1)) {
+                    return IndexController.okResponse("Spring boot server running correctly");
+                }
+                return postAccount("FIRST ADMIN");
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
 }

@@ -80,10 +80,10 @@ public class PatchOperationsTests {
             }
             //Update details
             PatchOperations.patchAccount(id1, "30", "29", "20", "1", realEmail,
-                    "+447777777777", "123456789", "0", "0", "0.8", "false");
+                    "+447777777777", "123456789", "0", "0", "0.8", "false", "true");
             //Check details
             SQL = "SELECT email, phone, doctorId, annualLeave, studyLeave, workingHours, accountStatus, doctorStatus, level, "+
-                    "timeWorked, fixedWorking FROM accounts WHERE id = ?;";
+                    "timeWorked, fixedWorking, painWeek FROM accounts WHERE id = ?;";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
                 ResultSet r = s.executeQuery();
@@ -99,13 +99,14 @@ public class PatchOperationsTests {
                 assertEquals(1, r.getInt("level"));
                 assertEquals(0, Float.compare(0.8f, r.getFloat("timeWorked")));
                 assertFalse(r.getBoolean("fixedWorking"));
+                assertTrue(r.getBoolean("painWeek"));
             }
             //Update only some details
             PatchOperations.patchAccount(id1, null, "39", null, "0", null,
-                    "mob: 07777 777777", null, null, null, "0.6", null);
+                    "mob: 07777 777777", null, null, null, "0.6", null, "false");
             //Check details
             SQL = "SELECT email, phone, doctorId, annualLeave, studyLeave, workingHours, accountStatus, doctorStatus, level, "+
-                    "timeWorked, fixedWorking FROM accounts WHERE id = ?;";
+                    "timeWorked, fixedWorking, painWeek FROM accounts WHERE id = ?;";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
                 ResultSet r = s.executeQuery();
@@ -121,14 +122,15 @@ public class PatchOperationsTests {
                 assertEquals(0, r.getInt("level"));
                 assertEquals(0, Float.compare(0.6f, r.getFloat("timeWorked")));
                 assertFalse(r.getBoolean("fixedWorking"));
+                assertFalse(r.getBoolean("painWeek"));
             }
             //Update non-existent account
             assertFalse(ConnectionTools.accountIdExists(1000000000, c));
             assertThrows(ResponseStatusException.class, ()-> PatchOperations.patchAccount(1000000000, "30", "29", "20", "1", realEmail,
-                    "+447777777777", "123456789", "0", "0", "0.8", "false"));
+                    "+447777777777", "123456789", "0", "0", "0.8", "false", "false"));
             // Check incorrect data format
             assertThrows(NumberFormatException.class, ()-> PatchOperations.patchAccount(id1, "thirty", "29", "20", "1", realEmail,
-                    "+447777777777", "123456789", "0", "0", "0.8", "false"));
+                    "+447777777777", "123456789", "0", "0", "0.8", "false", "false"));
             //Delete account
             DeleteOperations.deleteAccount(id1);
             assertFalse(ConnectionTools.accountIdExists(id1, c));

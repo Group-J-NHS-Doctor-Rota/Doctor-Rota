@@ -112,6 +112,7 @@ public class GetOperations {
         objectNode.put("level", r.getInt("level"));
         objectNode.put("timeWorked", r.getFloat("timeWorked"));
         objectNode.put("fixedWorking", r.getBoolean("fixedWorking"));
+        objectNode.put("painWeek", r.getBoolean("painWeek"));
         ObjectNode partTimeDetails = objectNode.putObject("partTimeDetails");
         ArrayNode fixedRotaShifts = objectNode.putArray("fixedRotaShifts");
         ArrayNode accountRotaTypes = objectNode.putArray("accountRotaTypes");

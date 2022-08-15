@@ -226,6 +226,7 @@ public class GetOperationsTest {
             assertTrue(rootNode.has("level"));
             assertTrue(rootNode.has("timeWorked"));
             assertTrue(rootNode.has("fixedWorking"));
+            assertTrue(rootNode.has("painWeek"));
             // Only check part-time days if non-empty
             assertTrue(rootNode.has("partTimeDetails"));
             JsonNode partTimeDetails = rootNode.get("partTimeDetails");
@@ -308,6 +309,7 @@ public class GetOperationsTest {
             assertTrue(account.has("level"));
             assertTrue(account.has("timeWorked"));
             assertTrue(account.has("fixedWorking"));
+            assertTrue(account.has("painWeek"));
             // Only check part-time days if non-empty
             assertTrue(account.has("partTimeDetails"));
             JsonNode partTimeDetails = account.get("partTimeDetails");

@@ -80,10 +80,11 @@ public class IndexController {
                                                    @RequestParam(required = false) String doctorStatus,
                                                    @RequestParam(required = false) String timeWorked,
                                                    @RequestParam(required = false) String fixedWorking,
+                                                   @RequestParam(required = false) String painWeek,
                                                    @RequestHeader String token) {
         ConnectionTools.validTokenAuthorised(token, 0);
         return PatchOperations.patchAccount(accountId, annualLeave, studyLeave, workingHours, level, email,
-                phone, doctorId, accountStatus, doctorStatus, timeWorked, fixedWorking);
+                phone, doctorId, accountStatus, doctorStatus, timeWorked, fixedWorking, painWeek);
     }
 
     @GetMapping(value = "/account/{accountId}", produces = "application/json")

@@ -38,6 +38,7 @@ CREATE TABLE accounts (
     rotaGroupId int,
     timeWorked float DEFAULT 1,
     fixedWorking bool DEFAULT false,
+    painWeek bool DEFAULT false,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
     UNIQUE (username),

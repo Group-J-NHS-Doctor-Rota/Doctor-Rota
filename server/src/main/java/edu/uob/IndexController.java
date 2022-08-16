@@ -26,6 +26,7 @@ public class IndexController {
 
     @GetMapping(value = "/", produces = "application/json")
     public ResponseEntity<ObjectNode> index() {
+        ConnectionTools.createTables();
         return PostOperations.postFirstAdminAccount();
     }
 

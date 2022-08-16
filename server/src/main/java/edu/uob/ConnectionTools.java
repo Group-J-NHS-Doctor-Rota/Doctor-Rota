@@ -4,7 +4,11 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.sql.*;
+import org.apache.ibatis.jdbc.ScriptRunner;
+import java.io.Reader;
 
 public class ConnectionTools {
 
@@ -103,6 +107,25 @@ public class ConnectionTools {
         } catch(SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
+    }
 
+    // Adapted from https://www.tutorialspoint.com/how-to-run-sql-script-using-jdbc
+    public static void createTables() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            //Initialize the script runner
+            ScriptRunner sr = new ScriptRunner(c);
+            //Creating a reader object
+            Reader reader = new BufferedReader(new FileReader("src/main/resources/createTables.sql"));
+            //Running the script
+            sr.runScript(reader);
+            //Now do the type data
+            reader = new BufferedReader(new FileReader("src/main/resources/insertTypeData.sql"));
+            sr.runScript(reader);
+            // This fails if the tables exist so catch and print the errors, but do not throw exception
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Tables already exist");
+        }
     }
 }

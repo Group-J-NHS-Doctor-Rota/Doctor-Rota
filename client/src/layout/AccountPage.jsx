@@ -95,7 +95,7 @@ export default function AccountPage() {
     const getCardContent = () => {
         let content = [];
 
-        accounts.filter(account => (currentPage) * 6 > account.id && account.id > (currentPage - 1) * 6)
+        accounts.filter(account => (currentPage) * 6 > account.number && account.number > (currentPage - 1) * 6)
             .map((account) => (
                 content.push(
                     <AccountCardV2 key={account.id} className="d-block m-1 p-3" onClick={() => handleClick(account.id)}>

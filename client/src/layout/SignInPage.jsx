@@ -53,10 +53,6 @@ export default function SignIn() {
             required: true,
         }
     ];
-    // errorMessage: "Incorrect username format",
-    // pattern: "[a-zA-Z \./']+",
-    // pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
-    // errorMessage: "Incorrect password format",
 
     const resetInputs = [
         {
@@ -97,8 +93,7 @@ export default function SignIn() {
                             headers: {
                                 'Access-Control-Allow-Origin': '*',
                                 'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                "Access-Control-Allow-Credentials": true
+                                'Accept': 'application/json'
                             }
                         })
                         .then(response => {
@@ -129,6 +124,7 @@ export default function SignIn() {
         }, 1000);
     };
 
+    
     const onLoginChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
     };

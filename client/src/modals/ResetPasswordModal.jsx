@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
 import { useUrl } from '../contexts/UrlContexts'
 import FormInput from '../components/FormInput';
 import { Modal } from 'react-bootstrap'
@@ -10,8 +9,6 @@ const ResetPasswordModal = ({ reset, setReset }) => {
     const { getUrl } = useUrl()
     const url = getUrl()
 
-    const navigate = useNavigate();
-
     const auth = JSON.parse(localStorage.getItem('auth'))
 
     const [values, setValues] = useState({
@@ -19,6 +16,11 @@ const ResetPasswordModal = ({ reset, setReset }) => {
         password: "",
         confirmPassword: "",
     });
+
+    const [errorMsg, setErrorMsg] = useState({
+        oldPassword_incorrect: false,
+        new_old_password_same: false
+    })
 
     const onChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value });
@@ -80,24 +82,45 @@ const ResetPasswordModal = ({ reset, setReset }) => {
                     }
                 })
                 .then(response => {
-                    // console.log(response)
-                    // console.log(response.status)
-                        // could be the same old password
-                    setValues({
-                        oldpassword: "",
-                        password: "",
-                        confirmPassword: "",
-                    })
+                    if(response.status == 409){
+                        setErrorMsg({
+                            oldPassword_incorrect: true,
+                            new_old_password_same: false
+                        })
+                    }else if(response.status == 405){
+                        setErrorMsg({
+                            oldPassword_incorrect: false,
+                            new_old_password_same: true
+                        })
+                    }else{
+                        setValues({
+                            oldpassword: "",
+                            password: "",
+                            confirmPassword: "",
+                        })
+                        setErrorMsg({
+                            oldPassword_incorrect: false,
+                            new_old_password_same: false
+                        })
+                        setReset(false)
+                    }
                 })
             }
-                setReset(false)
-            } catch (error) {
-                console.log(error)
-            }
-        
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     const handleCancel = e => {
+        setValues({
+            oldpassword: "",
+            password: "",
+            confirmPassword: "",
+        })
+        setErrorMsg({
+            oldPassword_incorrect: false,
+            new_old_Password_same: false
+        })
         setReset(false)
     }
 
@@ -118,6 +141,19 @@ const ResetPasswordModal = ({ reset, setReset }) => {
                                 />
                             ))}
                         </div>
+
+                        {
+                            errorMsg.oldPassword_incorrect &&
+                            <div>
+                                <ErrorMessage>Incorrect old password </ErrorMessage>
+                            </div>
+                            ||
+                            errorMsg.new_old_password_same &&
+                            <div>
+                                <ErrorMessage>New password cannot be the same as old password </ErrorMessage>
+                            </div>
+                        }
+
                         <div className="d-flex justify-content-center my-3">
                             <CloseButton type="button" className="m-2" onClick={handleCancel}>
                                 Close
@@ -181,4 +217,10 @@ const ConfirmButton = styled.button`
         font-size: 16px;
         min-width: 80px;
     }
+`
+
+const ErrorMessage = styled.p`
+    font-size: 12px;
+    padding: 3px;
+    color: red;
 `

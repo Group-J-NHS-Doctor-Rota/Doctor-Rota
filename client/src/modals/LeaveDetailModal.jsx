@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap"
 import { useState, useEffect } from "react"
 import { useUrl } from '../contexts/UrlContexts' 
 
+// https://www.pluralsight.com/guides/how-to-make-modal-popup-onclose-refresh-item-on-page
 
 const LeaveDetailModal = ({ notification, leaveDetail, setLeaveDetail }) => {
     const [accountInfo, setAccountInfo] = useState()

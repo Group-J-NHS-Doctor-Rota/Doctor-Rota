@@ -5,6 +5,8 @@ import { useUrl } from '../contexts/UrlContexts'
 
 import FormInput from '../components/FormInput';
 
+// https://www.pluralsight.com/guides/how-to-make-modal-popup-onclose-refresh-item-on-page
+
 const CreateUsersModal = ({ create, setCreate }) => {
     const auth = JSON.parse(localStorage.getItem('auth'))
 

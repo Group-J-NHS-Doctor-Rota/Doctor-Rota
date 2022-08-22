@@ -24,24 +24,24 @@ CREATE TABLE accounts (
     username varchar NOT NULL,
     --Only store encrypted and never actual password
     password varchar NOT NULL,
-    salt varchar NOT NULL,
+    salt varchar,
     email varchar,
     -- phone is varchar so it copes regardless of format
     phone varchar,
     doctorId varchar,
-    annualLeave int NOT NULL,
-    studyLeave int NOT NULL,
-    workingHours int NOT NULL,
+    annualLeave int DEFAULT 30,
+    studyLeave int DEFAULT 15,
+    workingHours int DEFAULT 48,
     accountStatus int,
     doctorStatus int,
-    level int NOT NULL,
+    level int DEFAULT 0,
     rotaGroupId int,
-    timeWorked float,
-    fixedWorking bool,
+    timeWorked float DEFAULT 1,
+    fixedWorking bool DEFAULT false,
+    painWeek bool DEFAULT false,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
     UNIQUE (username),
-    UNIQUE (salt),
     FOREIGN KEY (rotaGroupId) REFERENCES rotagroups(id),
     FOREIGN KEY (level) REFERENCES levelTypes(id)
 );
@@ -141,15 +141,12 @@ CREATE TABLE accountRotaTypes (
     id SERIAL NOT NULL,
     accountId int NOT NULL,
     rotaTypeId int NOT NULL,
-    rotaGroupId int NOT NULL,
     startDate date NOT NULL,
     endDate date NOT NULL,
     timestamp timestamp DEFAULT now(),
     PRIMARY KEY (id),
-    UNIQUE (accountId, rotaTypeId, rotaGroupId),
     FOREIGN KEY (accountId) REFERENCES accounts(id),
-    FOREIGN KEY (rotaTypeId) REFERENCES rotaTypes(id),
-    FOREIGN KEY (rotaGroupId) REFERENCES rotaGroups(id)
+    FOREIGN KEY (rotaTypeId) REFERENCES rotaTypes(id)
 );
 
 /*Details on fixed rota shifts, for any accounts that have them*/
@@ -197,4 +194,13 @@ CREATE TABLE notifications (
     PRIMARY KEY (id),
     UNIQUE(type, detailId),
     FOREIGN KEY (type) REFERENCES notificationTypes(id)
+);
+
+/*Location of authentication tokens for each account*/
+CREATE TABLE tokens (
+    accountId int NOT NULL,
+    token varchar NOT NULL,
+    timestamp timestamp DEFAULT now(),
+    PRIMARY KEY (accountId),
+    FOREIGN KEY (accountId) REFERENCES accounts(id)
 );

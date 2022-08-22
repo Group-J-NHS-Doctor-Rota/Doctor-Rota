@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -227,6 +226,7 @@ public class GetOperationsTest {
             assertTrue(rootNode.has("level"));
             assertTrue(rootNode.has("timeWorked"));
             assertTrue(rootNode.has("fixedWorking"));
+            assertTrue(rootNode.has("painWeek"));
             // Only check part-time days if non-empty
             assertTrue(rootNode.has("partTimeDetails"));
             JsonNode partTimeDetails = rootNode.get("partTimeDetails");
@@ -309,6 +309,7 @@ public class GetOperationsTest {
             assertTrue(account.has("level"));
             assertTrue(account.has("timeWorked"));
             assertTrue(account.has("fixedWorking"));
+            assertTrue(account.has("painWeek"));
             // Only check part-time days if non-empty
             assertTrue(account.has("partTimeDetails"));
             JsonNode partTimeDetails = account.get("partTimeDetails");

@@ -24,6 +24,35 @@ public class BuildRotaTests {
         assertNotEquals(null, connectionString, "Connection string shouldn't be null");
     }
 
+    @Test
+    void getNewDate() throws JsonProcessingException {
+
+        dates = BuildRota.getStartAndEndDate(1);
+
+        Date start = dates.get(0);
+        Date end = dates.get(1);
+
+        ResponseEntity<ObjectNode> response = BuildRota.getData(start, end);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode = mapper.readTree(String.valueOf(response.getBody()));
+
+        int numberOfAccounts = rootNode.get("accounts").size();
+
+        for(int i = 0; i < numberOfAccounts; i++) {
+            JsonNode account = rootNode.get("accounts").get(i);
+            assertTrue(account.has("id"));
+            assertTrue(account.has("rotaGroupId"));
+            assertTrue(account.has("rotaTypeId"));
+            assertTrue(account.has("date"));
+            assertTrue(account.has("shiftType"));
+        }
+
+
+    }
+
+    private Date convertToDateViaSqlDate(LocalDate dateToConvert) {
+        return java.sql.Date.valueOf(dateToConvert);
+    }
 
     @Test
     void getRotaData() throws JsonProcessingException {
@@ -40,7 +69,6 @@ public class BuildRotaTests {
         // Check all accounts, have all the fields
         for(int i = 0; i < numberOfAccounts; i++) {
             JsonNode account = rootNode.get("accounts").get(i);
-            System.out.println(account);
             int index = Integer.parseInt(account.get("id").toString());
             if(!found.contains(index-1)){
                 found.add(index-1);
@@ -55,12 +83,20 @@ public class BuildRotaTests {
             assertTrue(account.has("leaveType"));
             assertTrue(account.has("leaveLength"));
             assertTrue(account.has("leaveStatus"));
+            assertTrue(account.has("fixedWorkingDate"));
+            assertTrue(account.has("fixedWorkingShift"));
+            assertTrue(account.has("painWeek"));
 
         }
 
         for(int i=0; i< 40; i++){
                 assertTrue(found.contains(i));
         }
+    }
+
+    @Test
+    void buildRota() throws JsonProcessingException {
+        BuildRota.buildRota(1);
     }
 
 }

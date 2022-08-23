@@ -1,5 +1,6 @@
 package edu.uob;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpStatus;
@@ -133,8 +134,7 @@ public class IndexController {
     @PutMapping(value = "/rotabuild", produces = "application/json")
     public ResponseEntity<ObjectNode> putRotaBuild(@RequestHeader String token) {
         ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
-        //todo input full logic
-        return okResponse("");
+        return BuildRota.buildRota(1);
     }
 
     @GetMapping(value = "/login", produces = "application/json")
@@ -165,5 +165,4 @@ public class IndexController {
         ConnectionTools.validTokenAuthorised(token, 0);
         return PatchOperations.patchLogout(token);
     }
-
 }

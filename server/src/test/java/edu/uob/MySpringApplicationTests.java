@@ -43,14 +43,7 @@ public class MySpringApplicationTests {
 		// Check the /test url returns ok, so the server can connect to the database
 		mockMvc.perform(get("/test")).andExpect(status().isOk());
 	}
-
-	//TODO remove this test once rotabuild request have been completed
-	@Test
-	public void testSkeletonRequests() throws Exception {
-		// Check rotabuild works without any variables
-		String validToken = ConnectionTools.getValidToken();
-		mockMvc.perform(put("/rotabuild").header("token", validToken)).andExpect(status().isOk());
-	}
+	
 
 	@Test
 	public void testInvalidToken() throws Exception {

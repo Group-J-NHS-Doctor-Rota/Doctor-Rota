@@ -17,15 +17,25 @@ final class RotaTests {
     private final static double[] hours = {1,1,1,1,1,1,1,1};
     private static final Hashtable<LocalDate, ArrayList<Shifts>> fwp = new Hashtable<>();
 
+    private void setStartAndEnd(ArrayList<JuniorDoctor> doctors){
+        for(JuniorDoctor doctor : doctors){
+            doctor.setStartDate(startDate);
+            doctor.setEndDate(endDate);
+        }
+    }
+
     @Test
     void basicInitialisation() {
         ArrayList<JuniorDoctor> doctors = SortData.addDoctors(names, hours);
+        setStartAndEnd(doctors);
         doctors.get(0).resetDoctor();
         assertEquals(doctors.get(0).getName(), "James");
         assertEquals(doctors.get(0).getLongDays(), 11);
         assertEquals(doctors.get(0).getNights(), 11);
         assertEquals(doctors.get(0).getTheatre(), 32);
         assertEquals(doctors.size(), 8);
+        assertEquals(doctors.get(0).getEndDate(), endDate);
+        assertEquals(doctors.get(0).getStartDate(), startDate);
 
         int numberOfDays = SortData.setNumberOfDays(startDate, endDate);
         assertEquals(numberOfDays, 90);
@@ -127,6 +137,7 @@ final class RotaTests {
     @Test
     void painWeek(){
         ArrayList<JuniorDoctor> doctors = SortData.addDoctors(names, hours);
+        setStartAndEnd(doctors);
 
         for(JuniorDoctor doctor : doctors){
             doctor.setPainWeek();
@@ -153,6 +164,7 @@ final class RotaTests {
     @Test
     void fixedWorkingPattern(){
         ArrayList<JuniorDoctor> doctors = SortData.addDoctors(names, hours);
+        setStartAndEnd(doctors);
         int numberOfDays = SortData.setNumberOfDays(startDate, endDate);
 
         Hashtable<LocalDate, ArrayList<Shifts>> fixedWorkingPattern = new Hashtable<>();

@@ -94,9 +94,11 @@ public class BuildRotaTests {
         }
     }
 
-    @Test
-    void buildRota() throws JsonProcessingException {
-        BuildRota.buildRota(1);
-    }
+    //don't want to run this with every test as it rebuilds the rota
+
+//    @Test
+//    void buildRota() throws JsonProcessingException {
+//        BuildRota.buildRota(1);
+//    }
 
 }

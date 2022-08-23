@@ -17,9 +17,17 @@ public class LeaveRequests {
     private final static double[] hours = {1,1,1,1,1,1,1,1};
     private static final Hashtable<LocalDate, ArrayList<Shifts>> fwp = new Hashtable<>();
 
+    private void setStartAndEnd(ArrayList<JuniorDoctor> doctors){
+        for(JuniorDoctor doctor : doctors){
+            doctor.setStartDate(startDate);
+            doctor.setEndDate(endDate);
+        }
+    }
+
     @Test
     void leaveAndNotOnCallRequests() {
         ArrayList<JuniorDoctor> doctors = SortData.addDoctors(names, hours);
+        setStartAndEnd(doctors);
 
         JuniorDoctor james = doctors.get(0);
         james.addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 10, 18), LeaveType.STUDY);
@@ -74,6 +82,7 @@ public class LeaveRequests {
 
 
         ArrayList<JuniorDoctor> doctors2 = SortData.addDoctors(names, hours);
+        setStartAndEnd(doctors2);
 
         for (int i = 0; i < doctors2.size() - 3; i++) {
             JuniorDoctor doctor = doctors2.get(i);
@@ -107,6 +116,7 @@ public class LeaveRequests {
         assertNotEquals(doctors2.get(7).getAnnualOrStudyLeaveRequestType(LocalDate.of(2021, 9, 18)), LeaveType.STUDY);
 
         ArrayList<JuniorDoctor> doctors3 = SortData.addDoctors(names, hours);
+        setStartAndEnd(doctors3);
 
         doctors3.get(0).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 16), LeaveType.STUDY);
         doctors3.get(0).addAnnualOrStudyLeaveRequest(LocalDate.of(2021, 9, 17), LeaveType.STUDY);

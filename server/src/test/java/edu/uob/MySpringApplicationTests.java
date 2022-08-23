@@ -43,7 +43,7 @@ public class MySpringApplicationTests {
 		// Check the /test url returns ok, so the server can connect to the database
 		mockMvc.perform(get("/test")).andExpect(status().isOk());
 	}
-	
+
 
 	@Test
 	public void testInvalidToken() throws Exception {

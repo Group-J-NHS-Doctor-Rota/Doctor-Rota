@@ -12,10 +12,10 @@ public class Rules {
     private static int rulesBroken;
     private static int numberOfDays;
     private static boolean swaps;
-    private static ArrayList<String> description;
+//    private static ArrayList<String> description;
 
 
-    public Rules(ArrayList<JuniorDoctor> doctorsList, LocalDate start, LocalDate end, Hashtable<LocalDate, ArrayList<Shifts>> fixedWorkingPattern){
+    public Rules(ArrayList<JuniorDoctor> doctorsList, LocalDate start, LocalDate end){
         startDate = start;
         endDate = end;
         numberOfDays = setNumberOfDays(startDate, endDate);
@@ -25,7 +25,7 @@ public class Rules {
     }
 
     private static void rulesBroken(ArrayList<JuniorDoctor> doctors, LocalDate start, LocalDate end, int count){
-        description = new ArrayList<>();
+//        description = new ArrayList<>();
         if(count == 10){
             rulesBroken = 100;
             return;
@@ -77,9 +77,9 @@ public class Rules {
             }
             start = start.plusDays(1);
         }
-        if(errors > 0){
-            description.add("Error with pain week -> " + doctor.getName());
-        }
+//        if(errors > 0){
+//            description.add("Error with pain week -> " + doctor.getName());
+//        }
         return errors;
     }
 
@@ -92,7 +92,7 @@ public class Rules {
         while (date.isBefore(endDate.plusDays(1))) {
             if(counter > 4){
                 errorCounter++;
-                description.add("Four long days in a row from - " + date.minusDays(5) + "to - " + date + " -> " + doctor.getName());
+//                description.add("Four long days in a row from - " + date.minusDays(5) + "to - " + date + " -> " + doctor.getName());
             }
             if(counter == 4){
                 errorCounter += check48Hours(date, doctor);
@@ -116,9 +116,9 @@ public class Rules {
         while (date.isBefore(endDate.plusDays(1))) {
             if(counter == 7){
                 errorCounter += check48Hours(date, doctor);
-                if (check48Hours(date, doctor) > 0){
-                    description.add("more than seven consecutive shifts starting at - " + date.minusDays(7) + " -> " + doctor.getName());
-                }
+//                if (check48Hours(date, doctor) > 0){
+//                    description.add("more than seven consecutive shifts starting at - " + date.minusDays(7) + " -> " + doctor.getName());
+//                }
                 counter = 0;
             }
             if(doctor.getShiftType(date) == Shifts.DAYON || doctor.getShiftType(date) == Shifts.NIGHT ||
@@ -174,9 +174,9 @@ public class Rules {
 
             date = date.plusDays(1);
         }
-        if(errorCounter>0){
-            description.add("three weekends in a row -> " + doctor.getName());
-        }
+//        if(errorCounter>0){
+//            description.add("three weekends in a row -> " + doctor.getName());
+//        }
         return errorCounter;
     }
 
@@ -213,9 +213,9 @@ public class Rules {
             }
             date = date.plusDays(1);
         }
-        if(errorCounter > 0){
-            description.add("72 hour work week -> " +  doctor.getName());
-        }
+//        if(errorCounter > 0){
+//            description.add("72 hour work week -> " +  doctor.getName());
+//        }
         return errorCounter;
 
     }
@@ -341,7 +341,7 @@ public class Rules {
         }
         int weeks = numberOfDays/7;
         if((hours / weeks) > 48){
-            description.add("More than 48 hour average work week");
+//            description.add("More than 48 hour average work week");
             return 1;
         }
         return 0;
@@ -365,7 +365,7 @@ public class Rules {
                 }
             }
             if(counter < 2){
-                description.add("not enough normal shifts on day -> " +date);
+//                description.add("not enough normal shifts on day -> " +date);
                 errorCounter++;
             }
             date = date.plusDays(1);
@@ -405,8 +405,8 @@ public class Rules {
         return rulesBroken;
     }
 
-    public ArrayList<String> getRulesBrokenDescriptions(){
-        return description;
-    }
+//    public ArrayList<String> getRulesBrokenDescriptions(){
+//        return description;
+//    }
 
 }

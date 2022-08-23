@@ -102,7 +102,7 @@ public class SortData {
 
             int numberOfDays = setNumberOfDays(startDate, endDate);
 
-            ArrayList<String> rulesBrokenDescription = new ArrayList<>();
+//            ArrayList<String> rulesBrokenDescription = new ArrayList<>();
 
             ArrayList<JuniorDoctor> doctorsLeastErrors = new ArrayList<>();
             int lowestRulesBroken = 0;
@@ -119,12 +119,12 @@ public class SortData {
                     if (counter == 0) {
                         doctorsLeastErrors = copyDoctors(doctors);
                         lowestRulesBroken = rulesBroken;
-                        rulesBrokenDescription = iteration.getDescriptions();
+//                        rulesBrokenDescription = iteration.getDescriptions();
                     } else {
                         if (rulesBroken < lowestRulesBroken) {
                             doctorsLeastErrors = copyDoctors(doctors);
                             lowestRulesBroken = rulesBroken;
-                            rulesBrokenDescription = iteration.getDescriptions();
+//                            rulesBrokenDescription = iteration.getDescriptions();
                         }
                     }
                     counter++;

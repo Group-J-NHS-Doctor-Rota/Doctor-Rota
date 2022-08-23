@@ -15,12 +15,20 @@ public class PartTime {
     private static final LocalDate endDate = LocalDate.of(2021, 11, 2);;
     private static final Hashtable<LocalDate, ArrayList<Shifts>> fwp = new Hashtable<>();
 
+    private void setStartAndEnd(ArrayList<JuniorDoctor> doctors){
+        for(JuniorDoctor doctor : doctors){
+            doctor.setStartDate(startDate);
+            doctor.setEndDate(endDate);
+        }
+    }
+
     @Test
     void fifteenPartTimeZeroPointSix(){
         String [] names = {"James", "Alex", "Sam", "Bob", "Ryan", "Matt", "michael", "steve", "paul", "daniel", "sarah", "amy", "ella", "megan", "sheila"};
         double[] hours = {0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6};
 
         ArrayList<JuniorDoctor> doctors = SortData.addDoctors(names, hours);
+        setStartAndEnd(doctors);
 
         doctors.get(0).resetDoctor();
 
@@ -118,6 +126,7 @@ public class PartTime {
         double[] hours = {1,1,1,1,1,1,1,0.6,0.6};
 
         ArrayList<JuniorDoctor> doctors = SortData.addDoctors(names, hours);
+        setStartAndEnd(doctors);
 
         doctors.get(0).resetDoctor();
         doctors.get(8).resetDoctor();
@@ -237,6 +246,7 @@ public class PartTime {
         double[] hours = {1,1,1,1,1,1,1};
         int numberOfDays = SortData.setNumberOfDays(startDate, endDate);
         ArrayList<JuniorDoctor> doctors = SortData.addDoctors(names, hours);
+        setStartAndEnd(doctors);
 
         BuildSchedule iteration;
         int rules;

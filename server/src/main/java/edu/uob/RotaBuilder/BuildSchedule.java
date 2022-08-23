@@ -28,9 +28,9 @@ public class BuildSchedule {
 
 
         addShifts();
-        Rules rulesBrokenCount = new Rules(doctors, startDate, endDate, fwp);
+        Rules rulesBrokenCount = new Rules(doctors, startDate, endDate);
         rulesBroken = rulesBrokenCount.getRulesBroken();
-        descriptions = rulesBrokenCount.getRulesBrokenDescriptions();
+        //descriptions = rulesBrokenCount.getRulesBrokenDescriptions();
 
     }
 

@@ -4,7 +4,11 @@ import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.sql.*;
+import org.apache.ibatis.jdbc.ScriptRunner;
+import java.io.Reader;
 
 public class ConnectionTools {
 
@@ -67,22 +71,6 @@ public class ConnectionTools {
         }
     }
     
-    public static boolean isAdminAccount(int id, Connection c) {
-        // Get true or false value for where an id exists in the table
-        String SQL = "SELECT level FROM accounts WHERE id = ?; ";
-        try (PreparedStatement s = c.prepareStatement(SQL)) {
-            s.setInt(1, id);
-            ResultSet r = s.executeQuery();
-            int level = -1;
-            while(r.next()) {
-                level = r.getInt("level");
-            }
-            return level == 1;
-        } catch (SQLException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
-        }
-    }
-    
     // Checks token and throws exception if not valid
     public static void validTokenAuthorised(String token, int level) {
         if(!validToken(token, level)) {
@@ -104,6 +92,40 @@ public class ConnectionTools {
             }
         } catch(SQLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+
+    public static int getAccountsSum() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            String SQL = "SELECT COUNT(*) AS total FROM accounts;";
+            try (PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                r.next();
+                return r.getInt("total");
+            }
+        } catch(SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+
+    // Adapted from https://www.tutorialspoint.com/how-to-run-sql-script-using-jdbc
+    public static void createTables() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            //Initialize the script runner
+            ScriptRunner sr = new ScriptRunner(c);
+            //Creating a reader object
+            Reader reader = new BufferedReader(new FileReader("src/main/resources/createTables.sql"));
+            //Running the script
+            sr.runScript(reader);
+            //Now do the type data
+            reader = new BufferedReader(new FileReader("src/main/resources/insertTypeData.sql"));
+            sr.runScript(reader);
+            // This fails if the tables exist so catch and print the errors, but do not throw exception
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Tables already exist");
         }
     }
 }

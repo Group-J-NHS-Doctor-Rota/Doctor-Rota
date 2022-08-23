@@ -27,7 +27,8 @@ public class IndexController {
 
     @GetMapping(value = "/", produces = "application/json")
     public ResponseEntity<ObjectNode> index() {
-        return okResponse("Spring boot server running correctly");
+        ConnectionTools.createTables();
+        return PostOperations.postFirstAdminAccount();
     }
 
     @GetMapping(value = "/test", produces = "application/json")
@@ -81,10 +82,11 @@ public class IndexController {
                                                    @RequestParam(required = false) String doctorStatus,
                                                    @RequestParam(required = false) String timeWorked,
                                                    @RequestParam(required = false) String fixedWorking,
+                                                   @RequestParam(required = false) String painWeek,
                                                    @RequestHeader String token) {
         ConnectionTools.validTokenAuthorised(token, 0);
         return PatchOperations.patchAccount(accountId, annualLeave, studyLeave, workingHours, level, email,
-                phone, doctorId, accountStatus, doctorStatus, timeWorked, fixedWorking);
+                phone, doctorId, accountStatus, doctorStatus, timeWorked, fixedWorking, painWeek);
     }
 
     @GetMapping(value = "/account/{accountId}", produces = "application/json")
@@ -155,7 +157,7 @@ public class IndexController {
         return PatchOperations.patchPassword(oldPassword, newPassword, accountId);
     }
 
-    @PatchMapping(value = "/passwordReset", produces = "application/json")
+    @PatchMapping(value = "/passwordreset", produces = "application/json")
     public ResponseEntity<ObjectNode> patchPasswordReset(@RequestParam String username, @RequestParam String email) {
         return PatchOperations.patchPasswordReset(username, email);
     }
@@ -164,5 +166,32 @@ public class IndexController {
     public ResponseEntity<ObjectNode> patchLogout(@RequestHeader String token) {
         ConnectionTools.validTokenAuthorised(token, 0);
         return PatchOperations.patchLogout(token);
+    }
+    
+    @GetMapping(value = "/leavereminder", produces = "application/json")
+    public ResponseEntity<ObjectNode> getLeaveReminder(@RequestHeader String token) {
+        ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
+        return GetOperations.getLeaveReminder();
+    }
+    
+    @PostMapping(value = "/rotagroup", produces = "application/json")
+    public ResponseEntity<ObjectNode> postRotaGroup(@RequestHeader String token, @RequestParam String startDate,
+                                                    @RequestParam String endDate) {
+        ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
+        return PostOperations.postRotaGroup(startDate, endDate);
+    }
+
+    @GetMapping(value = "/rotagroup", produces = "application/json")
+    public ResponseEntity<ObjectNode> postRotaGroup(@RequestHeader String token) {
+        ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
+        return GetOperations.getRotaGroup();
+    }
+    
+    @PutMapping(value = "/account/{accountId}/rotatype", produces = "application/json")
+    public ResponseEntity<ObjectNode> putAccountRotaType(@RequestHeader String token, @PathVariable int accountId,
+                                                         @RequestParam int rotaTypeId,
+                                                         @RequestParam String startDate, @RequestParam String endDate) {
+        ConnectionTools.validTokenAuthorised(token, 1); // Admin only request
+        return PutOperations.putAccountRotaType(accountId, rotaTypeId, startDate, endDate);
     }
 }

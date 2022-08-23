@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.mail.MessagingException;
 import java.sql.*;
 
 public class PostOperations {
@@ -79,14 +80,82 @@ public class PostOperations {
                 s.setString(2, Encryption.getRandomToken());
                 s.executeUpdate();
             }
+            // email users:
+            if (email != null && !email.isBlank()) {
+                EmailTools emailTools = new EmailTools();
+                String msg = emailTools.accountCreateMsg(username);
+                emailTools.sendSimpleMessage(email, "Create an account successfully", msg);
+            }
             return IndexController.okResponse("Account creation successful for username: " + username);
             // Have to catch SQLException exception here
-        } catch (SQLException e) {
+        } catch (SQLException | MessagingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
         }
     }
 
     public static ResponseEntity<ObjectNode> postAccount(String username) {
         return postAccount(username, null);
+    }
+
+    public static ResponseEntity<ObjectNode> postRotaGroup(String startDate, String endDate) {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Do the dates already exist
+            String SQL = "SELECT EXISTS (SELECT id FROM rotagroups WHERE startdate = cast(? AS date) AND enddate = cast(? AS date)); ";
+            boolean datesExist;
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.setString(1, startDate);
+                s.setString(2, endDate);
+                ResultSet r = s.executeQuery();
+                r.next();
+                datesExist = r.getBoolean(1);
+            }
+            // Yes, set only to true
+            if(datesExist) {
+                SQL = "UPDATE rotagroups SET status = false WHERE 1=1; " +
+                        "UPDATE rotagroups SET status = true WHERE startdate = cast(? AS date) AND enddate = cast(? AS date);";
+                try(PreparedStatement s = c.prepareStatement(SQL)) {
+                    s.setString(1, startDate);
+                    s.setString(2, endDate);
+                    s.executeUpdate();
+                }
+                // No, create new as only true
+            } else {
+                SQL = "UPDATE rotagroups SET status = false WHERE 1=1; " +
+                        "INSERT INTO rotaGroups (startdate, enddate, status) VALUES (cast(? AS date), cast(? AS date), TRUE);";
+                try(PreparedStatement s = c.prepareStatement(SQL)) {
+                    s.setString(1, startDate);
+                    s.setString(2, endDate);
+                    s.executeUpdate();
+                }
+            }
+            return IndexController.okResponse("Rota group created successfully");
+            // Have to catch SQLException exception here
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
+    }
+
+    public static ResponseEntity<ObjectNode> postFirstAdminAccount() {
+        String connectionString = ConnectionTools.getConnectionString();
+        try(Connection c = DriverManager.getConnection(connectionString)) {
+            // Delete any non-admin accounts with this special username
+            String SQL = "DELETE FROM accounts WHERE username = 'FIRST ADMIN' AND level != 1; ";
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                s.executeUpdate();
+            }
+            // Check if an admin already exists
+            SQL = "SELECT EXISTS (SELECT level FROM accounts WHERE level = 1); ";
+            try(PreparedStatement s = c.prepareStatement(SQL)) {
+                ResultSet r = s.executeQuery();
+                r.next();
+                if(r.getBoolean(1)) {
+                    return IndexController.okResponse("Spring boot server running correctly");
+                }
+                return postAccount("FIRST ADMIN");
+            }
+        } catch (SQLException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.toString());
+        }
     }
 }

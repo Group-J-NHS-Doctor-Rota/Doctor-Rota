@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>edu.uob</groupId>
@@ -81,7 +81,7 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.12.0</version>
 		</dependency>
-		
+    
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -102,21 +102,21 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-			      <groupId>com.heroku.sdk</groupId>
-			      <artifactId>heroku-maven-plugin</artifactId>
-			      <version>2.0.3</version>
-			      <configuration>
-			          <appName>callicoder-heroku-maven-demo</appName>
-			          <includeTarget>false</includeTarget>
-			          <includes>
-			              <include>${project.build.directory}/${project.build.finalName}.jar</include>
-			          </includes>
-			          <jdkVersion>${java.version}</jdkVersion>
-			          <processTypes>
-			              <web>java $JAVA_OPTS -jar ${project.build.directory}/${project.build.finalName}.jar</web>
-			          </processTypes>
-			      </configuration>
-			  </plugin>
+				<groupId>com.heroku.sdk</groupId>
+				<artifactId>heroku-maven-plugin</artifactId>
+				<version>2.0.3</version>
+				<configuration>
+					<appName>callicoder-heroku-maven-demo</appName>
+					<includeTarget>false</includeTarget>
+					<includes>
+						<include>${project.build.directory}/${project.build.finalName}.jar</include>
+					</includes>
+					<jdkVersion>${java.version}</jdkVersion>
+					<processTypes>
+						<web>java $JAVA_OPTS -jar ${project.build.directory}/${project.build.finalName}.jar</web>
+					</processTypes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

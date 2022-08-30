@@ -5,21 +5,24 @@ import { Modal } from 'react-bootstrap'
 import '../css/general.css'
 import styled from 'styled-components'
 
-export default function LogoutModal({ logout, setLogout }){
-
+export default function RefreshModal({ refresh, setRefresh }){
     return (
         <>
-            <Modal show={logout}>
+            <Modal show={refresh}>
                 <div className="d-flex justify-content-center mb-4 mt-5">
-                    <Title>Do you want to log out?</Title>
+                    <Title>Warning</Title>
                 </div>
-                
+
+                <div className="px-5">
+                    <Content>Are you sure you want to refresh all the shifts?</Content>
+                </div>
+
                 <div className="d-flex justify-content-center my-3">
-                    <CloseButton className="m-2" onClick={() => setLogout(false)}>
+                    <CloseButton className="m-2" onClick={() => setRefresh(false)}>
                         Close
                     </CloseButton>
 
-                    <ConfirmButton className="m-2" onClick={() => setLogout(false)}>
+                    <ConfirmButton className="m-2" onClick={() => setRefresh(false)}>
                         Confirm
                     </ConfirmButton>
                 </div>
@@ -31,11 +34,20 @@ export default function LogoutModal({ logout, setLogout }){
 const Title = styled.h1`
     font-size: 32px;
     font-weight: bold;
-    color: #168082;
-    padding: 10px;
+    color: #035eb8;
 
     @media (max-width: 575px){
         font-size: 24px;
+    }
+`
+
+const Content = styled.p`
+    font-size: 20px;
+    font-weight: bold;
+    color: #035eb8;
+
+    @media (max-width: 575px){
+        font-size: 16px;
     }
 `
 
@@ -45,7 +57,7 @@ const CloseButton = styled.button`
     background-color: white;
     border-radius: 5px;
     border: none;
-    color: #168082;
+    color: #035eb8;
     font-weight: bold;
     padding: 5px 10px;
 
@@ -58,7 +70,7 @@ const CloseButton = styled.button`
 const ConfirmButton = styled.button`
     min-width: 100px;
     font-size: 20px;
-    background-color: #168082;
+    background-color: #035eb8;
     border-radius: 5px;
     border: none;
     color: white;

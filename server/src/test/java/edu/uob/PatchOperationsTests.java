@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,22 +20,25 @@ public class PatchOperationsTests {
 
     @Test
     void testUpdateVariable() {
-        // Get random account id and username to test
+        // Get random account id, username and email to test
         int id1 = TestTools.getTestAccountId();
         String username1 = TestTools.getRandomUsername();
+        String email1 = TestTools.getRandomEmail();
+        String email2 = TestTools.getRandomEmail();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // Create new account with id 998999999 (definitely unused), with some data
+            // Create new account with random account id (definitely unused) and some data
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             String SQL = "INSERT INTO accounts (id, username, password, email) " +
-                    "VALUES (?, ?, 'sdfdfsgghndfh', 'person@test.com'); ";
+                    "VALUES (?, ?, 'sdfdfsgghndfh', ?); ";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
                 s.setString(2, username1);
+                s.setString(3, email1);
                 s.executeUpdate();
             }
             // Change some data (3 bits)
-            PatchOperations.updateVariable("person2@test.com", "string", "email", "accounts", id1, c);
+            PatchOperations.updateVariable(email2, "string", "email", "accounts", id1, c);
             PatchOperations.updateVariable("true", "boolean", "fixedWorking", "accounts", id1, c);
             PatchOperations.updateVariable("25", "int", "annualLeave", "accounts", id1, c);
             // Confirm update has worked
@@ -45,7 +47,7 @@ public class PatchOperationsTests {
                 s.setInt(1, id1);
                 ResultSet r = s.executeQuery();
                 r.next();
-                assertEquals("person2@test.com", r.getString("email"));
+                assertEquals(email2, r.getString("email"));
                 assertTrue(r.getBoolean("fixedWorking"));
                 assertEquals(25, r.getInt("annualLeave"));
             }
@@ -59,31 +61,34 @@ public class PatchOperationsTests {
 
     @Test
     void testPatchAccount() {
-        // Get random account id and username to test
+        // Get random account id, username and email to test
         int id1 = TestTools.getTestAccountId();
+        String email1 = TestTools.getRandomEmail();
+        String realEmail = TestTools.getRandomEmail();
         String connectionString = ConnectionTools.getConnectionString();
         String username1 = TestTools.getRandomUsername();
         try(Connection c = DriverManager.getConnection(connectionString)) {
-            // Create new account with id 919999999 (definitely unused)
+            // Create new account with random account id (definitely unused)
             assertFalse(ConnectionTools.accountIdExists(id1, c));
             String SQL = "INSERT INTO accounts (id, username, password, email) " +
-                    "VALUES (?, ?, 'sdfdsh', 'ttt@test.com');";
+                    "VALUES (?, ?, 'sdfdsh', ?);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
                 s.setString(2, username1);
+                s.setString(3, email1);
                 s.executeUpdate();
             }
             //Update details
-            PatchOperations.patchAccount(id1, "30", "29", "20", "1", "real@email.com",
-                    "+447777777777", "123456789", "0", "0", "0.8", "false");
+            PatchOperations.patchAccount(id1, "30", "29", "20", "1", realEmail,
+                    "+447777777777", "123456789", "0", "0", "0.8", "false", "true");
             //Check details
             SQL = "SELECT email, phone, doctorId, annualLeave, studyLeave, workingHours, accountStatus, doctorStatus, level, "+
-                    "timeWorked, fixedWorking FROM accounts WHERE id = ?;";
+                    "timeWorked, fixedWorking, painWeek FROM accounts WHERE id = ?;";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
                 ResultSet r = s.executeQuery();
                 r.next();
-                assertEquals("real@email.com", r.getString("email"));
+                assertEquals(realEmail, r.getString("email"));
                 assertEquals("+447777777777", r.getString("phone"));
                 assertEquals("123456789", r.getString("doctorId"));
                 assertEquals(30, r.getInt("annualLeave"));
@@ -94,18 +99,19 @@ public class PatchOperationsTests {
                 assertEquals(1, r.getInt("level"));
                 assertEquals(0, Float.compare(0.8f, r.getFloat("timeWorked")));
                 assertFalse(r.getBoolean("fixedWorking"));
+                assertTrue(r.getBoolean("painWeek"));
             }
             //Update only some details
             PatchOperations.patchAccount(id1, null, "39", null, "0", null,
-                    "mob: 07777 777777", null, null, null, "0.6", null);
+                    "mob: 07777 777777", null, null, null, "0.6", null, "false");
             //Check details
             SQL = "SELECT email, phone, doctorId, annualLeave, studyLeave, workingHours, accountStatus, doctorStatus, level, "+
-                    "timeWorked, fixedWorking FROM accounts WHERE id = ?;";
+                    "timeWorked, fixedWorking, painWeek FROM accounts WHERE id = ?;";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
                 ResultSet r = s.executeQuery();
                 r.next();
-                assertEquals("real@email.com", r.getString("email"));
+                assertEquals(realEmail, r.getString("email"));
                 assertEquals("mob: 07777 777777", r.getString("phone"));
                 assertEquals("123456789", r.getString("doctorId"));
                 assertEquals(30, r.getInt("annualLeave"));
@@ -116,14 +122,15 @@ public class PatchOperationsTests {
                 assertEquals(0, r.getInt("level"));
                 assertEquals(0, Float.compare(0.6f, r.getFloat("timeWorked")));
                 assertFalse(r.getBoolean("fixedWorking"));
+                assertFalse(r.getBoolean("painWeek"));
             }
             //Update non-existent account
             assertFalse(ConnectionTools.accountIdExists(1000000000, c));
-            assertThrows(ResponseStatusException.class, ()-> PatchOperations.patchAccount(1000000000, "30", "29", "20", "1", "real@email.com",
-                    "+447777777777", "123456789", "0", "0", "0.8", "false"));
+            assertThrows(ResponseStatusException.class, ()-> PatchOperations.patchAccount(1000000000, "30", "29", "20", "1", realEmail,
+                    "+447777777777", "123456789", "0", "0", "0.8", "false", "false"));
             // Check incorrect data format
-            assertThrows(NumberFormatException.class, ()-> PatchOperations.patchAccount(id1, "thirty", "29", "20", "1", "real@email.com",
-                    "+447777777777", "123456789", "0", "0", "0.8", "false"));
+            assertThrows(NumberFormatException.class, ()-> PatchOperations.patchAccount(id1, "thirty", "29", "20", "1", realEmail,
+                    "+447777777777", "123456789", "0", "0", "0.8", "false", "false"));
             //Delete account
             DeleteOperations.deleteAccount(id1);
             assertFalse(ConnectionTools.accountIdExists(id1, c));
@@ -134,11 +141,12 @@ public class PatchOperationsTests {
 
     @Test
     void testPatchNotification() {
-        // Get random ids and username to test
+        // Get random ids, username and email to test
         int id1 = TestTools.getTestAccountId(); // as account id
         int id2 = TestTools.getTestAccountId(); // as leave request id
         int id3 = TestTools.getTestAccountId(); // as notification id
         String username1 = TestTools.getRandomUsername();
+        String email1 = TestTools.getRandomEmail();
         String connectionString = ConnectionTools.getConnectionString();
         try(Connection c = DriverManager.getConnection(connectionString)) {
             // check the test data
@@ -149,10 +157,11 @@ public class PatchOperationsTests {
                     id3, "id", "notifications", c));
             // Create new account with random test id
             String SQL = "INSERT INTO accounts (id, username, password, email) " +
-                    "VALUES (?, ?, 'pwd999999073', 't_user073@test.com');";
+                    "VALUES (?, ?, 'pwd999999073', ?);";
             try (PreparedStatement s = c.prepareStatement(SQL)) {
                 s.setInt(1, id1);
                 s.setString(2, username1);
+                s.setString(3, email1);
                 s.executeUpdate();
             }
             // Add test data for leave requests and notifications
@@ -238,9 +247,9 @@ public class PatchOperationsTests {
 
     @Test
     void testPatchPasswordReset() throws JsonProcessingException {
-        // Create account
+        // Create account with random username and email
         String username = TestTools.getRandomUsername();
-        String email = RandomStringUtils.randomAlphabetic(16)+"@"+RandomStringUtils.randomAlphabetic(8)+".com";
+        String email = TestTools.getRandomEmail();
         PostOperations.postAccount(username, email);
         // Login
         String password1 = ConnectionTools.getEnvOrSysVariable("DEFAULT_PASSWORD");

@@ -20,7 +20,10 @@ jobs:
       JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
       PEPPER: ${{ secrets.PEPPER }}
       DEFAULT_PASSWORD: ${{ secrets.DEFAULT_PASSWORD }}
-
+      EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      EMAIL_TO: ${{ secrets.EMAIL_TO }}
+      
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17

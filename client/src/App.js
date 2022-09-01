@@ -1,22 +1,48 @@
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+// This app uses es6 new features
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import SignIn from './layout/SignIn'
-import Homgepage from './layout/Homepage';
+// install react-router-dom package 6.3.0
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate
+} from 'react-router-dom';
+
+import PrivateRouter from './auth/PrivateRoute';
+
+import { UrlProvider } from './contexts/UrlContexts';
+import { AuthProvider } from './contexts/AuthContext';
+
+import SignInPage from './layout/SignInPage';
+// import SignUpPage from './layout/SignUpPage';
+import Homepage from './layout/Homepage';
 import AccountPage from './layout/AccountPage';
+import NotificationPage from './layout/NotificationPage';
+import NavBar from './components/NavBar';
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import "bootstrap-icons/font/bootstrap-icons.css";
-
-function App() {
+const App = () => {
   return (
     <div>
-      <Router>
-        <Switch>
-          <Route exact path="/" component={Homgepage} />
-          <Route path="/signin" component={SignIn} />
-          <Route path="/account" component={AccountPage} />
-        </Switch>
-      </Router>
+      <UrlProvider>
+        <AuthProvider>
+          <Router>
+            <Routes>
+                <Route element={<PrivateRouter/>}>
+                  <Route path="/" element={<NavBar />}>
+                    <Route index path="/" element={<Homepage />} />
+                    <Route path="account" element={<AccountPage />} />
+                    <Route path="notification" element={<NotificationPage />} />
+                  </Route>
+                </Route>
+                <Route path="signin" element={<SignInPage />} />
+
+                {/* <Route path="signup" element={<SignUpPage />} /> */}
+            </Routes>
+          </Router>
+        </AuthProvider>
+      </UrlProvider>
     </div>
   );
 }

@@ -1,54 +1,88 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
-import Navbar from '../element/Navbar'
-import DataCard from '../element/DataCard'
-import CalendarTable from '../element/CalendarTable'
+import DataBar from '../components/DataBar'
+import CalendarTable from '../components/CalendarTable'
+import FilterCard from '../components/FilterCard'
 
 import styled from 'styled-components'
 
-export default function Homgepage(){
+export default function Homgepage() {
     const today = new Date()
+    const filterRef = useRef(null)
 
     const [year, setYear] = useState(today.getFullYear())
-    const [month, setMonth] = useState(today.getMonth()+1)
+    const [month, setMonth] = useState(today.getMonth() + 1)
+    const [open, setOpen] = useState(false)
     
-    function handleNextMonth(){
-        if(month == 12){
-            setMonth(1)
-            setYear(year+1)
+    const handleClickOutside = event => {
+        if(filterRef.current && !filterRef.current.contains(event.target) && event.target.id != "icon_filter"){
+            setOpen(false)
         }else{
-            setMonth(month+1)
+            setOpen(true)
         }
     }
 
-    function handlePreviousMonth(){
-        if(month == 1){
+    useEffect(() => {        
+        document.addEventListener('click', handleClickOutside)
+
+        return () => document.removeEventListener('click', handleClickOutside)
+    }, [])
+
+
+    function handleNextMonth() {
+        if (month == 12) {
+            setMonth(1)
+            setYear(year + 1)
+        } else {
+            setMonth(month + 1)
+        }
+    }
+
+    function handlePreviousMonth() {
+        if (month == 1) {
             setMonth(12)
-            setYear(year-1)
-        }else{
-            setMonth(month-1)
+            setYear(year - 1)
+        } else {
+            setMonth(month - 1)
         }
     }
 
     return (
         <div>
-            <Navbar />
 
             <Container>
-                <DataCard />
+                <DataBar />
 
                 {/* Switch Calendar */}
-                <div className="d-flex align-items-center mt-3">
-                    <div className="m-1">
-                        <Icon className="bi bi-caret-left-fill" style={{cursor: 'pointer'}} onClick={() => handlePreviousMonth()}></Icon>
+                <div className="d-flex justify-content-between align-items-center mt-3" style={{ position: 'relative' }}>
+                    <div className="d-flex align-items-center">
+                        <div className="m-1">
+                            <Icon className="bi bi-caret-left-fill" style={{ fontSize: '20px', cursor: 'pointer' }} onClick={() => handlePreviousMonth()}></Icon>
+                        </div>
+                        <div className="m-1">
+                            <p className="mb-0" style={{ fontSize: '20px' }}>
+                                {year}/
+                                {
+                                    ((month + '').length) === 2 ? month : ('0' + month)
+                                }
+                            </p>
+                        </div>
+                        <div className="m-1">
+                            <Icon className="bi bi-caret-right-fill" style={{ fontSize: '20px', cursor: 'pointer' }} onClick={() => handleNextMonth()}></Icon>
+                        </div>
                     </div>
-                    <div className="m-1">
-                        <p className="mb-0">{year}/{month}</p>
-                    </div>
-                    <div className="m-1">
-                        <Icon className="bi bi-caret-right-fill" style={{cursor: 'pointer'}} onClick={() => handleNextMonth()}></Icon>
+
+                    <div style={{ fontSize: '40px' }}>
+                        <Icon id="icon_filter" className="bi bi-filter" style={{ cursor: 'pointer' }} onClick={() => setOpen(!open)}></Icon>
                     </div>
                 </div>
+
+                <div ref={filterRef}>
+                    {
+                        open && <FilterCard id="filter_card" open={open} setOpen={setOpen} />
+                    }
+                </div>
+
 
                 <Week className="my-2">
                     <div className="d-flex justify-content-center"><h3 className="fs-5">Mon</h3></div>
@@ -59,7 +93,7 @@ export default function Homgepage(){
                     <div className="d-flex justify-content-center"><h3 className="fs-5">Sat</h3></div>
                     <div className="d-flex justify-content-center"><h3 className="fs-5">Sun</h3></div>
                 </Week>
-                
+
                 <CalendarTable year={year} month={month} />
             </Container>
         </div>
@@ -73,7 +107,7 @@ const Container = styled.div`
 
 const Icon = styled.i`
     &:hover{
-        color: #168082;
+        color: #035eb8;
     }
 `
 
@@ -84,4 +118,3 @@ const Week = styled.div`
         grid-template-columns: repeat(7, 1fr)
     }
 `
-

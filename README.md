@@ -23,3 +23,10 @@ We are seeking an automated programme for writing junior doctors' rotas in anaes
 With increased work flexibility, the writing of rotas has become increasingly complex and time consuming. This has become non-sustainable as a consultant role and many hospitals how now created 'fixed' rota patterns. Fixed rota patterns remove flexibility in terms of leave and weekends off, impairing work-life balance for doctors in training. This is impacting trainee doctor wellbeing which has already been strained during the current pandemic.
 
 If successful, this programme could be utilised as a format throughout the hospital as well as adopted by other hospitals in region and around the country who have similar issues. This would avoid widespread adoption of fixed, inflexible rota patterns
+
+## Folder structure
+
+- client, contains all code relating to the react frontend application
+- database, contains all code relating to the database design and creation
+- resources, contains any readme files
+- server, contains all code relating to the spring-boot backend application

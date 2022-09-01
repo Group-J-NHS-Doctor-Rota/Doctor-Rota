@@ -1,19 +1,15 @@
-## Spring Boot Heroku Deployment Example
+# Spring Boot Application
 
-**Tutorial:** [Deploying / Hosting Spring Boot applications on Heroku](https://www.callicoder.com/deploy-host-spring-boot-apps-on-heroku/) 
+This skeleton application was intially created from this **tutorial:** [Deploying / Hosting Spring Boot applications on Heroku](https://www.callicoder.com/deploy-host-spring-boot-apps-on-heroku/) 
 
 ## Running the application locally
 
 ```bash
-git clone https://github.com/callicoder/spring-boot-heroku-deployment-example.git
-cd spring-boot-heroku-deployment-example
+git clone https://github.com/Group-J-NHS-Doctor-Rota/Doctor-Rota.git
+cd Doctor-Rota/client
 mvn spring-boot:run
 ```
 
-## Deploying to Heroku
+## Heroku deploys
 
-Read the [Tutorial](https://www.callicoder.com/deploy-host-spring-boot-apps-on-heroku/) for instructions on deploying to Heroku.
-
-Or click this magic button to deploy this project to your heroku account:
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+At the top of the directory these can be found under the Environments section. "-spring-" in the name refers to versions of the spring-boot application.
